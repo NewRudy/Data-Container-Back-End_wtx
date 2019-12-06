@@ -24,55 +24,7 @@ exports.storage=function(req,res,next){
             req.on('end', function () {
               res.send({uid:uid,datetime:datetime});
             });
-            //数据固有属性
-            // let obj={
-            //     uid:uid,
-            //     // path:files.file.path,
-            //     // originalName:files.file.name,
-            //     // size:files.file.size+'b',
-            //     // type:files.file.type,
-            //     date:datetime,
-                
-            // };
-
-            // //数据自描述属性
-            // if("info" in fields){
-            //     obj["info"]=JSON.parse(fields.info);
-            //     var file_name=obj["info"].name
-            // }
-            // if("file" in fields){
-            //     console.log( fields.file[0,10] )
-               
-            //     var myWriteStream = fs.createWriteStream(__dirname + '/../upload/'+uid);//创建一个写入流
-
-            //     myWriteStream.write(Buffer.from(fields.file));//写入
-            //     myWriteStream.end();//写入完之后调用end方法   （调用这个方法是 代表这个流结束了，如果不掉用这个流，这个流是结束不了的，finish方法不会触发）
-            //     myWriteStream.on("finish",function(){//加一个监听函数，监听撸结束后
-            //         console.log('文件已被保存');
-                       
-                       
-            //             obj['path']=__dirname + '/../upload/'+uid
-            //                 //数据信息入库
-            //             DataSet.create(obj,function(err,small){
-            //             if(err){
-            //                 console.log(err);
-            //                 res.send(err);
-            //             }
-                        
-            //             res.send({'data':{source_store_id:uid,file_name:file_name}});
-            //         })
-
-
-            //     })
-               
-                
-
-
-             
-
-
-            // }
-
+           
         }catch(err){
             console.log(err)
         }
@@ -144,18 +96,24 @@ exports.download=function(req,res,next){
 //获取数据列表
 exports.datalist=function(req,res,next){
     let page=req.query.page-1
-    DataSet.find({},null,{skip:10*page,limit:10},function(err,doc){
-        let re=[]
-        doc.forEach(_=>{
-            let obj={}
-            obj["info"]=_.info;
-            obj["uid"]=_.uid;
-            obj["date"]=_.date
-            re.push(obj)
+   
+    DataSet.count({},function(err,ct){
+         
+        DataSet.find({},null,{skip:10*page,limit:10},function(err,doc){
+            let re=[]
+            doc.forEach(_=>{
+                let obj={}
+                obj["info"]=_.info;
+                obj["uid"]=_.uid;
+                obj["date"]=_.date
+                re.push(obj)
+            })
+            console.log("get data list,total: ",ct)
+            res.send({total:ct,list:re})
         })
-        console.log("get data list")
-        res.send(re)
-    })    
+    })
+     
+       
 
 }
 
