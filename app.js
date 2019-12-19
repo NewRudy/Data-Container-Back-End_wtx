@@ -29,18 +29,43 @@ app.all('*', function (req, res, next) {
 
 
 //上传数据到中转服务器
-app.post('/publicdata/',router.storageData)
-app.post('/datainfo',router.storageDesc)
+//第一种接口，数据检验
+
+/**
+ * file
+ * 
+ */
+app.post('/udxzip',router.storageData)
+
+// app.post('/udxzipinfo',router.storageDesc)
+
+//接口2和3
+app.post('/source/:type',router.noTemplate)
+ 
+
+//第四种接口
+app.post('/randomsource',router.randomSource)
+
 
 //下载获得数据流
-app.get('/datasource',router.datasource)
+//第一种接口的下载
+app.get('/zipsource',router.datasource)
+
+//数据流上传
+
+
+//test
+
+app.get('/test',router.test)
+
+//批量下载
+app.get('/datasources',)
 
 //获取服务器数据列表
 app.get('/datalist',router.datalist)
+//检索
+app.get('/onlinefilter',router.filter)
 
-
-//数据描述 storageDesc
-app.post('/datadesc',router.storageDesc)
 
 //更新数据描述
 app.post('/update',router.update);

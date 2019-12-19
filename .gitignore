@@ -1,3 +1,7 @@
 node_modules
 .vscode
 upload/
+upload_mdlschema/
+upload_random/
+upload_stand_zip/
+upload_template/

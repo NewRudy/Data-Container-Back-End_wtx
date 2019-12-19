@@ -24,8 +24,4 @@ var dataSChema = new mongoose.Schema({
 });
 
 //创建model
-var DataSet=mongoose.model('dataset',dataSChema,'datalist')
-
-exports.DataSet=DataSet;
-
-
+var UdxZip=mongoose.model('dataset3',dataSChema,'udxZip')

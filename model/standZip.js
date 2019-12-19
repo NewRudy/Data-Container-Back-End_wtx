@@ -24,8 +24,5 @@ var dataSChema = new mongoose.Schema({
 });
 
 //创建model
-var DataSet=mongoose.model('dataset',dataSChema,'datalist')
-
-exports.DataSet=DataSet;
-
-
+var StandZip=mongoose.model('standZip',dataSChema,'standZip')
+exports.StandZip = StandZip;
