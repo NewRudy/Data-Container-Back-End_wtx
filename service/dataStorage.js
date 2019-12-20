@@ -478,36 +478,67 @@ exports.storageDesc=function(req,res,next){
 exports.download=function(req,res,next){
     let uid=req.query.uid;
     let type=req.query.type;
+    let path
 
-    try{
-        DataSet.find({uid:uid},function(err,doc){
-            if(doc!=null){
-                __dirname + '/../upload/'
-                let filePath=__dirname + '/../upload/'+doc[0].fileId+'.zip';
-                let ogmsdata=doc[0].name
+    if(type==="zip"){
+
+        path=__dirname+'/../upload_stand_zip/'+uid+'/'+uid+'.zip'
+    }else if(type==="tep"){
+
+        path=__dirname+'/../upload_template/'+uid+'.zip'
+    }else if(type==="udx"){
+
+        path=__dirname+'/../upload_mdlschema/'+uid+'.zip'
+    }else if(type==="ran"){
+
+        path=__dirname+'/../upload_random/'+uid
+
+        compressing.zip.compressDir(path, path+'.zip')
+        .then(() => {
+            console.log('success');
+            res.writeHead(200, {
+                'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                'Content-Disposition': 'attachment; filename=' + encodeURI("data")+'.zip',//告诉浏览器这是一个需要下载的文件
+            });//设置响应头
+            var readStream = fs.createReadStream(path+'.zip');//得到文件输入流
+
+            readStream.on('data', (chunk) => {
+                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+            });
+            readStream.on('end', () => {
+                res.end();
+                 fs.unlink(path+'.zip',(err)=>{
+                     console.log(err)
+                 })
+                return;
+            })
 
 
-                res.writeHead(200, {
-                    'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                    'Content-Disposition': 'attachment; filename=' + encodeURI(ogmsdata)+'.zip',//告诉浏览器这是一个需要下载的文件
-                });//设置响应头
-                var readStream = fs.createReadStream(filePath);//得到文件输入流
-
-                readStream.on('data', (chunk) => {
-                    res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
-                });
-                readStream.on('end', () => {
-                    res.end();
-                })
-            
-            }else{
-                res.send("no data")
-            }
         })
+        .catch(err => {
+            console.error(err);
+        });
 
-    }catch(err){
-        console.log(err)
+
     }
+
+     
+    if(type!="ran"){
+        res.writeHead(200, {
+                'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                'Content-Disposition': 'attachment; filename=' + encodeURI("data")+'.zip',//告诉浏览器这是一个需要下载的文件
+            });//设置响应头
+            var readStream = fs.createReadStream(path);//得到文件输入流
+
+            readStream.on('data', (chunk) => {
+                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+            });
+            readStream.on('end', () => {
+                res.end();
+            })
+    }
+            
+        
     
 }
 
