@@ -107,3 +107,14 @@
     }
         ```
 
+## 下载数据接口
+- ### http://111.229.14.128:8899/zipsource?uid=xxx&type=xxx GET
+  - 下载指定类型的数据
+  - 参数：
+    - uid:上传数据返回的id
+    - type:
+      - zip：专业用户zip
+      - tep: 原始数据+数据模板
+      - udx: mdl中读出的schema+udx.data
+      - ran: 任意数据
+  - 返回值：文件数据流
