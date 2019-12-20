@@ -304,10 +304,13 @@ exports.noTemplate=function(req,res,next){
                                     // append files
                                     
                                     for(fe of filesItem){
-                                        if(fe===item){
+                                        if(fe==item){
                                             continue;
+                                        }else{
+                                            console.log(fe)
+                                            archive.file(dirPath+'/'+fe, {name: fe});
                                         }
-                                        archive.file(dirPath+'/'+fe, {name: fe});
+                                        
                                     }
                                     
                                     //
@@ -322,8 +325,10 @@ exports.noTemplate=function(req,res,next){
                             })
                         })
 
-                        // break;
+                        break;
                     } 
+
+                     
                 }
             
             });
@@ -472,6 +477,7 @@ exports.storageDesc=function(req,res,next){
 //下载数据
 exports.download=function(req,res,next){
     let uid=req.query.uid;
+    let type=req.query.type;
 
     try{
         DataSet.find({uid:uid},function(err,doc){
