@@ -24,4 +24,5 @@ var dataSChema = new mongoose.Schema({
 });
 
 //创建model
-var SrcZip=mongoose.model('dataset1',dataSChema,'srcZip')
+var SrcZip=mongoose.model('srcZip',dataSChema,'srcZip')
+exports.SrcZip=SrcZip;

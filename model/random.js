@@ -25,3 +25,4 @@ var dataSChema = new mongoose.Schema({
 
 //创建model
 var Random=mongoose.model('dataset4',dataSChema,'random')
+exports.Random=Random;

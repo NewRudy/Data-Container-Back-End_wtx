@@ -24,4 +24,5 @@ var dataSChema = new mongoose.Schema({
 });
 
 //创建model
-var UdxZip=mongoose.model('dataset3',dataSChema,'udxZip')
+var UdxZip=mongoose.model('udxZip',dataSChema,'udxZip')
+exports.UdxZip=UdxZip;

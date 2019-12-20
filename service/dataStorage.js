@@ -27,7 +27,7 @@ var UdxZip=udxZip.UdxZip;
 
 const compressing = require('compressing');
 const zlib = require( 'zlib' );
-
+var parser = new xml2js.Parser();
 
 const delDir=require('../utils/utils')
 //上传符合要求的zip数据,接口1
@@ -36,7 +36,7 @@ exports.storage=function(req,res,next){
     var form =new formidable.IncomingForm();
     let uid=uuid.v4()
     let dirPath=__dirname+'/../upload_stand_zip/'+uid
-    var parser = new xml2js.Parser();
+   
     
     fs.mkdir(dirPath,(err)=>{
 
@@ -46,9 +46,13 @@ exports.storage=function(req,res,next){
         form.keepExtensions=true
         
         form.parse(req,function(err,fields,file){
-        //    fs.rename(file.filename.path,dirPath+"/"+uid+'.zip',(err)=>{
-        //        console.log(err)
-        //    })
+         
+         //必要参数的检验
+            if(!fields.name||!fields.origination||!fields.serverNode||!fields.userId){
+                res.send({code:0,message:"without name , userId ,origination, serverNode"})
+                return
+            } 
+
            let doc={
                 uid:uid,
                 name:fields.name,
@@ -61,22 +65,17 @@ exports.storage=function(req,res,next){
                 // info:JSON.parse(fields.info)
             };
 
-            //必要参数的检验
-            if(!fields.name||!fields.origination||!fields.serverNode||!fields.userId){
-                res.send("without name , userId ,origination, serverNode")
-                return
-            } 
-
+           
             if("access" in fields){
                 doc["access"]=fields.access
             }
 
             if("info" in fields){
-                doc["info"]=fields.info
+                doc["info"]=JSON.parse(fields.info)
             }
             
             //解压压缩包
-            compressing.zip.uncompress(file.filename.path, dirPath+'/unzipdata')
+            compressing.zip.uncompress(file.ogmsdata.path, dirPath+'/unzipdata')
             .then(() => {
                 console.log('unzip original zip data success');
                 fs.readFile(dirPath+'/unzipdata'+'/config.udxcfg',(err,data)=>{
@@ -94,7 +93,7 @@ exports.storage=function(req,res,next){
                             //检查模板id是否正确
                             let dataTemplateId=result.UDXZip["DataTemplateId"]
                             if(!dataTemplateId){
-                                res.send("data template id empty!")
+                                res.send({code:0,message:"data template id empty!"})
                                 return
                             }
 
@@ -117,7 +116,7 @@ exports.storage=function(req,res,next){
                             archive.pipe(output);
 
                             // append files
-                            let na=file.filename.path.split('\\')
+                            let na=file.ogmsdata.path.split('\\')
                             for(item of filesItem){
                                 if(item==="config.udxcfg"||item===na[na.length-1]){
                                     continue;
@@ -141,7 +140,7 @@ exports.storage=function(req,res,next){
                             StandZip.create(doc,function(err1,small){
                                 if(err1){
                                     console.log(err1);
-                                    res.send(err1);
+                                    res.send({code:0,message:err1});
                                     return
                                 }
                                 console.log("upload file")
@@ -153,8 +152,8 @@ exports.storage=function(req,res,next){
 
 
                         }else{
-                            res.send("data check error!")
-                             
+                            res.send({code:0,message:"data check error!"})
+                            return
                         }
                     });
     
@@ -165,7 +164,7 @@ exports.storage=function(req,res,next){
                 console.error(err);
             });
     
-        
+             
         })
     })
    
@@ -176,11 +175,14 @@ exports.noTemplate=function(req,res,next){
 
     var form =new formidable.IncomingForm();
     let uid=uuid.v4()
-    let type=req.params.type,dirPath
+    let type=req.params.type,dirPath,zipPath
     if(type==="tep"){
         dirPath=__dirname+'/../upload_template/'+uid
+        zipPath=__dirname+'/../upload_template/'
     }else if(type==="udx"){
         dirPath=__dirname+'/../upload_mdlschema/'+uid
+        zipPath=__dirname+'/../upload_mdlschema/'
+
     }
      
     fs.mkdir(dirPath,(err)=>{
@@ -190,55 +192,171 @@ exports.noTemplate=function(req,res,next){
         form.uploadDir=dirPath
         form.keepExtensions=true
         
+
         form.parse(req,function(err,fields,file){
 
-            //检验数据todo
-           
-                compressing.zip.compressDir(dirPath, dirPath+'.zip')
-                .then(() => {
-
-                    //存库记录
-                    console.log('success');
-                    delDir(dirPath)//递归删除文件夹内容
+            if(!fields.name||!fields.origination||!fields.serverNode||!fields.userId){
+                fs.rmdir(dirPath,(err)=>{
+                    console.log(err)
                 })
-                .catch(err => {
-                    console.error(err);
-                });
-                
-           
-            //存库记录
+                res.send({code:0,message:"without name , userId ,origination, serverNode"})
+                return;
+            } 
+            //入库数据结构
             let doc={
                 uid:uid,
                 name:fields.name,
-                dataTemplateId:fields.dataTemplateId,
                 origination:fields.origination,
                 serverNode:fields.serverNode,
                 userId:fields.userId,
-                access:fields.access,
                 date: date.format(new Date(), 'YYYY-MM-DD HH:mm'),
-                info:JSON.parse(fields.info)
+              
             };
 
-            if(!fields.name||!fields.dataTemplateId||!fields.origination||!fields.serverNode||!fields.userId){
-                res.send("without name , dataFileId ,origination, serverNode or dataTemplateId")
-                return
-            } 
-
-            let ret={source_store_id:uid,file_name:fields.name}
-            console.log("")
-            if(type="tep"){
-
-                savedb(SrcZip,doc,ret)
-                
-
-            }else if(type="udx"){
-
-                savedb(UdxZip,doc,ret)
-               
+            if("access" in fields){
+                doc["access"]=fields.access
             }
+
+            if("info" in fields){
+                doc["info"]=JSON.parse(fields.info)
+            }
+
+           
+            
+            //检验数据
+            // let filesItem=fs.readdirSync(dirPath)
+
+            fs.readdir(dirPath,(err,filesItem)=>{
+
+                console.log(filesItem)
+                for(item of filesItem){
+
+                    if((item.split("."))[1]==="udxcfg"){
+                        cfg_name=item
+
+                        fs.readFile(dirPath+'/'+item,(err,data)=>{
+                            parser.parseString(data, function (err, result) {
+                                //校验文件个数
+                                console.log(filesItem,result.UDXZip["Name"][0].add.length)
+                                if(filesItem.length-1==result.UDXZip["Name"][0].add.length){
+                                    console.log("data check succcess!")
+
+
+                                    //检查模板id是否正确
+                                    let dataTemplateId=result.UDXZip["DataTemplateId"]
+                                    if(!dataTemplateId){
+                                        res.send({code:0,message:"data template id empty!"})
+                                        return
+                                    }
+
+                                    doc["dataTemplateId"]=dataTemplateId[0]
+
+                                    //将除了配置文件外的数据压缩，为调用准备
+                                    var output = fs.createWriteStream( zipPath+'/'+uid+'.zip');
+                                    var archive = archiver('zip', {
+                                        gzip: true,
+                                        zlib: { level: 9 } // Sets the compression level.
+                                    });
+
+                                    archive.on('error', function(err) {
+                                        throw err;
+                                    });
+                                    archive.on('end',(err)=>{
+                                        delDir(dirPath)
+                                         //存库记录
+                                        let ret={source_store_id:uid,file_name:fields.name}
+                                    
+                                        if(type==="tep"){
+
+                                            //存库
+                                            SrcZip.create(doc,function(err1,small){
+                                                if(err1){
+                                                    console.log(err1);
+                                                    res.send({code:0,message: err1});
+                                                    return
+                                                }
+                                            
+                                                res.send(ret);
+                                                return
+                                            })
+                                            
+                                            console.log("add template data-"+uid)
+                                            
+                                        }else if(type==="udx"){
+
+                                            //存库
+                                            UdxZip.create(doc,function(err2,small){
+                                                if(err2){
+                                                    console.log(err2);
+                                                    res.send({code:0,message: err2});
+                                                    return
+                                                }
+                                                
+                                                res.send(ret);
+                                                return
+                                            })
+                                            
+                                            console.log("add udx data-"+uid)
+                                        
+                                        }
+
+
+
+                                        console.log("zip original zip data without config data success")
+                                    })
+
+                                    // pipe archive data to the output file
+                                    archive.pipe(output);
+
+                                    // append files
+                                    
+                                    for(fe of filesItem){
+                                        if(fe===item){
+                                            continue;
+                                        }
+                                        archive.file(dirPath+'/'+fe, {name: fe});
+                                    }
+                                    
+                                    //
+                                    archive.finalize();
+
+
+                                }else{
+                                    console.log(filesItem.length===result.UDXZip["Name"][0].add.length)
+                                    res.send({code:0,message:"data check error!"})
+                                
+                                }
+                            })
+                        })
+
+                        // break;
+                    } 
+                }
+            
+            });
+
+            
+               
+           
+                
+           
            
         })
+
+        // form.on('end', function() {
+        //     fs.readdir(dirPath,(err,filesItem)=>{
+        //         console.log(filesItem)   
+        //     })
+             
+           
+        // });
+        // res.send("error")
+        // return
+
+        
     })
+
+     
     
 }
 
@@ -246,56 +364,69 @@ exports.noTemplate=function(req,res,next){
 
 //上传任意数据
 exports.randomSource=function randomSource(req,res,next){
+    let uid=uuid.v4()
 
     var form =new formidable.IncomingForm();
-    form.uploadDir=__dirname+'/../upload_random'
+    var dp=__dirname+'/../upload_random/'+uid
+    form.uploadDir=dp
     form.keepExtensions=true
-    form.parse(req,function(err,fields,file){
-        if(err){
-            console.log(err)
-        }
-         
-        //检验
 
+    fs.mkdir(dp,(err)=>{
+        if(err) throw err;
+        form.parse(req,function(err,fields,file){
+                if(err){
+                    console.log(err)
+                }
+                
+                
+                //必要参数的检验
+                if(!fields.name||!fields.origination||!fields.serverNode||!fields.userId){
+                    res.send({code:0,message:"without name , userId ,origination, serverNode"})
+                    return
+                } 
 
-        //存库记录
-        let doc={
-            uid:uid,
-            name:fields.name,
-            dataTemplateId:fields.dataTemplateId,
-            origination:fields.origination,
-            serverNode:fields.serverNode,
-            userId:fields.userId,
-            access:fields.access,
-            date: date.format(new Date(), 'YYYY-MM-DD HH:mm'),
-            info:JSON.parse(fields.info)
-        };
+            let doc={
+                    uid:uid,
+                    name:fields.name,
+                    origination:fields.origination,
+                    serverNode:fields.serverNode,
+                    userId:fields.userId,
 
-        if(!fields.name||!fields.dataTemplateId||!fields.origination||!fields.serverNode||!fields.userId){
-            res.send("without name , dataFileId ,origination, serverNode or dataTemplateId")
-            return
-        } 
+                    // access:fields.access,
+                    date: date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+                    // info:JSON.parse(fields.info)
+                };
 
+            
+                if("access" in fields){
+                    doc["access"]=fields.access
+                }
 
-        let ret={source_store_id:uid,file_name:fields.name}
-        savedb(Random,doc,ret)
-         
-    })
-}
+                if("info" in fields){
+                    doc["info"]=JSON.parse(fields.info)
+                }
 
-function savedb(dbschema,doc,ret,res){
+            
 
-    dbschema.create(doc,function(err1,small){
-        if(err1){
-            console.log(err1);
-            res.send(err1);
-        }
-        console.log("upload file")
-        res.send(ret);
-    })
+                let ret={source_store_id:uid,file_name:fields.name}
+                
+                Random.create(doc,function(err2,small){
+                    if(err2){
+                        console.log(err2);
+                        res.send({code:0,message: err2});
+                        return
+                    }
+                    
+                    res.send(ret);
+                    return
+                })
+                
+            })
+    });
     
-
 }
+
+ 
 exports.test=function test(req,res,next){
     
 }
@@ -354,12 +485,12 @@ exports.download=function(req,res,next){
             if(doc!=null){
                 __dirname + '/../upload/'
                 let filePath=__dirname + '/../upload/'+doc[0].fileId+'.zip';
-                let filename=doc[0].name
+                let ogmsdata=doc[0].name
 
 
                 res.writeHead(200, {
                     'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                    'Content-Disposition': 'attachment; filename=' + encodeURI(filename)+'.zip',//告诉浏览器这是一个需要下载的文件
+                    'Content-Disposition': 'attachment; filename=' + encodeURI(ogmsdata)+'.zip',//告诉浏览器这是一个需要下载的文件
                 });//设置响应头
                 var readStream = fs.createReadStream(filePath);//得到文件输入流
 
