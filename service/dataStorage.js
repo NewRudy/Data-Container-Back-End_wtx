@@ -89,13 +89,7 @@ exports.storage=function(req,res,next){
                         if(filesItem.length-1===result.UDXZip["Name"][0].add.length){
                             console.log("data check succcess!")
 
-
-                            //检查模板id是否正确
-                            let dataTemplateId=result.UDXZip["DataTemplateId"]
-                            if(!dataTemplateId){
-                                res.send({code:0,message:"data template id empty!"})
-                                return
-                            }
+ 
 
                         
                             //将除了配置文件外的数据压缩，为调用准备
@@ -128,15 +122,10 @@ exports.storage=function(req,res,next){
                             archive.finalize();
 
 
-                    
-
-                            doc["dataTemplateId"]=dataTemplateId[0]
-
                             let ret={source_store_id:uid,file_name:fields.name}
 
                             //库存数据信息记录
-                            // savedb(StandZip,doc,ret,res)
-
+                           
                             StandZip.create(doc,function(err1,small){
                                 if(err1){
                                     console.log(err1);
