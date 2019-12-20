@@ -242,18 +242,14 @@ exports.noTemplate=function(req,res,next){
                                     console.log("data check succcess!")
 
 
-                                    //类型是tep检查模板id是否正确
-                                    if(type==="tep"){
-
-                                        let dataTemplateId=result.UDXZip["DataTemplateId"]
-                                        if(!dataTemplateId){
-                                            res.send({code:0,message:"data template id empty!"})
-                                            return
-                                        }
-
-                                        doc["dataTemplateId"]=dataTemplateId[0]
+                                    //检查模板id是否正确
+                                    let dataTemplateId=result.UDXZip["DataTemplateId"]
+                                    if(!dataTemplateId){
+                                        res.send({code:0,message:"data template id empty!"})
+                                        return
                                     }
-                                    
+
+                                    doc["dataTemplateId"]=dataTemplateId[0]
 
                                     //将除了配置文件外的数据压缩，为调用准备
                                     var output = fs.createWriteStream( zipPath+'/'+uid+'.zip');

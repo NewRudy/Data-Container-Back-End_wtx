@@ -5,11 +5,10 @@ exports.storageData=storageData.storage;
 //数据描述
 exports.storageDesc=storageData.storageDesc;
 
-//第二种接口
+//第2,3种接口
 exports.noTemplate=storageData.noTemplate;
 
-//第三种接口
-exports.mdlSchema=storageData.mdlSchema;
+ 
 
 //第四种接口
 exports.randomSource=storageData.randomSource;
