@@ -7,6 +7,8 @@
 
 ## 上传数据接口
 
+- ### postman接口文档
+  - https://documenter.getpostman.com/view/9819382/SWEDzuBT?version=latest
 - ### http://111.229.14.128:8899/udxzip POST
   - 专业用户
   - 必填参数：上传文件，name,userId,serverNode,origination,
