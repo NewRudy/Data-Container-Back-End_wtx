@@ -5,7 +5,9 @@ const fs=require('fs')
 const unzip=require('unzip')
 const xml2js =require('xml2js')
 const archiver =require('archiver')
+const cp = require('child_process');//引入包
 
+//这个是datalist的model
 const dataModel=require('../model/dataList.js')
 
 
@@ -30,6 +32,9 @@ const zlib = require( 'zlib' );
 var parser = new xml2js.Parser();
 
 const delDir=require('../utils/utils')
+
+ 
+
 //上传符合要求的zip数据,接口1
 exports.storage=function(req,res,next){
 
@@ -358,9 +363,7 @@ exports.noTemplate=function(req,res,next){
     
 }
 
- 
-
-//上传任意数据
+//上传任意数据, 接口4
 exports.randomSource=function randomSource(req,res,next){
     let uid=uuid.v4()
 
@@ -424,57 +427,7 @@ exports.randomSource=function randomSource(req,res,next){
     
 }
 
- 
-exports.test=function test(req,res,next){
-    
-}
-
-//添加描述信息
-exports.storageDesc=function(req,res,next){
-
- 
-    const uid=uuid.v4();
-
-    var form = new formidable.IncomingForm();
-    //文件放在文件夹xia
-    form.parse(req,function(err,fields,files){
-
-        let DataSet=dataModel.DataSet;
-        if(!fields.dataFileId||!fields.name||!fields.dataTemplateId||!fields.origination||!fields.serverNode||!fields.userId){
-            res.send("without name , dataFileId ,origination, serverNode or dataTemplateId")
-            return
-        } 
-        let obj={
-            uid:uid,
-            name:fields.name,
-            fileId:fields.dataFileId,
-            dataTemplateId:fields.dataTemplateId,
-            origination:fields.origination,
-            serverNode:fields.serverNode,
-            userId:fields.userId,
-            access:fields.access,
-            date: date.format(new Date(), 'YYYY-MM-DD HH:mm'),
-            info:JSON.parse(fields.info)
-        };
-
-        if(err){
-            console.log(err);
-            res.send(err);
-            
-        }
-        console.log("add info")
-        DataSet.create(obj,function(err1,small){
-            if(err1){
-                console.log(err1);
-                res.send(err1);
-            }
-            res.send({source_store_id:uid,file_name:fields.name});
-        })
-    })
-}
-
-
-//下载数据
+//下载数据，下载接口
 exports.download=function(req,res,next){
     let uid=req.query.uid;
     let type=req.query.type;
@@ -542,6 +495,110 @@ exports.download=function(req,res,next){
     
 }
 
+exports.dataVisual=function(req,res,next){
+    let 
+        // suffix=req.params.suffix,
+        // type=req.params.type,
+        // uid=req.params.uid,
+        path=req.query.path
+     
+     
+
+        let commond="python3 /home/server/lib/visual/shp.py "+path;
+     
+   
+    
+    try{
+
+ 
+         //python要写绝对路径
+        cp.exec(commond,(error,stdout,stderr)=>{
+            if(error){
+            console.log(error)
+            }
+           
+            console.log(`stderr: ${stderr}`)
+
+            let res_path=stdout.trim()
+         
+
+            fs.readFile(res_path,(err,data)=>{
+                res.writeHead(200, {
+                    'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                    'Content-Disposition': 'attachment; filename=' + 'shp.png',//告诉浏览器这是一个需要下载的文件
+                });//设置响应头
+                var readStream = fs.createReadStream(res_path);//得到文件输入流
+
+                readStream.on('data', (chunk) => {
+                    res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+                });
+                readStream.on('end', () => {
+                    res.end();
+                    
+                    return;
+                })
+
+            })
+            
+        
+        })
+    }catch(err){
+        console.log(err)
+    }   
+    
+
+
+
+}
+
+
+exports.test=function test(req,res,next){
+    console.log("test")
+}
+
+//添加描述信息
+exports.storageDesc=function(req,res,next){
+
+ 
+    const uid=uuid.v4();
+
+    var form = new formidable.IncomingForm();
+    //文件放在文件夹xia
+    form.parse(req,function(err,fields,files){
+
+        let DataSet=dataModel.DataSet;
+        if(!fields.dataFileId||!fields.name||!fields.dataTemplateId||!fields.origination||!fields.serverNode||!fields.userId){
+            res.send("without name , dataFileId ,origination, serverNode or dataTemplateId")
+            return
+        } 
+        let obj={
+            uid:uid,
+            name:fields.name,
+            fileId:fields.dataFileId,
+            dataTemplateId:fields.dataTemplateId,
+            origination:fields.origination,
+            serverNode:fields.serverNode,
+            userId:fields.userId,
+            access:fields.access,
+            date: date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+            info:JSON.parse(fields.info)
+        };
+
+        if(err){
+            console.log(err);
+            res.send(err);
+            
+        }
+        console.log("add info")
+        DataSet.create(obj,function(err1,small){
+            if(err1){
+                console.log(err1);
+                res.send(err1);
+            }
+            res.send({source_store_id:uid,file_name:fields.name});
+        })
+    })
+}
 
 //获取数据列表
 exports.datalist=function(req,res,next){

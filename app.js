@@ -51,11 +51,11 @@ app.post('/randomsource',router.randomSource)
 //第一种接口的下载
 app.get('/zipsource',router.datasource)
 
-//数据流上传
+//可视化接口
 
+app.get('/visual',router.dataVisual)
 
 //test
-
 app.get('/test',router.test)
 
 //批量下载

@@ -8,10 +8,19 @@ exports.storageDesc=storageData.storageDesc;
 //第2,3种接口
 exports.noTemplate=storageData.noTemplate;
 
- 
 
 //第四种接口
 exports.randomSource=storageData.randomSource;
+
+//获得数据
+exports.datasource=storageData.download;
+
+
+//可视化
+exports.dataVisual=storageData.dataVisual;
+
+
+
 
 
 
@@ -20,8 +29,7 @@ exports.randomSource=storageData.randomSource;
 exports.test=storageData.test;
 
 
-//获得数据
-exports.datasource=storageData.download;
+
 
 //数据列表
 exports.datalist=storageData.datalist;
