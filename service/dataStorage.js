@@ -617,7 +617,123 @@ exports.dataVisual=function(req,res,next){
         })
 
 }
+exports.dataVisualNoCache=function(req,res,next){
+    let suffix=req.query.suffix,
+        type=req.query.type,
+        uid=req.query.uid,
+        picId=uuid.v4(),
+        path =''
+     
+        if(!uid||!type||!suffix){
+            res.send({code:0,message: "uid, suffix or type params is necessary!"});
+            return
+        }
 
+        if(type==='zip'){
+            path=__dirname+'/../upload_stand_zip/'+uid+'/'+uid+'.zip'
+
+        }else if(type==='tep'){
+            path=__dirname+'/../upload_template/'+uid+'.zip'
+        }
+
+
+
+
+         //若未生成过snapshot，则生成
+         compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')
+         .then((err)=>{
+            if(err){
+                res.send(err)
+                return
+            }
+             fs.readdir( __dirname+'/../temp/'+uid+'/',(err,files)=>{
+                 
+                 for(v of files){ 
+                     let reg=new RegExp('.'+suffix)
+                     if(reg.test(v)){
+
+                         let path="F:\\code\\server\\temp\\"+uid+"\\"+v
+                
+                         //python要写绝对路径
+                         const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ 'F:\\code\\server\\lib\\visual\\shp.py',path,picId]);
+
+                         ls.stdout.on('data', (data) => {
+                                 console.log(`stdout: ${data}`);
+                                 var res_path=`${data}`.trim()
+                                 console.log(res_path)
+                 
+                                 fs.readFile(res_path,(err,data)=>{
+                                     res.writeHead(200, {
+                                         'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                                         'Content-Disposition': 'attachment; filename=' + suffix+'.png',//告诉浏览器这是一个需要下载的文件
+                                     });//设置响应头
+                                     var readStream = fs.createReadStream(res_path);//得到文件输入流
+                     
+                                     readStream.on('data', (chunk) => {
+                                         res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+                                     });
+                                     readStream.on('end', () => {
+                                         res.end();
+                                        VisualLog.find({dataUid:uid},(err,doc)=>{
+
+                                            if(doc.length>0){
+                                                VisualLog.update({
+                                                    uid:picId,
+                                                    dataUid:uid,
+                                                    generateDate:date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+                                                    cached:true
+                                                },(err,data)=>{
+                                                    if(err){
+                                                        console.log(err)
+                                                    }
+                                                    return;
+                                                })
+                                            }else{
+                                                VisualLog.create({
+                                                    uid:picId,
+                                                    dataUid:uid,
+                                                    generateDate:date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+                                                    cached:true
+                                                },(err,data)=>{
+                                                    if(err){
+                                                        console.log(err)
+                                                    }
+                                                    return;
+                                                })
+                                            }
+                                        })
+                                        
+                                     })
+                     
+                                 })
+
+
+                         });
+
+                         ls.stderr.on('data', (data) => {
+                         console.error(`stderr: ${data}`);
+                         });
+
+                         ls.on('close', (code) => {
+                         console.log(`子进程退出，退出码 ${code}`);
+                         });
+                       
+                        
+
+                         break
+                     }
+                 }
+             })
+         })
+         .catch((err)=>{
+
+         })
+
+
+
+
+
+}
 
 exports.test=function test(req,res,next){
     console.log("test")

@@ -18,6 +18,8 @@ exports.datasource=storageData.download;
 
 //可视化
 exports.dataVisual=storageData.dataVisual;
+//强制可视化生成
+exports.dataVisualNoCache=storageData.dataVisualNoCache;
 
 
 

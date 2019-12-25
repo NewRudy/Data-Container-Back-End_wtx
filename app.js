@@ -52,8 +52,9 @@ app.post('/randomsource',router.randomSource)
 app.get('/zipsource',router.datasource)
 
 //可视化接口
-
 app.get('/visual',router.dataVisual)
+//强制生成
+app.get('/visualnocache',router.dataVisualNoCache)
 
 //test
 app.get('/test',router.test)
