@@ -2,8 +2,7 @@ import sys
 import matplotlib.pyplot as plt
 import shapefile   
 ##shp数据可视化，snapshot
-def f(path):
-     
+def f(path,picId):
     shpFilePath =  path 
     listx=[]
     listy=[]
@@ -14,12 +13,12 @@ def f(path):
             listy.append(yNew)
     plt.plot(listx,listy)
     plt.axis('off')
-    plt.savefig('D:\\z\\shp.png')
+    plt.savefig('F:\\code\\server\\snapShotCache\\'+picId+'.png')
     return True
 # plt.show()
 
 if __name__ == '__main__':
     # print(sys.argv[1])
-    if f(sys.argv[1]) is True:
-        print("D:\z\shp.png")
+    if f(sys.argv[1],sys.argv[2]) is True:
+        print('F:\\code\\server\\snapShotCache\\'+sys.argv[2]+'.png')
  

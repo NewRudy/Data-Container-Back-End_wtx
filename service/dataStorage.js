@@ -15,9 +15,7 @@ const standZip=require('../model/standZip.js')
 const random=require('../model/random.js')
 const srcZip=require('../model/srcZip.js')
 const udxZip=require('../model/udxZip.js')
-
-
-var path="E:\/CONTAINER_DATASET\/"
+const visualLog =require('../model/visualLog.js')
 
 var DataSet=dataModel.DataSet;
 
@@ -25,6 +23,7 @@ var StandZip=standZip.StandZip;
 var Random=random.Random;
 var SrcZip=srcZip.SrcZip;
 var UdxZip=udxZip.UdxZip;
+var VisualLog=visualLog.VisualLog
 
 
 const compressing = require('compressing');
@@ -496,58 +495,126 @@ exports.download=function(req,res,next){
 }
 
 exports.dataVisual=function(req,res,next){
-    let 
-        // suffix=req.params.suffix,
-        // type=req.params.type,
-        // uid=req.params.uid,
-        path=req.query.path
+    let suffix=req.query.suffix,
+        type=req.query.type,
+        uid=req.query.uid,
+        picId=uuid.v4(),
+        path =''
      
-     
+        if(!uid||!type||!suffix){
+            res.send({code:0,message: "uid, suffix or type params is necessary!"});
+            return
+        }
 
-        let commond="python3 /home/server/lib/visual/shp.py "+path;
-     
-   
+        if(type==='zip'){
+            path=__dirname+'/../upload_stand_zip/'+uid+'/'+uid+'.zip'
+
+        }else if(type==='tep'){
+            path=__dirname+'/../upload_template/'+uid+'.zip'
+        }
+        //在snapshot日志里检索是否生成了截图
+        VisualLog.find({dataUid:uid},(err,doc)=>{
+            
+            //若生成过，直接找到截图返回给client
+            if(doc.length>0){
+                let res_path= 'F:\\code\\server\\snapShotCache\\'+doc[0].uid+'.png' 
+
+                fs.readFile(res_path,(err,data)=>{
+                    res.writeHead(200, {
+                        'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                        'Content-Disposition': 'attachment; filename=' + 'shp.png',//告诉浏览器这是一个需要下载的文件
+                    });//设置响应头
+                    var readStream = fs.createReadStream(res_path);//得到文件输入流
     
-    try{
-
+                    readStream.on('data', (chunk) => {
+                        res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+                    });
+                    readStream.on('end', () => {
+                        res.end();
  
-         //python要写绝对路径
-        cp.exec(commond,(error,stdout,stderr)=>{
-            if(error){
-            console.log(error)
-            }
-           
-            console.log(`stderr: ${stderr}`)
-
-            let res_path=stdout.trim()
-         
-
-            fs.readFile(res_path,(err,data)=>{
-                res.writeHead(200, {
-                    'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                    'Content-Disposition': 'attachment; filename=' + 'shp.png',//告诉浏览器这是一个需要下载的文件
-                });//设置响应头
-                var readStream = fs.createReadStream(res_path);//得到文件输入流
-
-                readStream.on('data', (chunk) => {
-                    res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
-                });
-                readStream.on('end', () => {
-                    res.end();
-                    
-                    return;
+                        return;
+                    })
+    
                 })
 
-            })
-            
-        
-        })
-    }catch(err){
-        console.log(err)
-    }   
+            }else{
+                //若未生成过snapshot，则生成
+                 compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')
+                .then((err)=>{
+
+                    fs.readdir( __dirname+'/../temp/'+uid+'/',(err,files)=>{
+                        
+                        for(v of files){ 
+                            let reg=new RegExp('.'+suffix)
+                            if(reg.test(v)){
+
+                                let path="F:\\code\\server\\temp\\"+uid+"\\"+v
+                                
+                              
+                
+                                //python要写绝对路径
+                                const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ 'F:\\code\\server\\lib\\visual\\shp.py',path,picId]);
+
+                                ls.stdout.on('data', (data) => {
+                                        console.log(`stdout: ${data}`);
+                                        var res_path=`${data}`.trim()
+                                        console.log(res_path)
+                        
+                                        fs.readFile(res_path,(err,data)=>{
+                                            res.writeHead(200, {
+                                                'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                                                'Content-Disposition': 'attachment; filename=' + 'shp.png',//告诉浏览器这是一个需要下载的文件
+                                            });//设置响应头
+                                            var readStream = fs.createReadStream(res_path);//得到文件输入流
+                            
+                                            readStream.on('data', (chunk) => {
+                                                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+                                            });
+                                            readStream.on('end', () => {
+                                                res.end();
     
+                                                VisualLog.create({
+                                                    uid:picId,
+                                                    dataUid:uid,
+                                                    generateDate:date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+                                                    cached:true
+                                                },(err,data)=>{
+                                                    if(err){
+                                                        console.log(err)
+                                                    }
+            
+                                                })
+                                                
+                                                return;
+                                            })
+                            
+                                        })
 
 
+                                });
+
+                                ls.stderr.on('data', (data) => {
+                                console.error(`stderr: ${data}`);
+                                });
+
+                                ls.on('close', (code) => {
+                                console.log(`子进程退出，退出码 ${code}`);
+                                });
+                              
+                               
+
+                                break
+                            }
+                        }
+                    })
+                })
+                .catch((err)=>{
+
+                })
+
+            }
+
+        })
 
 }
 
