@@ -121,6 +121,7 @@
       - ran: 任意数据
   - 返回值：文件数据流
 
+
 ## 数据可视化接口
 
 - ### http://111.229.14.128:8899/visual?suffix=shp&type=zip&uid=6b196f37-90e2-4d79-b844-4865db13a978 GET
@@ -130,6 +131,7 @@
   - type:数据类型，可选项zip,tep
   - uid:id,数据上传后返回的id
 - 返回值：截图图片文件
+- ![2.15](/snapShotCache/09ee3e4b-d350-45f7-b616-64027cc61494.png)
 - ## 缓存说明：此接口支持缓存，若生成过数据图片，则会进行缓存，再次请求时直接获取缓存
 
 - ### http://111.229.14.128:8899/visualnocache?suffix=shp&type=zip&uid=6b196f37-90e2-4d79-b844-4865db13a978 GET
