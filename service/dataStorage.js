@@ -522,7 +522,7 @@ exports.dataVisual=function(req,res,next){
                 fs.readFile(res_path,(err,data)=>{
                     res.writeHead(200, {
                         'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                        'Content-Disposition': 'attachment; filename=' + 'shp.png',//告诉浏览器这是一个需要下载的文件
+                        'Content-Disposition': 'attachment; filename=' + 'visual.png',//告诉浏览器这是一个需要下载的文件
                     });//设置响应头
                     var readStream = fs.createReadStream(res_path);//得到文件输入流
     
@@ -553,7 +553,13 @@ exports.dataVisual=function(req,res,next){
                               
                 
                                 //python要写绝对路径
-                                const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ 'F:\\code\\server\\lib\\visual\\shp.py',path,picId]);
+                                let py_script_path
+                                if(suffix==='shp'){
+                                    py_script_path='F:\\code\\server\\lib\\visual\\shp.py'
+                                }else if(suffix==='tiff'||suffix==='tif'){
+                                    py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
+                                }
+                                const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,path,picId]);
 
                                 ls.stdout.on('data', (data) => {
                                         console.log(`stdout: ${data}`);
@@ -563,7 +569,7 @@ exports.dataVisual=function(req,res,next){
                                         fs.readFile(res_path,(err,data)=>{
                                             res.writeHead(200, {
                                                 'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                                                'Content-Disposition': 'attachment; filename=' + 'shp.png',//告诉浏览器这是一个需要下载的文件
+                                                'Content-Disposition': 'attachment; filename=' + 'visual.png',//告诉浏览器这是一个需要下载的文件
                                             });//设置响应头
                                             var readStream = fs.createReadStream(res_path);//得到文件输入流
                             
@@ -654,8 +660,16 @@ exports.dataVisualNoCache=function(req,res,next){
 
                          let path="F:\\code\\server\\temp\\"+uid+"\\"+v
                 
-                         //python要写绝对路径
-                         const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ 'F:\\code\\server\\lib\\visual\\shp.py',path,picId]);
+                            //判断可视化类型，目前只有tif和shp两种
+                         let py_script_path
+                        if(suffix==='shp'){
+                            py_script_path='F:\\code\\server\\lib\\visual\\shp.py'
+                        }else if(suffix==='tiff'||suffix==='tif'){
+                            py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
+                        }
+                        const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,path,picId]);
+
+                         
 
                          ls.stdout.on('data', (data) => {
                                  console.log(`stdout: ${data}`);
@@ -665,7 +679,7 @@ exports.dataVisualNoCache=function(req,res,next){
                                  fs.readFile(res_path,(err,data)=>{
                                      res.writeHead(200, {
                                          'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                                         'Content-Disposition': 'attachment; filename=' + suffix+'.png',//告诉浏览器这是一个需要下载的文件
+                                         'Content-Disposition': 'attachment; filename=' +'visual.png',//告诉浏览器这是一个需要下载的文件
                                      });//设置响应头
                                      var readStream = fs.createReadStream(res_path);//得到文件输入流
                      
