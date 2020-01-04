@@ -46,10 +46,19 @@ app.post('/source/:type',router.noTemplate)
 //第四种接口
 app.post('/randomsource',router.randomSource)
 
+//数据上传一个接口
+app.post('/data',router.ogmsDataUp)
+
+//数据下载
+app.get('/data',router.ogmsDataDown)
+
+
 
 //下载获得数据流
 //第一种接口的下载
 app.get('/zipsource',router.datasource)
+
+app.get('/single',router.singleDatasource)
 
 //可视化接口
 app.get('/visual',router.dataVisual)

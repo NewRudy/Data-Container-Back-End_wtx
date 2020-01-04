@@ -11,6 +11,7 @@ var dataSChema = new mongoose.Schema({
      size:String,
      originalName:String,
      type:String,
+     fileList:Array,
      //自描述属性
      fileId:String,
      info:Mixed,
@@ -20,7 +21,8 @@ var dataSChema = new mongoose.Schema({
      serverNode:String,
      access:String,
      userId:String,
-     date:Date
+     date:Date,
+
 });
 
 //创建model

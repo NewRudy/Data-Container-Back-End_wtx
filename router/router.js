@@ -14,6 +14,8 @@ exports.randomSource=storageData.randomSource;
 
 //获得数据
 exports.datasource=storageData.download;
+//获得单个数据
+exports.singleDatasource=storageData.singleDatasource;
 
 
 //可视化
@@ -22,9 +24,12 @@ exports.dataVisual=storageData.dataVisual;
 exports.dataVisualNoCache=storageData.dataVisualNoCache;
 
 
+//数据上传
+exports.ogmsDataUp=storageData.ogmsDataUp;
 
+//数据上传
 
-
+exports.ogmsDataDown=storageData.ogmsDataDown;
 
 
 //测试

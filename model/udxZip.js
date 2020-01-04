@@ -11,11 +11,13 @@ var dataSChema = new mongoose.Schema({
      size:String,
      originalName:String,
      type:String,
+     fileList:Array,
+
      //自描述属性
      fileId:String,
      info:Mixed,
      name:String,
-     dataTemplateId:String,
+     dataTemplate:Mixed,
      origination:String,
      serverNode:String,
      access:String,

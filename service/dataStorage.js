@@ -385,6 +385,8 @@ exports.randomSource=function randomSource(req,res,next){
                     return
                 } 
 
+
+
             let doc={
                     uid:uid,
                     name:fields.name,
@@ -494,24 +496,419 @@ exports.download=function(req,res,next){
     
 }
 
+//数据上传
+exports.ogmsDataUp=async function(req,res,next){
+    var form =new formidable.IncomingForm();
+    let uid=uuid.v4()
+    let dirPath=__dirname+'/../upload_ogms/'+uid
+
+    
+    fs.mkdir(dirPath,(err)=>{
+
+        if(err) throw err
+
+        form.uploadDir=dirPath
+        form.keepExtensions=true
+
+
+        form.parse(req,function(err,fields,file){
+
+            //必要参数的检验,参数有误的返回值
+            if(!fields.name||!fields.origination||!fields.serverNode||!fields.userId){
+                res.send({code:0,message:"without name , userId ,origination, serverNode"})
+                return
+            }
+
+            //数据信息记录
+            var doc={
+                uid:uid,
+                name:fields.name,
+                origination:fields.origination,
+                serverNode:fields.serverNode,
+                userId:fields.userId,
+
+                // access:fields.access,
+                date: date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+                // info:JSON.parse(fields.info)
+            };
+
+           
+            if("access" in fields){
+                doc["access"]=fields.access
+            }
+
+            if("info" in fields){
+                doc["info"]=JSON.parse(fields.info)
+            }
+            fs.readdir(dirPath,(errr,files)=>{
+                if(files.length===0){
+                    res.send({code:0,message:'error,data count 0'})
+                    return;
+                }else if(files.length>1){
+                     var reg=new RegExp('.udxcfg')
+                     var config= configExistsF(files,reg)
+
+                     if(config===undefined){
+                         res.send({code:0,message:'error,no config file'})
+                         return;
+                     }else{
+
+                         fs.readFile(dirPath+'/'+config,(configerr,configContent)=>{
+                             if(configerr){
+                                 res.send({code:1,message:'config error'})
+                                 return
+                             }
+
+                            parser.parseString(configContent, function (err, result) {
+                                //检查配置文件格式
+                                if(!result||!result.UDXZip||!result.UDXZip['Name']||!result.UDXZip['Name'][0]||!result.UDXZip['DataTemplate']){
+                                    res.send({code:0,message:'config file content uncorrect!!'})
+                                }
+                                //检验数据个数是否匹配
+                                if(files.length-1 != result.UDXZip["Name"][0].add.length){
+                                    res.send({code:1,message:'file count error!!'})
+                                    return
+
+                                }
+                             
+                                //检验类型字段是否存在
+                                let type=result.UDXZip['DataTemplate'][0].$.type
+                                if(type===undefined){
+                                    res.send({code:0,message:'config file no type info'})
+                                    return;
+                                }
+
+                                if(type==="id"){
+
+                                    doc['type']='template'
+                                    //单个文件，不打包
+                                    if(files.length===2){
+                                        let configFilePath
+                                        doc['fileList']=[]
+                                        for(f of files){
+                                            if(reg.test(f)){
+                                                configFilePath=dirPath+'/'+f
+                                                continue
+                                            }
+                                            doc['fileList'].push(dirPath+'/'+f)
+                                          
+                                        }
+                                        //datatemplate id 入库
+                                        doc['dataTemplateId']=result.UDXZip['DataTemplate'][0]._.replace(/[\r\n\t]/g,"");  
+                                        //删除配置文件
+                                        fs.unlinkSync(configFilePath)
+
+                                        
+                                        let ret={source_store_id:uid,file_name:fields.name}
+                                        //存库
+                                        SrcZip.create(doc,function(err1,small){
+                                            if(err1){
+                                                console.log(err1);
+                                                res.send({code:0,message: err1});
+                                                return
+                                            }
+                                        
+                                            res.send(ret);
+                                            return
+                                        })
+                                       
+                                    }else if(files.length>2){
+                                        doc['fileList']=[]
+                                        doc['dataTemplateId']=result.UDXZip['DataTemplate'][0]._.replace(/[\r\n\t]/g,"");  
+
+
+                                        //将除了配置文件外的数据压缩，为调用准备
+                                        var output = fs.createWriteStream( dirPath+'/'+uid+'.zip');
+                                        var archive = archiver('zip', {
+                                            gzip: true,
+                                            zlib: { level: 9 } // Sets the compression level.
+                                        });
+                                        archive.on('error', function(err) {
+                                            throw err;
+                                        });
+                                        var configFilePath
+                                        archive.on('end',(err)=>{
+                                            // throw err;
+                                            doc['fileList']=[dirPath+'/'+uid+'.zip']
+                                            
+                                            let ret={source_store_id:uid,file_name:fields.name}
+                                            //存库
+                                            SrcZip.create(doc,function(err1,small){
+                                                if(err1){
+                                                    console.log(err1);
+                                                    res.send({code:0,message: err1});
+                                                    return
+                                                }
+                                            
+                                                res.send(ret);
+                                                return
+                                            })
+
+
+                                        });
+                                        // pipe archive data to the output file
+                                        archive.pipe(output);
+                                        
+
+                                        // append files
+                                        for(fe of files){
+                                            if(reg.test(fe)){
+                                                configFilePath=dirPath+'/'+fe
+                                                continue;
+                                            }                                             
+                                            console.log(fe)
+                                            archive.file(dirPath+'/'+fe, {name: fe});                                           
+                                        }
+                                        
+                                        //压缩结束
+                                        archive.finalize();
+
+                                    }else{
+                                        res.send({code:0,message:'error'})
+                                        return;
+                                    }
+
+
+                                }else if(type==="schema"){
+                                    doc['type']='schema'
+                                    //单个文件，不打包
+                                    if(files.length===2){
+                                        let configFilePath
+                                        doc['fileList']=[]
+                                        for(f of files){
+                                            if(reg.test(f)){
+                                                configFilePath=dirPath+'/'+f
+                                                continue
+                                            }
+                                            doc['fileList'].push(dirPath+'/'+f)
+                                          
+                                        }
+                                        //datatemplate 内容 入库
+                                        // doc['dataTemplate']=result.UDXZip['DataTemplate'][0].XDO
+                                        //删除配置文件
+                                        fs.unlinkSync(configFilePath)
+
+                                        let ret={source_store_id:uid,file_name:fields.name}
+                                        //存库
+                                        UdxZip.create(doc,function(err1,small){
+                                            if(err1){
+                                                console.log(err1);
+                                                res.send({code:0,message: err1});
+                                                return
+                                            }
+                                        
+                                            res.send(ret);
+                                            return
+                                        })
+
+
+
+                                    }else if(files.length>2){
+
+                                        //udx 数据有多个的情况暂时不考虑
+
+                                    }else{
+                                        res.send({code:1,message:'error'})
+                                    }
+
+
+
+
+                                }else if(type==="none"){
+                                    doc['type']='none'
+                                    //单个文件，不打包
+                                    if(files.length===2){
+                                        let configFilePath
+                                        doc['fileList']=[]
+                                        for(f of files){
+                                            if(reg.test(f)){
+                                                configFilePath=dirPath+'/'+f
+                                                continue
+                                            }
+                                            doc['fileList'].push(dirPath+'/'+f)
+                                        }
+                                        fs.unlinkSync(configFilePath)
+
+                                        let ret={source_store_id:uid,file_name:fields.name}
+                                        //存库
+                                        Random.create(doc,function(err1,small){
+                                            if(err1){
+                                                console.log(err1);
+                                                res.send({code:0,message: err1});
+                                                return
+                                            }
+                                        
+                                            res.send(ret);
+                                            return
+                                        })
+
+                                    }else if(files.length>2){
+                                        doc['fileList']=[]
+
+                                        //将除了配置文件外的数据压缩，为调用准备
+                                        var output = fs.createWriteStream( dirPath+'/'+uid+'.zip');
+                                        var archive = archiver('zip', {
+                                            gzip: true,
+                                            zlib: { level: 9 } // Sets the compression level.
+                                        });
+                                        archive.on('error', function(err) {
+                                            throw err;
+                                        });
+                                        let configFilePath
+                                        archive.on('end',(err)=>{
+                                            // throw err;
+                                            doc['fileList']=[dirPath+'/'+uid+'.zip']
+                                            
+                                            let ret={source_store_id:uid,file_name:fields.name}
+                                            //存库
+                                            Random.create(doc,function(err1,small){
+                                                if(err1){
+                                                    console.log(err1);
+                                                    res.send({code:0,message: err1});
+                                                    return
+                                                }
+                                            
+                                                res.send(ret);
+                                                return
+                                            })
+
+
+                                        });
+                                        // pipe archive data to the output file
+                                        archive.pipe(output);
+                                        
+
+                                        // append files
+                                        for(fe of files){
+                                            if(reg.test(fe)){
+                                                configFilePath=dirPath+'/'+fe
+                                                continue;
+                                            }                                             
+                                            console.log(fe)
+                                            archive.file(dirPath+'/'+fe, {name: fe});                                           
+                                        }
+                                        archive.finalize();
+
+
+
+                                    }else{
+                                        res.send({code:0,message:'error'})
+                                        return;
+                                    }
+
+
+
+                                }
+
+                            })
+                        })
+
+
+                     }
+
+                }else{
+                    //zip专业数据
+
+                }
+
+            })
+
+
+
+
+            
+            
+
+        })
+    });
+}
+ function configExistsF(list,reg){
+    let configName=undefined
+    let regE=new RegExp(reg)
+    for(file of list){
+        if(regE.test(file)){
+            configName=file
+            break
+        }
+    }
+    return configName
+}
+//数据下载
+
+exports.ogmsDataDown=function(req,res,next){
+    let uid=req.query.uid
+    let dirPath=__dirname+'/../upload_ogms/'+uid
+
+    fs.readdir(dirPath,(err,files)=>{
+        if(files.length===1){
+            res.writeHead(200, {
+                'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                'Content-Disposition': 'attachment; filename=' +files[0],//告诉浏览器这是一个需要下载的文件
+            });//设置响应头
+            var readStream = fs.createReadStream(dirPath+'/'+files[0]);//得到文件输入流
+        
+            readStream.on('data', (chunk) => {
+                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+            });
+            readStream.on('end', () => {
+                res.end();
+
+                return;
+            })
+
+        }else{
+            res.writeHead(200, {
+                'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                'Content-Disposition': 'attachment; filename=' +uid+'.zip',//告诉浏览器这是一个需要下载的文件
+            });//设置响应头
+            var readStream = fs.createReadStream(dirPath+'/'+uid+'.zip');//得到文件输入流
+        
+            readStream.on('data', (chunk) => {
+                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+            });
+            readStream.on('end', () => {
+                res.end();
+                return;
+            })
+
+        }
+    })
+
+  
+
+
+
+}
+
+
+
+
+
+exports.singleDatasource=function(req,res,next){
+
+
+
+
+
+}
+
+
+
+
 exports.dataVisual=function(req,res,next){
     let suffix=req.query.suffix,
-        type=req.query.type,
+      
         uid=req.query.uid,
         picId=uuid.v4(),
         path =''
      
-        if(!uid||!type||!suffix){
+        if(!uid||!suffix){
             res.send({code:0,message: "uid, suffix or type params is necessary!"});
             return
         }
 
-        if(type==='zip'){
-            path=__dirname+'/../upload_stand_zip/'+uid+'/'+uid+'.zip'
-
-        }else if(type==='tep'){
-            path=__dirname+'/../upload_template/'+uid+'.zip'
-        }
+        
+        path=__dirname+'/../upload_template/'+uid+'.zip'
         //在snapshot日志里检索是否生成了截图
         VisualLog.find({dataUid:uid},(err,doc)=>{
             
@@ -622,28 +1019,23 @@ exports.dataVisual=function(req,res,next){
 
         })
 
+        res.send({code:0,message:"input error"})
+
 }
 exports.dataVisualNoCache=function(req,res,next){
     let suffix=req.query.suffix,
-        type=req.query.type,
+       
         uid=req.query.uid,
         picId=uuid.v4(),
         path =''
      
-        if(!uid||!type||!suffix){
+        if(!uid||!suffix){
             res.send({code:0,message: "uid, suffix or type params is necessary!"});
             return
         }
 
-        if(type==='zip'){
-            path=__dirname+'/../upload_stand_zip/'+uid+'/'+uid+'.zip'
-
-        }else if(type==='tep'){
-            path=__dirname+'/../upload_template/'+uid+'.zip'
-        }
-
-
-
+       
+        path=__dirname+'/../upload_template/'+uid+'.zip'
 
          //若未生成过snapshot，则生成
          compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')

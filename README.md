@@ -108,6 +108,23 @@
     }
         ```
 
+-  以上接口的配置文件：
+
+      ```
+        <UDXZip>
+          <Name >
+            <add value="udxdata.xml" />
+            <add value="schema.xml" />
+          </Name>
+          <DataTemplateId type="">
+            guid
+          </DataTemplateId>
+          
+        </UDXZip>
+
+      ```
+
+
 ## 下载数据接口
 
 - ### http://111.229.14.128:8899/zipsource?uid=xxx&type=xxx GET
