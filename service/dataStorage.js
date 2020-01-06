@@ -542,31 +542,31 @@ exports.ogmsDataUp=async function(req,res,next){
             }
             fs.readdir(dirPath,(errr,files)=>{
                 if(files.length===0){
-                    res.send({code:0,message:'error,data count 0'})
+                    res.send({code:-1,message:'error,data count 0'})
                     return;
                 }else if(files.length>1){
                      var reg=new RegExp('.udxcfg')
                      var config= configExistsF(files,reg)
 
                      if(config===undefined){
-                         res.send({code:0,message:'error,no config file'})
+                         res.send({code:-1,message:'error,no config file'})
                          return;
                      }else{
 
                          fs.readFile(dirPath+'/'+config,(configerr,configContent)=>{
                              if(configerr){
-                                 res.send({code:1,message:'config error'})
+                                 res.send({code:-1,message:'config error'})
                                  return
                              }
 
                             parser.parseString(configContent, function (err, result) {
                                 //检查配置文件格式
                                 if(!result||!result.UDXZip||!result.UDXZip['Name']||!result.UDXZip['Name'][0]||!result.UDXZip['DataTemplate']){
-                                    res.send({code:0,message:'config file content uncorrect!!'})
+                                    res.send({code:-1,message:'config file content uncorrect!!'})
                                 }
                                 //检验数据个数是否匹配
                                 if(files.length-1 != result.UDXZip["Name"][0].add.length){
-                                    res.send({code:1,message:'file count error!!'})
+                                    res.send({code:-1,message:'file count error!!'})
                                     return
 
                                 }
@@ -574,7 +574,7 @@ exports.ogmsDataUp=async function(req,res,next){
                                 //检验类型字段是否存在
                                 let type=result.UDXZip['DataTemplate'][0].$.type
                                 if(type===undefined){
-                                    res.send({code:0,message:'config file no type info'})
+                                    res.send({code:-1,message:'config file no type info'})
                                     return;
                                 }
 
@@ -608,7 +608,7 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 return
                                             }
                                         
-                                            res.send(ret);
+                                            res.send({code:0,data:ret});
                                             return
                                         })
                                        
@@ -636,11 +636,11 @@ exports.ogmsDataUp=async function(req,res,next){
                                             SrcZip.create(doc,function(err1,small){
                                                 if(err1){
                                                     console.log(err1);
-                                                    res.send({code:0,message: err1});
+                                                    res.send({code:-1,message: err1});
                                                     return
                                                 }
                                             
-                                                res.send(ret);
+                                                res.send({code:0,data:ret});
                                                 return
                                             })
 
@@ -664,7 +664,7 @@ exports.ogmsDataUp=async function(req,res,next){
                                         archive.finalize();
 
                                     }else{
-                                        res.send({code:0,message:'error'})
+                                        res.send({code:-1,message:'error'})
                                         return;
                                     }
 
@@ -693,11 +693,11 @@ exports.ogmsDataUp=async function(req,res,next){
                                         UdxZip.create(doc,function(err1,small){
                                             if(err1){
                                                 console.log(err1);
-                                                res.send({code:0,message: err1});
+                                                res.send({code:-1,message: err1});
                                                 return
                                             }
                                         
-                                            res.send(ret);
+                                            res.send({code:0,data:ret});
                                             return
                                         })
 
@@ -706,9 +706,58 @@ exports.ogmsDataUp=async function(req,res,next){
                                     }else if(files.length>2){
 
                                         //udx 数据有多个的情况暂时不考虑
+                                        doc['fileList']=[]
+
+                                        //将除了配置文件外的数据压缩，为调用准备
+                                        var output = fs.createWriteStream( dirPath+'/'+uid+'.zip');
+                                        var archive = archiver('zip', {
+                                            gzip: true,
+                                            zlib: { level: 9 } // Sets the compression level.
+                                        });
+                                        archive.on('error', function(err) {
+                                            throw err;
+                                        });
+                                        let configFilePath
+                                        archive.on('end',(err)=>{
+                                            // throw err;
+                                            doc['fileList']=[dirPath+'/'+uid+'.zip']
+                                            
+                                            let ret={source_store_id:uid,file_name:fields.name}
+                                            //存库
+                                            Random.create(doc,function(err1,small){
+                                                if(err1){
+                                                    console.log(err1);
+                                                    res.send({code:-1,message: err1});
+                                                    return
+                                                }
+                                            
+                                                res.send({code:0,data:ret});
+                                                return
+                                            })
+
+
+                                        });
+                                        // pipe archive data to the output file
+                                        archive.pipe(output);
+                                        
+
+                                        // append files
+                                        for(fe of files){
+                                            if(reg.test(fe)){
+                                                configFilePath=dirPath+'/'+fe
+                                                continue;
+                                            }                                             
+                                            console.log(fe)
+                                            archive.file(dirPath+'/'+fe, {name: fe});                                           
+                                        }
+                                        archive.finalize();
+
+
+
+
 
                                     }else{
-                                        res.send({code:1,message:'error'})
+                                        res.send({code:-1,message:'error'})
                                     }
 
 
@@ -734,7 +783,7 @@ exports.ogmsDataUp=async function(req,res,next){
                                         Random.create(doc,function(err1,small){
                                             if(err1){
                                                 console.log(err1);
-                                                res.send({code:0,message: err1});
+                                                res.send({code:-1,message: err1});
                                                 return
                                             }
                                         
@@ -764,11 +813,11 @@ exports.ogmsDataUp=async function(req,res,next){
                                             Random.create(doc,function(err1,small){
                                                 if(err1){
                                                     console.log(err1);
-                                                    res.send({code:0,message: err1});
+                                                    res.send({code:-1,message: err1});
                                                     return
                                                 }
                                             
-                                                res.send(ret);
+                                                res.send({code:0,data:ret});
                                                 return
                                             })
 
@@ -792,7 +841,7 @@ exports.ogmsDataUp=async function(req,res,next){
 
 
                                     }else{
-                                        res.send({code:0,message:'error'})
+                                        res.send({code:-1,message:'error'})
                                         return;
                                     }
 
@@ -807,7 +856,18 @@ exports.ogmsDataUp=async function(req,res,next){
                      }
 
                 }else{
-                    //zip专业数据
+                     
+                    var reg=new RegExp('.udxcfg')
+                    var config= configExistsF(files,reg)
+
+                    if(config===undefined){
+                        res.send({code:-1,message:'error,no config file'})
+                        return;
+                    }else{
+                        res.send({code:-1,message:'not only config file'})
+                                    return;
+            
+                    }
 
                 }
 
@@ -820,7 +880,11 @@ exports.ogmsDataUp=async function(req,res,next){
             
 
         })
+
+
     });
+
+     
 }
  function configExistsF(list,reg){
     let configName=undefined
