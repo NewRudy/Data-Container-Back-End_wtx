@@ -32,6 +32,7 @@ var parser = new xml2js.Parser();
 
 const delDir=require('../utils/utils')
 
+
  
 
 //上传符合要求的zip数据,接口1
@@ -529,6 +530,7 @@ exports.ogmsDataUp=async function(req,res,next){
 
                 // access:fields.access,
                 date: date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+                path:dirPath
                 // info:JSON.parse(fields.info)
             };
 
@@ -591,6 +593,8 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 continue
                                             }
                                             doc['fileList'].push(dirPath+'/'+f)
+                                            let name_suffix=f.split('.')
+                                            fs.renameSync(dirPath+'/'+f,dirPath+'/'+doc['name']+'.'+name_suffix[1])
                                           
                                         }
                                         //datatemplate id 入库
@@ -657,7 +661,8 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 continue;
                                             }                                             
                                             console.log(fe)
-                                            archive.file(dirPath+'/'+fe, {name: fe});                                           
+                                            let suffix=fe.split('.')
+                                            archive.file(dirPath+'/'+fe, {name: doc['name']+'.'+suffix[1]});                                           
                                         }
                                         
                                         //压缩结束
@@ -672,6 +677,14 @@ exports.ogmsDataUp=async function(req,res,next){
                                 }else if(type==="schema"){
                                     doc['type']='schema'
                                     //单个文件，不打包
+                                     //datatemplate 内容 入库
+                                        var builder = new xml2js.Builder();
+                                        var xml = builder.buildObject(
+                                            {
+                                                UdxDeclaration:result.UDXZip['DataTemplate'][0]['UdxDeclaration'][0]
+                                        
+                                            });
+                                        doc['dataTemplate']=xml 
                                     if(files.length===2){
                                         let configFilePath
                                         doc['fileList']=[]
@@ -681,10 +694,12 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 continue
                                             }
                                             doc['fileList'].push(dirPath+'/'+f)
+                                            let name_suffix=f.split('.')
+                                            fs.renameSync(dirPath+'/'+f,dirPath+'/'+doc['name']+'.'+name_suffix[1])
+
                                           
                                         }
-                                        //datatemplate 内容 入库
-                                        // doc['dataTemplate']=result.UDXZip['DataTemplate'][0].XDO
+                                       
                                         //删除配置文件
                                         fs.unlinkSync(configFilePath)
 
@@ -748,7 +763,9 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 continue;
                                             }                                             
                                             console.log(fe)
-                                            archive.file(dirPath+'/'+fe, {name: fe});                                           
+                                          
+                                            let suffix=fe.split('.')
+                                            archive.file(dirPath+'/'+fe, {name: doc['name']+'.'+suffix[1]});                                              
                                         }
                                         archive.finalize();
 
@@ -775,6 +792,10 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 continue
                                             }
                                             doc['fileList'].push(dirPath+'/'+f)
+                                            let name_suffix=f.split('.')
+                                            fs.renameSync(dirPath+'/'+f,dirPath+'/'+doc['name']+'.'+name_suffix[1])
+
+
                                         }
                                         fs.unlinkSync(configFilePath)
 
@@ -834,7 +855,10 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 continue;
                                             }                                             
                                             console.log(fe)
-                                            archive.file(dirPath+'/'+fe, {name: fe});                                           
+                                             
+                                            let suffix=fe.split('.')
+                                            archive.file(dirPath+'/'+fe, {name: doc['name']+'.'+suffix[1]});    
+
                                         }
                                         archive.finalize();
 
@@ -886,6 +910,7 @@ exports.ogmsDataUp=async function(req,res,next){
 
      
 }
+//检查配置文件
  function configExistsF(list,reg){
     let configName=undefined
     let regE=new RegExp(reg)
@@ -897,6 +922,7 @@ exports.ogmsDataUp=async function(req,res,next){
     }
     return configName
 }
+
 //数据下载
 
 exports.ogmsDataDown=function(req,res,next){
@@ -923,7 +949,7 @@ exports.ogmsDataDown=function(req,res,next){
         }else{
             res.writeHead(200, {
                 'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                'Content-Disposition': 'attachment; filename=' +uid+'.zip',//告诉浏览器这是一个需要下载的文件
+                'Content-Disposition': 'attachment; filename=' +'data.zip',//告诉浏览器这是一个需要下载的文件
             });//设置响应头
             var readStream = fs.createReadStream(dirPath+'/'+uid+'.zip');//得到文件输入流
         
@@ -945,12 +971,17 @@ exports.ogmsDataDown=function(req,res,next){
 }
 
 
-
+exports.snapShot=function(req,res,next){
+  
+}
 
 
 exports.singleDatasource=function(req,res,next){
 
+    // fs.readFile(__dirname+'/../test/'+'config.udxcfg',(er,date)=>{
 
+    //     console.log(data)
+    // })
 
 
 
@@ -972,7 +1003,7 @@ exports.dataVisual=function(req,res,next){
         }
 
         
-        path=__dirname+'/../upload_template/'+uid+'.zip'
+        path=__dirname+'/../upload_ogms/'+uid+'/'+uid+'.zip'
         //在snapshot日志里检索是否生成了截图
         VisualLog.find({dataUid:uid},(err,doc)=>{
             
@@ -1002,14 +1033,16 @@ exports.dataVisual=function(req,res,next){
                 //若未生成过snapshot，则生成
                  compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')
                 .then((err)=>{
-
+                    if(err){
+                        console.log(err)
+                    }
                     fs.readdir( __dirname+'/../temp/'+uid+'/',(err,files)=>{
                         
                         for(v of files){ 
                             let reg=new RegExp('.'+suffix)
                             if(reg.test(v)){
 
-                                let path="F:\\code\\server\\temp\\"+uid+"\\"+v
+                                let temp_path="F:\\code\\server\\temp\\"+uid+"\\"+v
                                 
                               
                 
@@ -1020,7 +1053,7 @@ exports.dataVisual=function(req,res,next){
                                 }else if(suffix==='tiff'||suffix==='tif'){
                                     py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
                                 }
-                                const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,path,picId]);
+                                const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,temp_path,picId]);
 
                                 ls.stdout.on('data', (data) => {
                                         console.log(`stdout: ${data}`);
@@ -1083,7 +1116,7 @@ exports.dataVisual=function(req,res,next){
 
         })
 
-        res.send({code:0,message:"input error"})
+        
 
 }
 exports.dataVisualNoCache=function(req,res,next){

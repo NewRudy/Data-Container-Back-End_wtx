@@ -1,0 +1,21 @@
+<UDXZip>
+	<Name >
+		<add value="udxdata.xml" />
+	
+	</Name>
+	<DataTemplate type="schema">
+		<UdxDeclaration name="Aeronav FAA files " description="(GDAL/OGR &gt;= 1.8.0)
+		This driver reads text files describing aeronav information - obstacles, navaids and routes - as provided by the FAA.">
+			<UdxNode>
+				<UdxNode name="AeronavFAA " type="DTKT_ANY" description=""/>
+			</UdxNode>
+			<SemanticAttachment>
+				<Concepts/>
+				<SpatialRefs/>
+				<Units/>
+				<DataTemplates/>
+			</SemanticAttachment>
+		</UdxDeclaration>
+	</DataTemplate>
+	
+</UDXZip>

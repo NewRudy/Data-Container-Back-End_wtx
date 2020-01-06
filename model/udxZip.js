@@ -17,7 +17,7 @@ var dataSChema = new mongoose.Schema({
      fileId:String,
      info:Mixed,
      name:String,
-     dataTemplate:Mixed,
+     dataTemplate:String,
      origination:String,
      serverNode:String,
      access:String,

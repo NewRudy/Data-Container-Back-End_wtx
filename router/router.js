@@ -31,6 +31,12 @@ exports.ogmsDataUp=storageData.ogmsDataUp;
 
 exports.ogmsDataDown=storageData.ogmsDataDown;
 
+//数据可视化
+
+exports.snapShot=storageData.snapShot;
+
+
+
 
 //测试
 exports.test=storageData.test;

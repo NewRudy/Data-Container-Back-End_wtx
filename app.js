@@ -46,11 +46,22 @@ app.post('/source/:type',router.noTemplate)
 //第四种接口
 app.post('/randomsource',router.randomSource)
 
+
+
+
+
+
+
 //数据上传一个接口
 app.post('/data',router.ogmsDataUp)
 
 //数据下载
 app.get('/data',router.ogmsDataDown)
+//数据可视化
+app.get('/snapshot',router.snapShot)
+
+
+
 
 
 
@@ -92,6 +103,6 @@ app.get('/', function (req, res) {
 
 
 app.listen(config.port,()=>{
-  console.log(process.pid)
+  console.log(config.port,process.pid)
   console.log("server online")
 });
