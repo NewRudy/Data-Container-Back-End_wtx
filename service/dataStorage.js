@@ -1009,7 +1009,8 @@ exports.dataVisual=function(req,res,next){
             
             //若生成过，直接找到截图返回给client
             if(doc.length>0){
-                let res_path= 'F:\\code\\server\\snapShotCache\\'+doc[0].uid+'.png' 
+                let res_path=   __dirname+'/../snapShotCache/'+doc[0].uid+'.png'
+                // let res_path= 'F:\\code\\server\\snapShotCache\\'+doc[0].uid+'.png' 
 
                 fs.readFile(res_path,(err,data)=>{
                     res.writeHead(200, {
@@ -1042,16 +1043,23 @@ exports.dataVisual=function(req,res,next){
                             let reg=new RegExp('.'+suffix)
                             if(reg.test(v)){
 
-                                let temp_path="F:\\code\\server\\temp\\"+uid+"\\"+v
+                                // let temp_path="F:\\code\\server\\temp\\"+uid+"\\"+v
                                 
-                              
+                                let temp_path= __dirname+'/../temp/'+uid+'/'+v
                 
                                 //python要写绝对路径
                                 let py_script_path
                                 if(suffix==='shp'){
-                                    py_script_path='F:\\code\\server\\lib\\visual\\shp.py'
+                                    // py_script_path='F:\\code\\server\\lib\\visual\\shp.py'
+                                    
+                                    py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
+
+
                                 }else if(suffix==='tiff'||suffix==='tif'){
-                                    py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
+                                    // py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
+                                    py_script_path=_dirname+'/../temp/'+'lib/visual/tiff.py'
+
+
                                 }
                                 const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,temp_path,picId]);
 
@@ -1147,14 +1155,20 @@ exports.dataVisualNoCache=function(req,res,next){
                      let reg=new RegExp('.'+suffix)
                      if(reg.test(v)){
 
-                         let path="F:\\code\\server\\temp\\"+uid+"\\"+v
+                        //  let path="F:\\code\\server\\temp\\"+uid+"\\"+v
+                         let path=__dirname+"/../temp/"+uid+"/"+v
+                         
                 
                             //判断可视化类型，目前只有tif和shp两种
                          let py_script_path
                         if(suffix==='shp'){
-                            py_script_path='F:\\code\\server\\lib\\visual\\shp.py'
+                            // py_script_path='F:\\code\\server\\lib\\visual\\shp.py'
+                            py_script_path=__dirname+'/../lib/visual/shp.py'
+
                         }else if(suffix==='tiff'||suffix==='tif'){
-                            py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
+                            // py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
+                            py_script_path=__dirname+'/../lib/visual/shp.py'
+
                         }
                         const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,path,picId]);
 

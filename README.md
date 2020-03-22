@@ -51,9 +51,9 @@
             <add value="udxdata.xml" />
             <add value="schema.xml" />
           </Name>
-          <DataTemplateId type="id/schema/none">
+          <DataTemplate type="id/schema/none">
             guid/udx schema
-          </DataTemplateId>
+          </DataTemplate>
           
         </UDXZip>
     ```
