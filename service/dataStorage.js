@@ -17,6 +17,8 @@ const srcZip=require('../model/srcZip.js')
 const udxZip=require('../model/udxZip.js')
 const visualLog =require('../model/visualLog.js')
 
+const VisualSolution=require('../lib/data/templateIdOfVisualSolution.js')
+
 var DataSet=dataModel.DataSet;
 
 var StandZip=standZip.StandZip;
@@ -991,14 +993,14 @@ exports.singleDatasource=function(req,res,next){
 
 
 exports.dataVisual=function(req,res,next){
-    let suffix=req.query.suffix,
+    let  suffix='',
       
         uid=req.query.uid,
         picId=uuid.v4(),
         path =''
      
-        if(!uid||!suffix){
-            res.send({code:0,message: "uid, suffix or type params is necessary!"});
+        if(!uid ){
+            res.send({code:0,message: "uid or type params is necessary!"});
             return
         }
 
@@ -1039,6 +1041,170 @@ exports.dataVisual=function(req,res,next){
                     }
                     fs.readdir( __dirname+'/../temp/'+uid+'/',(err,files)=>{
                         
+                        //判断采用的可视化方案
+                        SrcZip.find({uid},(err,doc)=>{
+                            if(doc.length>0){
+                                
+                                var py_script_path=''
+
+                                if(VisualSolution.shp.indexOf(doc[0]['dataTemplateId'])>-1){
+
+                                    py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
+
+                                    suffix='shp'
+                                }else if(VisualSolution.tiff.indexOf(doc[0]['dataTemplateId'])>-1){
+                                    py_script_path=__dirname+'/../temp/'+'lib/visual/tiff.py'
+                                    suffix='tif'
+
+                                }
+
+                                for(v of files){ 
+                                    let reg=new RegExp('.'+suffix)
+                                    if(reg.test(v)){
+        
+                                        // let temp_path="F:\\code\\server\\temp\\"+uid+"\\"+v
+                                        
+                                        let temp_path= __dirname+'/../temp/'+uid+'/'+v
+                        
+                                        //python要写绝对路径
+                                       
+        
+                                        
+        
+        
+                                        // if(suffix==='shp'){
+                                      
+                                        //     py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
+        
+        
+                                        // }else if(suffix==='tiff'||suffix==='tif'){
+                                      
+                                        //     py_script_path=_dirname+'/../temp/'+'lib/visual/tiff.py'
+        
+        
+                                        // }
+                                        const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,temp_path,picId]);
+        
+                                        ls.stdout.on('data', (data) => {
+                                                console.log(`stdout: ${data}`);
+                                                var res_path=`${data}`.trim()
+                                                console.log(res_path)
+                                
+                                                fs.readFile(res_path,(err,data)=>{
+                                                    res.writeHead(200, {
+                                                        'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                                                        'Content-Disposition': 'attachment; filename=' + 'visual.png',//告诉浏览器这是一个需要下载的文件
+                                                    });//设置响应头
+                                                    var readStream = fs.createReadStream(res_path);//得到文件输入流
+                                    
+                                                    readStream.on('data', (chunk) => {
+                                                        res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+                                                    });
+                                                    readStream.on('end', () => {
+                                                        res.end();
+            
+                                                        VisualLog.create({
+                                                            uid:picId,
+                                                            dataUid:uid,
+                                                            generateDate:date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+                                                            cached:true
+                                                        },(err,data)=>{
+                                                            if(err){
+                                                                console.log(err)
+                                                            }
+                    
+                                                        })
+                                                        
+                                                        return;
+                                                    })
+                                    
+                                                })
+        
+        
+                                        });
+        
+                                        ls.stderr.on('data', (data) => {
+                                        console.error(`stderr: ${data}`);
+                                        });
+        
+                                        ls.on('close', (code) => {
+                                        console.log(`子进程退出，退出码 ${code}`);
+                                        });
+                                      
+                                       
+        
+                                        break
+                                    }
+                                }
+        
+
+
+
+
+
+
+                                
+                            }else{
+                                res.send({code:-1,message:'error,no data'})
+                            }
+
+                        })
+
+                      
+
+                    })
+                })
+                .catch((err)=>{
+
+                })
+
+            }
+
+        })
+
+        
+
+}
+exports.dataVisualNoCache=function(req,res,next){
+    let suffix='',
+       
+        uid=req.query.uid,
+        picId=uuid.v4(),
+        path =''
+     
+        if(!uid||!suffix){
+            res.send({code:0,message: "uid  is necessary!"});
+            return
+        }
+
+       
+        path=__dirname+'/../upload_template/'+uid+'.zip'
+
+         //若未生成过snapshot，则生成
+         compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')
+         .then((err)=>{
+            if(err){
+                console.log(err)
+            }
+            fs.readdir( __dirname+'/../temp/'+uid+'/',(err,files)=>{
+                
+                //判断采用的可视化方案
+                SrcZip.find({uid},(err,doc)=>{
+                    if(doc.length>0){
+                        
+                        var py_script_path=''
+
+                        if(VisualSolution.shp.indexOf(doc[0]['dataTemplateId'])>-1){
+
+                            py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
+
+                            suffix='shp'
+                        }else if(VisualSolution.tiff.indexOf(doc[0]['dataTemplateId'])>-1){
+                            py_script_path=__dirname+'/../temp/'+'lib/visual/tiff.py'
+                            suffix='tif'
+
+                        }
+
                         for(v of files){ 
                             let reg=new RegExp('.'+suffix)
                             if(reg.test(v)){
@@ -1048,19 +1214,22 @@ exports.dataVisual=function(req,res,next){
                                 let temp_path= __dirname+'/../temp/'+uid+'/'+v
                 
                                 //python要写绝对路径
-                                let py_script_path
-                                if(suffix==='shp'){
-                                    // py_script_path='F:\\code\\server\\lib\\visual\\shp.py'
-                                    
-                                    py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
+                               
+
+                                
 
 
-                                }else if(suffix==='tiff'||suffix==='tif'){
-                                    // py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
-                                    py_script_path=_dirname+'/../temp/'+'lib/visual/tiff.py'
+                                // if(suffix==='shp'){
+                              
+                                //     py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
 
 
-                                }
+                                // }else if(suffix==='tiff'||suffix==='tif'){
+                              
+                                //     py_script_path=_dirname+'/../temp/'+'lib/visual/tiff.py'
+
+
+                                // }
                                 const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,temp_path,picId]);
 
                                 ls.stdout.on('data', (data) => {
@@ -1114,138 +1283,27 @@ exports.dataVisual=function(req,res,next){
                                 break
                             }
                         }
-                    })
-                })
-                .catch((err)=>{
+
+
+
+
+
+
+
+                        
+                    }else{
+                        res.send({code:-1,message:'error,no data'})
+                    }
 
                 })
 
-            }
+              
+
+            })
+        })
+        .catch((err)=>{
 
         })
-
-        
-
-}
-exports.dataVisualNoCache=function(req,res,next){
-    let suffix=req.query.suffix,
-       
-        uid=req.query.uid,
-        picId=uuid.v4(),
-        path =''
-     
-        if(!uid||!suffix){
-            res.send({code:0,message: "uid, suffix or type params is necessary!"});
-            return
-        }
-
-       
-        path=__dirname+'/../upload_template/'+uid+'.zip'
-
-         //若未生成过snapshot，则生成
-         compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')
-         .then((err)=>{
-            if(err){
-                res.send(err)
-                return
-            }
-             fs.readdir( __dirname+'/../temp/'+uid+'/',(err,files)=>{
-                 
-                 for(v of files){ 
-                     let reg=new RegExp('.'+suffix)
-                     if(reg.test(v)){
-
-                        //  let path="F:\\code\\server\\temp\\"+uid+"\\"+v
-                         let path=__dirname+"/../temp/"+uid+"/"+v
-                         
-                
-                            //判断可视化类型，目前只有tif和shp两种
-                         let py_script_path
-                        if(suffix==='shp'){
-                            // py_script_path='F:\\code\\server\\lib\\visual\\shp.py'
-                            py_script_path=__dirname+'/../lib/visual/shp.py'
-
-                        }else if(suffix==='tiff'||suffix==='tif'){
-                            // py_script_path='F:\\code\\server\\lib\\visual\\tiff.py'
-                            py_script_path=__dirname+'/../lib/visual/shp.py'
-
-                        }
-                        const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,path,picId]);
-
-                         
-
-                         ls.stdout.on('data', (data) => {
-                                 console.log(`stdout: ${data}`);
-                                 var res_path=`${data}`.trim()
-                                 console.log(res_path)
-                 
-                                 fs.readFile(res_path,(err,data)=>{
-                                     res.writeHead(200, {
-                                         'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                                         'Content-Disposition': 'attachment; filename=' +'visual.png',//告诉浏览器这是一个需要下载的文件
-                                     });//设置响应头
-                                     var readStream = fs.createReadStream(res_path);//得到文件输入流
-                     
-                                     readStream.on('data', (chunk) => {
-                                         res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
-                                     });
-                                     readStream.on('end', () => {
-                                         res.end();
-                                        VisualLog.find({dataUid:uid},(err,doc)=>{
-
-                                            if(doc.length>0){
-                                                VisualLog.update({
-                                                    uid:picId,
-                                                    dataUid:uid,
-                                                    generateDate:date.format(new Date(), 'YYYY-MM-DD HH:mm'),
-                                                    cached:true
-                                                },(err,data)=>{
-                                                    if(err){
-                                                        console.log(err)
-                                                    }
-                                                    return;
-                                                })
-                                            }else{
-                                                VisualLog.create({
-                                                    uid:picId,
-                                                    dataUid:uid,
-                                                    generateDate:date.format(new Date(), 'YYYY-MM-DD HH:mm'),
-                                                    cached:true
-                                                },(err,data)=>{
-                                                    if(err){
-                                                        console.log(err)
-                                                    }
-                                                    return;
-                                                })
-                                            }
-                                        })
-                                        
-                                     })
-                     
-                                 })
-
-
-                         });
-
-                         ls.stderr.on('data', (data) => {
-                         console.error(`stderr: ${data}`);
-                         });
-
-                         ls.on('close', (code) => {
-                         console.log(`子进程退出，退出码 ${code}`);
-                         });
-                       
-                        
-
-                         break
-                     }
-                 }
-             })
-         })
-         .catch((err)=>{
-
-         })
-
 
 
 

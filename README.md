@@ -200,7 +200,6 @@
 - ### http://111.229.14.128:8899/visual?suffix=shp&type=zip&uid=6b196f37-90e2-4d79-b844-4865db13a978 GET
 - 数据可视化snapshot截图
 - 参数：
-  - suffix：文件后缀，目前支持shp
  
   - uid:id,数据上传后返回的id
 - 返回值：截图图片文件
@@ -214,8 +213,7 @@
 - ### http://111.229.14.128:8899/visualnocache?suffix=shp&type=zip&uid=6b196f37-90e2-4d79-b844-4865db13a978 GET
 - 数据可视化snapshot截图
 - 参数：
-  - suffix：文件后缀，目前支持shp
-  
+
   - uid:id,数据上传后返回的id
 - 返回值：截图图片文件
 - 目前支持主流的gis数据文件：shp,tif
