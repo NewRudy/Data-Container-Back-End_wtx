@@ -1056,6 +1056,10 @@ exports.dataVisual=function(req,res,next){
                                     py_script_path=__dirname+'/../temp/'+'lib/visual/tiff.py'
                                     suffix='tif'
 
+                                }else{
+
+                                    res.send({code:-1,message:'There are no existing data templates'})
+                                    return;
                                 }
 
                                 for(v of files){ 
@@ -1203,6 +1207,10 @@ exports.dataVisualNoCache=function(req,res,next){
                             py_script_path=__dirname+'/../temp/'+'lib/visual/tiff.py'
                             suffix='tif'
 
+                        }else{
+
+                            res.send({code:-1,message:'There are no existing data templates'})
+                            return;
                         }
 
                         for(v of files){ 

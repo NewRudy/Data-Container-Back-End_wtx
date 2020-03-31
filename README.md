@@ -197,12 +197,18 @@
 
 ## 数据可视化接口
 
-- ### http://111.229.14.128:8899/visual?suffix=shp&type=zip&uid=6b196f37-90e2-4d79-b844-4865db13a978 GET
+- ### http://111.229.14.128:8899/visual?uid=6b196f37-90e2-4d79-b844-4865db13a978 GET
 - 数据可视化snapshot截图
 - 参数：
  
   - uid:id,数据上传后返回的id
 - 返回值：截图图片文件
+- 若数据模板id在模板库中不存在：返回值为：
+```
+{ code:-1,
+  message:'There are no existing data templates'
+}
+```
 - 目前支持主流的gis数据文件：shp,tif
 - shapefile数据可视化
 ![1](/snapShotCache/09ee3e4b-d350-45f7-b616-64027cc61494.png)
@@ -210,12 +216,18 @@
 ![2](/snapShotCache/1ae50628-ec77-4e7e-b9f8-3c2316021357.png)
 - ## 缓存说明：此接口支持缓存，若生成过数据图片，则会进行缓存，再次请求时直接获取缓存
 
-- ### http://111.229.14.128:8899/visualnocache?suffix=shp&type=zip&uid=6b196f37-90e2-4d79-b844-4865db13a978 GET
+- ### http://111.229.14.128:8899/visualnocache?uid=6b196f37-90e2-4d79-b844-4865db13a978 GET
 - 数据可视化snapshot截图
 - 参数：
 
   - uid:id,数据上传后返回的id
 - 返回值：截图图片文件
+- 若数据模板id在模板库中不存在：返回值为：
+```
+{ code:-1,
+  message:'There are no existing data templates'
+}
+```
 - 目前支持主流的gis数据文件：shp,tif
 - shapefile数据可视化
 ![3](/snapShotCache/09ee3e4b-d350-45f7-b616-64027cc61494.png)
