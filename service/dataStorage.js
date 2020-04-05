@@ -589,34 +589,37 @@ exports.ogmsDataUp=async function(req,res,next){
                                     if(files.length===2){
                                         let configFilePath
                                         doc['fileList']=[]
+
                                         for(f of files){
                                             if(reg.test(f)){
                                                 configFilePath=dirPath+'/'+f
                                                 continue
                                             }
                                             doc['fileList'].push(dirPath+'/'+f)
-                                            let name_suffix=f.split('.')
-                                            fs.renameSync(dirPath+'/'+f,dirPath+'/'+uid+'.'+name_suffix[1])
+                                            //fs.renameSync(dirPath+'/'+f,dirPath+'/'+doc['name']+'.'+name_suffix[1])
                                           
                                         }
-                                        //datatemplate id 入库
-                                        doc['dataTemplateId']=result.UDXZip['DataTemplate'][0]._.replace(/[\r\n\t]/g,"");  
-                                        //删除配置文件
-                                        fs.unlinkSync(configFilePath)
 
-                                        
-                                        let ret={source_store_id:uid,file_name:fields.name}
-                                        //存库
-                                        DataSet.create(doc,function(err1,small){
-                                            if(err1){
-                                                console.log(err1);
-                                                res.send({code:0,message: err1});
-                                                return
-                                            }
-                                        
-                                            res.send({code:0,data:ret});
-                                            return
-                                        })
+                                             
+                                              //datatemplate id 入库
+                                              doc['dataTemplateId']=(result.UDXZip['DataTemplate'][0]._.replace(/[\r\n\t]/g,"")).trim();  
+                                              //删除配置文件
+                                              fs.unlinkSync(configFilePath)
+                                               
+                                              
+                                              let ret={source_store_id:uid,file_name:fields.name}
+                                              //存库
+                                              DataSet.create(doc,function(err1,small){
+                                                  if(err1){
+                                                      console.log(err1);
+                                                      res.send({code:0,message: err1});
+                                                      return
+                                                  }
+                                              
+                                                  res.send({code:0,data:ret});
+                                                  return
+                                              })
+                                     
                                        
                                     }else if(files.length>2){
                                         doc['fileList']=[]
@@ -1035,14 +1038,15 @@ exports.dataVisual=function(req,res,next){
             }else{
                 //若未生成过snapshot，则生成
 
+               
+
                 fs.readdir(__dirname+'/../upload_ogms/'+uid+'/',(err,files)=>{
 
                     if(files.length===1){
                        
-                        path=_dirname+'/../upload_ogms/'+uid+'/'+files[0]
-                        console.log(paths)
+                        path=__dirname+'/../upload_ogms/'+uid+'/'+files[0]
+                        
                     }
-
                     compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')
                     .then((err)=>{
                         if(err){
@@ -1196,137 +1200,143 @@ exports.dataVisualNoCache=function(req,res,next){
         }
 
        
-      var  path=__dirname+'/../upload_template/'+uid+'.zip'
+        var  path=__dirname+'/../upload_template/'+uid+'.zip'
+        fs.readdir('/data/dataSource/'+uid+'/',(err,files)=>{
 
-         //若未生成过snapshot，则生成
-         compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')
-         .then((err)=>{
-            if(err){
-                console.log(err)
+            if(files.length===1){
+               
+                path=__dirname+'/../upload_ogms/'+uid+'/'+files[0]
+                
             }
-            fs.readdir( __dirname+'/../temp/'+uid+'/',(err,files)=>{
-                
-                //判断采用的可视化方案
-                DataSet.find({uid},(err,doc)=>{
-                    if(doc.length>0){
-                        
-                        var py_script_path=''
-
-                        if(VisualSolution.shp.indexOf(doc[0]['dataTemplateId'])>-1){
-
-                            py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
-
-                            suffix='shp'
-                        }else if(VisualSolution.tiff.indexOf(doc[0]['dataTemplateId'])>-1){
-                            py_script_path=__dirname+'/../temp/'+'lib/visual/tiff.py'
-                            suffix='tif'
-
-                        }else{
-
-                            res.send({code:-1,message:'There are no existing data templates'})
-                            return;
-                        }
-
-                        for(v of files){ 
-                            let reg=new RegExp('.'+suffix)
-                            if(reg.test(v)){
-
-                                // let temp_path="F:\\code\\server\\temp\\"+uid+"\\"+v
-                                
-                                let temp_path= __dirname+'/../temp/'+uid+'/'+v
-                
-                                //python要写绝对路径
-                               
-
-                                
-
-
-                                // if(suffix==='shp'){
-                              
-                                //     py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
-
-
-                                // }else if(suffix==='tiff'||suffix==='tif'){
-                              
-                                //     py_script_path=_dirname+'/../temp/'+'lib/visual/tiff.py'
-
-
-                                // }
-                                const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,temp_path,picId]);
-
-                                ls.stdout.on('data', (data) => {
-                                        console.log(`stdout: ${data}`);
-                                        var res_path=`${data}`.trim()
-                                        console.log(res_path)
-                        
-                                        fs.readFile(res_path,(err,data)=>{
-                                            res.writeHead(200, {
-                                                'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                                                'Content-Disposition': 'attachment; filename=' + 'visual.png',//告诉浏览器这是一个需要下载的文件
-                                            });//设置响应头
-                                            var readStream = fs.createReadStream(res_path);//得到文件输入流
+         //若未生成过snapshot，则生成
+            compressing.zip.uncompress(path, __dirname+'/../temp/'+uid+'/')
+            .then((err)=>{
+                if(err){
+                    console.log(err)
+                }
+                fs.readdir( __dirname+'/../temp/'+uid+'/',(err,files)=>{
+                    
+                    //判断采用的可视化方案
+                    DataSet.find({uid},(err,doc)=>{
+                        if(doc.length>0){
                             
-                                            readStream.on('data', (chunk) => {
-                                                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
-                                            });
-                                            readStream.on('end', () => {
-                                                res.end();
-    
-                                                VisualLog.create({
-                                                    uid:picId,
-                                                    dataUid:uid,
-                                                    generateDate:date.format(new Date(), 'YYYY-MM-DD HH:mm'),
-                                                    cached:true
-                                                },(err,data)=>{
-                                                    if(err){
-                                                        console.log(err)
-                                                    }
-            
-                                                })
-                                                
-                                                return;
-                                            })
-                            
-                                        })
+                            var py_script_path=''
 
+                            if(VisualSolution.shp.indexOf(doc[0]['dataTemplateId'])>-1){
 
-                                });
+                                py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
 
-                                ls.stderr.on('data', (data) => {
-                                console.error(`stderr: ${data}`);
-                                });
+                                suffix='shp'
+                            }else if(VisualSolution.tiff.indexOf(doc[0]['dataTemplateId'])>-1){
+                                py_script_path=__dirname+'/../temp/'+'lib/visual/tiff.py'
+                                suffix='tif'
 
-                                ls.on('close', (code) => {
-                                console.log(`子进程退出，退出码 ${code}`);
-                                });
-                              
-                               
+                            }else{
 
-                                break
+                                res.send({code:-1,message:'There are no existing data templates'})
+                                return;
                             }
+
+                            for(v of files){ 
+                                let reg=new RegExp('.'+suffix)
+                                if(reg.test(v)){
+
+                                    // let temp_path="F:\\code\\server\\temp\\"+uid+"\\"+v
+                                    
+                                    let temp_path= __dirname+'/../temp/'+uid+'/'+v
+                    
+                                    //python要写绝对路径
+                                
+
+                                    
+
+
+                                    // if(suffix==='shp'){
+                                
+                                    //     py_script_path=__dirname+'/../temp/'+'lib/visual/shp.py'
+
+
+                                    // }else if(suffix==='tiff'||suffix==='tif'){
+                                
+                                    //     py_script_path=_dirname+'/../temp/'+'lib/visual/tiff.py'
+
+
+                                    // }
+                                    const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,temp_path,picId]);
+
+                                    ls.stdout.on('data', (data) => {
+                                            console.log(`stdout: ${data}`);
+                                            var res_path=`${data}`.trim()
+                                            console.log(res_path)
+                            
+                                            fs.readFile(res_path,(err,data)=>{
+                                                res.writeHead(200, {
+                                                    'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
+                                                    'Content-Disposition': 'attachment; filename=' + 'visual.png',//告诉浏览器这是一个需要下载的文件
+                                                });//设置响应头
+                                                var readStream = fs.createReadStream(res_path);//得到文件输入流
+                                
+                                                readStream.on('data', (chunk) => {
+                                                    res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+                                                });
+                                                readStream.on('end', () => {
+                                                    res.end();
+        
+                                                    VisualLog.create({
+                                                        uid:picId,
+                                                        dataUid:uid,
+                                                        generateDate:date.format(new Date(), 'YYYY-MM-DD HH:mm'),
+                                                        cached:true
+                                                    },(err,data)=>{
+                                                        if(err){
+                                                            console.log(err)
+                                                        }
+                
+                                                    })
+                                                    
+                                                    return;
+                                                })
+                                
+                                            })
+
+
+                                    });
+
+                                    ls.stderr.on('data', (data) => {
+                                    console.error(`stderr: ${data}`);
+                                    });
+
+                                    ls.on('close', (code) => {
+                                    console.log(`子进程退出，退出码 ${code}`);
+                                    });
+                                
+                                
+
+                                    break
+                                }
+                            }
+
+
+
+
+
+
+
+                            
+                        }else{
+                            res.send({code:-1,message:'error,no data'})
                         }
 
+                    })
 
-
-
-
-
-
-                        
-                    }else{
-                        res.send({code:-1,message:'error,no data'})
-                    }
+                
 
                 })
-
-              
+            })
+            .catch((err)=>{
 
             })
         })
-        .catch((err)=>{
-
-        })
-
 
 
 
