@@ -13,6 +13,7 @@ def f(path,picId):
             listy.append(yNew)
     plt.plot(listx,listy)
     plt.axis('off')
+    plt.figure(figsize=(2,4))
     plt.savefig('F:\\code\\server\\snapShotCache\\'+picId+'.png')
     return True
 # plt.show()

@@ -106,3 +106,7 @@ app.listen(config.port,()=>{
   console.log(config.port,process.pid)
   console.log("server online")
 });
+
+process.on('uncaughtException', function (err) {
+  console.log('Caught Exception:' + err);//直接捕获method()未定义函数，Node进程未被退出。
+});
