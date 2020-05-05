@@ -936,9 +936,10 @@ exports.ogmsDataDown=function(req,res,next){
 
     fs.readdir(dirPath,(err,files)=>{
         if(files.length===1){
+            res.attachment(files[0]) //告诉浏览器这是一个需要下载的文件，解决中文乱码
             res.writeHead(200, {
-                'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                'Content-Disposition': 'attachment; filename=' +files[0],//告诉浏览器这是一个需要下载的文件
+                'Content-Type': 'application/octet-stream;charset=UTF8',//告诉浏览器这是一个二进制文件
+                // 'Content-Disposition': 'attachment; filename=' +files[0],//告诉浏览器这是一个需要下载的文件
             });//设置响应头
             var readStream = fs.createReadStream(dirPath+'/'+files[0]);//得到文件输入流
         
@@ -952,9 +953,10 @@ exports.ogmsDataDown=function(req,res,next){
             })
 
         }else{
+            res.attachment(doc['name']) //告诉浏览器这是一个需要下载的文件，解决中文乱码
             res.writeHead(200, {
                 'Content-Type': 'application/octet-stream',//告诉浏览器这是一个二进制文件
-                'Content-Disposition': 'attachment; filename=' +'data.zip',//告诉浏览器这是一个需要下载的文件
+                // 'Content-Disposition': 'attachment; filename=' +'data.zip',//告诉浏览器这是一个需要下载的文件
             });//设置响应头
             var readStream = fs.createReadStream(dirPath+'/'+uid+'.zip');//得到文件输入流
         
