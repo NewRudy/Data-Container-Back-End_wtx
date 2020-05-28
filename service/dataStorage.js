@@ -933,6 +933,11 @@ exports.ogmsDataUp=async function(req,res,next){
 exports.ogmsDataDown=function(req,res,next){
     let uid=req.query.uid
     let dirPath=__dirname+'/../upload_ogms/'+uid
+    DataSet.findOne({uid:uid},(err,doc)=>{
+        console.log("s"+doc)
+            if(!doc){
+            res.send({code:-1,message:'error,wrong uid'})
+            }
 
     fs.readdir(dirPath,(err,files)=>{
         if(files.length===1){
@@ -976,7 +981,7 @@ exports.ogmsDataDown=function(req,res,next){
         }
     })
 
-  
+})
 
 
 
