@@ -1475,28 +1475,33 @@ exports.update=function(req,res,next){
 
 //删除数据
 exports.del=function(req,res,next){
-    const form = new formidable.IncomingForm()
-    form.parse(req,function(err,fields,files){
-        let uid=fields.uid
+    
+     
+        let uid=req.query.uid
         
         DataSet.findOne({uid:uid},function(err,doc){
             if(err){
                 res.send(err)
             }else{
-                fs.unlink(doc.path,function(err){
-                    if(err){
-                        res.send(err)
-                    }else{
-                        DataSet.deleteOne({uid:uid},function(err){
-                            if(err){
-                                  res.send(err)
-                              }else{
-                                  res.send("delete success")
-                              }
-                        })
-                    }
-                })
+                try{
+                    delDir(doc.path)
+
+                    DataSet.deleteOne({uid:uid},function(err){
+                        if(err){
+                              res.send(err)
+                          }else{
+                              res.send({code:0,message:"delete success"})
+                          }
+                    })
+
+                }catch(err){
+                    console.log(err)
+                    res.send({code:-1,message:'delete error'})
+                }                
+
+
             }            
         })                                
-    })
+     
 }
+ 
