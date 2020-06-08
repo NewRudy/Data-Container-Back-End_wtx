@@ -12,6 +12,7 @@ var dataSChema = new mongoose.Schema({
      originalName:String,
      type:String,
      //自描述属性
+     singleFileName:String,
      fileId:String,
      info:Mixed,
      name:String,

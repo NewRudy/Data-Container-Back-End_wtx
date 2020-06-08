@@ -595,7 +595,11 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 configFilePath=dirPath+'/'+f
                                                 continue
                                             }
-                                            doc['fileList'].push(dirPath+'/'+f)
+                                            else{
+                                                doc['singleFileName']=f
+                                                         doc['fileList'].push(dirPath+'/'+f)
+                                            }
+                                           
                                             //fs.renameSync(dirPath+'/'+f,dirPath+'/'+doc['name']+'.'+name_suffix[1])
                                           
                                         }
@@ -698,9 +702,13 @@ exports.ogmsDataUp=async function(req,res,next){
                                                 configFilePath=dirPath+'/'+f
                                                 continue
                                             }
+                                            else{
+                                                doc['singleFileName']=f
+                                                         doc['fileList'].push(dirPath+'/'+f)
+                                            }
                                             doc['fileList'].push(dirPath+'/'+f)
-                                            let name_suffix=f.split('.')
-                                            fs.renameSync(dirPath+'/'+f,dirPath+'/'+doc['name']+'.'+name_suffix[1])
+                                           // let name_suffix=f.split('.')
+                                            //fs.renameSync(dirPath+'/'+f,dirPath+'/'+doc['name']+'.'+name_suffix[1])
 
                                           
                                         }
@@ -942,24 +950,24 @@ exports.ogmsDataDown=function(req,res,next){
     fs.readdir(dirPath,(err,files)=>{
         if(files.length===1){
              
-            console.log('single file:'+doc['name']+'.zip')
-            res.attachment(doc['name']+'.zip') //告诉浏览器这是一个需要下载的文件,解决中文乱码问题
-            res.setHeader('fileName',escape(doc['name']+'.zip')) 
-            res.writeHead(200, {
-                 'Content-Type': 'application/octet-stream;fileName='+escape(doc['name']+'.zip'),//告诉浏览器这是一个二进制文件
-               
-             });//设置响应头
- 
-             var readStream = fs.createReadStream(dirPath+'/'+files[0]);//得到文件输入流
-         
-             readStream.on('data', (chunk) => {
-                 res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
-             });
-             readStream.on('end', () => {
-                 res.end();
- 
-                 return;
-             })
+            let suffix=doc['singleFileName'].split('.')
+           res.attachment(doc['name']+'.'+suffix[1]) //告诉浏览器这是一个需要下载的文件,解决中文乱码问题
+           res.setHeader('fileName',escape(doc['name']+'.'+suffix[1])) 
+           res.writeHead(200, {
+                'Content-Type': 'application/octet-stream;fileName='+escape(doc['name']+'.'+suffix[1]),//告诉浏览器这是一个二进制文件
+              
+            });//设置响应头
+
+            var readStream = fs.createReadStream(dirPath+'/'+files[0]);//得到文件输入流
+        
+            readStream.on('data', (chunk) => {
+                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+            });
+            readStream.on('end', () => {
+                res.end();
+
+                return;
+            })
 
         }else{
             res.setHeader('fileName',escape(doc['name']+'.zip')) 
