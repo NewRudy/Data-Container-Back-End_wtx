@@ -26,10 +26,10 @@ https://documenter.getpostman.com/view/9819382/SzYbwc3b?version=latest
 # 配置文件
 
 ## 字段
-<Name> 文件列表，不包含配置文件
-    value:文件名
-<DataTemplate> 数据类型,在type为id时有值
-    type:数据类型，可选参数 id, schema, none
+- <Name> 文件列表，不包含配置文件
+- value:文件名
+- <DataTemplate> 数据类型,在type为id时有值
+- type:数据类型，可选参数 id, schema, none
 
 ## 基本内容
 ```
