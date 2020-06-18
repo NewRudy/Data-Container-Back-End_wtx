@@ -1,0 +1,9 @@
+<UDXZip>
+	<Name>
+		<add value="dem.prj" />
+		 <add value="dem.tif" />
+		  <add value="dem.tif" />
+		   <add value="dem.tif" />
+	</Name>
+	<DataTemplate type="id">4996e027-209b-4121-907b-1ed36a417d22</DataTemplate>
+</UDXZip>
