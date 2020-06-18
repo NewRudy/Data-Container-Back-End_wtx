@@ -27,9 +27,10 @@ https://documenter.getpostman.com/view/9819382/SzYbwc3b?version=latest
 - tiff、shp可视化
 - 带缓存和强制重新生成可视化结果两种方式
 - ### 测试数据集目录
-     /visualTestData
-        /shp    shp数据可视化，配置文件已写好
-        /tiff   tiff数据可视化，配置文件已写好
+    [/visualTestData](https://github.com/Makoq/transitDataServer/tree/master/visualTestData "test data for visualization")
+     
+    - /shp    shp数据可视化，配置文件已写好
+    - /tiff   tiff数据可视化，配置文件已写好
 
 # 配置文件
 
