@@ -1,9 +1,9 @@
 const mongoose=require('../lib/mongodb')
-
-var Mixed = mongoose.Schema.Types.Mixed;
+const DB=require('../lib/mongodb')
+var Mixed = mongoose.mongoose.Schema.Types.Mixed;
 
 //定义schema,相当于定义表结构
-var dataSChema = new mongoose.Schema({
+var dataSChema = new mongoose.mongoose.Schema({
      uid:String,
      path:  String,
      date: String,
@@ -27,5 +27,5 @@ var dataSChema = new mongoose.Schema({
 });
 
 //创建model
-var StandZip=mongoose.model('standZip',dataSChema,'standZip')
+var StandZip=DB.DB1.model('standZip',dataSChema,'standZip')
 exports.StandZip = StandZip;

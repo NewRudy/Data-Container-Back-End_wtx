@@ -1,9 +1,9 @@
 const mongoose=require('../lib/mongodb')
-
-var Mixed = mongoose.Schema.Types.Mixed;
+const DB=require('../lib/mongodb')
+var Mixed = mongoose.mongoose.Schema.Types.Mixed;
 
 //定义schema,相当于定义表结构
-var dataSChema = new mongoose.Schema({
+var dataSChema = new mongoose.mongoose.Schema({
      uid:String,//snapshot id
      dataUid:String,//绑定的数据索引id
      generateDate:Date,//snapshot生成日期
@@ -12,6 +12,6 @@ var dataSChema = new mongoose.Schema({
 });
 
 //创建model
-var VisualLog=mongoose.model('visualLog',dataSChema,'visualLog')
+var VisualLog=DB.DB1.model('visualLog',dataSChema,'visualLog')
 
 exports.VisualLog=VisualLog;

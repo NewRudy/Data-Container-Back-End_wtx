@@ -28,71 +28,62 @@ app.all('*', function (req, res, next) {
 
 
 
-//上传数据到中转服务器
+//接口不再用
 //第一种接口，数据检验
-
-/**
- * file
- * 
- */
 app.post('/udxzip',router.storageData)
-
 // app.post('/udxzipinfo',router.storageDesc)
-
 //接口2和3
 app.post('/source/:type',router.noTemplate)
- 
-
 //第四种接口
 app.post('/randomsource',router.randomSource)
+//数据可视化
+app.get('/snapshot',router.snapShot)
+//下载获得数据流
+//第一种接口的下载
+app.get('/zipsource',router.datasource)
+app.get('/single',router.singleDatasource)
+//test
+app.get('/test',router.test)
+//批量下载
+app.get('/datasources',)
+//获取服务器数据列表
+app.get('/datalist',router.datalist)
+//检索
+app.get('/onlinefilter',router.filter)
+//更新数据描述
+app.post('/update',router.update);
 
 
-
-
-
-
+//********************************************************** */
+//中转服务器接口
 
 //数据上传一个接口
 app.post('/data',router.ogmsDataUp)
 
 //数据下载
 app.get('/data',router.ogmsDataDown)
-//数据可视化
-app.get('/snapshot',router.snapShot)
 
-
-
-
-
-
-//下载获得数据流
-//第一种接口的下载
-app.get('/zipsource',router.datasource)
-
-app.get('/single',router.singleDatasource)
+//删除数据
+app.delete('/del',router.delete);
 
 //可视化接口
 app.get('/visual',router.dataVisual)
 //强制生成
 app.get('/visualnocache',router.dataVisualNoCache)
 
-//test
-app.get('/test',router.test)
 
-//批量下载
-app.get('/datasources',)
+//********************************************************** */
 
-//获取服务器数据列表
-app.get('/datalist',router.datalist)
-//检索
-app.get('/onlinefilter',router.filter)
+//就地共享系统接口
 
+//用户登录
+app.post('/login',router.login)
 
-//更新数据描述
-app.post('/update',router.update);
+//用户关联
+app.post('/connectusr',router.connectPortalUsr)
+//创建用户
+app.post('/reg',router.reg)
 
-//删除数据
-app.delete('/del',router.delete);
 
 
 

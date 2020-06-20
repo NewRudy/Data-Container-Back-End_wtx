@@ -1,9 +1,9 @@
 const mongoose=require('../lib/mongodb')
-
-var Mixed = mongoose.Schema.Types.Mixed;
+const DB=require('../lib/mongodb')
+var Mixed = mongoose.mongoose.Schema.Types.Mixed;
 
 //定义schema,相当于定义表结构
-var dataSChema = new mongoose.Schema({
+var dataSChema = new mongoose.mongoose.Schema({
      uid:String,
      path:  String,
      date: String,
@@ -26,5 +26,5 @@ var dataSChema = new mongoose.Schema({
 });
 
 //创建model
-var SrcZip=mongoose.model('srcZip',dataSChema,'srcZip')
+var SrcZip=DB.DB1.model('srcZip',dataSChema,'srcZip')
 exports.SrcZip=SrcZip;
