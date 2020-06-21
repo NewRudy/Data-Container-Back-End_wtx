@@ -144,21 +144,21 @@ exports.newFile=function(req,res,next){
                     res.send({code:-1,message:'new file error!'})
                     return
                 }
+                //todo
+                // fs.readdir(dirPath,(err,filesItem)=>{
+                //     if(filesItem.length===0){
+                //         res.send({code:-1,message:'new file error!'})
+                //     }else if(filesItem.length===1){
+                //         //单文件直接转移到指定目录下
 
-                fs.readdir(dirPath,(err,filesItem)=>{
-                    if(filesItem.length===0){
-                        res.send({code:-1,message:'new file error!'})
-                    }else if(filesItem.length===1){
-                        //单文件直接转移到指定目录下
+                //     }else if(filesItem.length>1){
+                //         //多文件打包转移至指定目录下
 
-                    }else if(filesItem.length>1){
-                        //多文件打包转移至指定目录下
-                        
-                    }
+                //     }
 
 
 
-                })
+                // })
 
 
                 res.send({code:0,data:newFile})
@@ -183,10 +183,8 @@ exports.delInst=function(req,res,next){
            
                 for(let i=0;i<doc.list.length;i++){
                     if(doc.list[i].id===req.query.id){
-                        if(req.query.type==='folder'){
-                            var sub=doc.list[i].subContentId
-                            var theId=doc.list[i].id
-                        }
+                        var sub=doc.list[i].subContentId
+                        var theId=doc.list[i].id
                         doc.list.splice(i,1)
                         Instances.update(query,doc,(err2)=>{
                             if(err){
