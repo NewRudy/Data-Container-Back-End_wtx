@@ -25,12 +25,13 @@ exports.login=function(req,res,next){
             }
              
             if(fields.pwd===doc.pwd){
-               let res= {token:doc.uid,account:doc.name}
+               let result= {token:doc.uid,account:doc.name}
+
                 //如果关联了用户则返回相关用户信息（加密的）
-               if(relatedUser in doc&&doc.relatedUser.oid!=undefined){
-                    res.relatedUser=doc.relatedUser
+               if(doc.relatedUser&&doc.relatedUser.oid!=undefined){
+                    result.relatedUser=doc.relatedUser
                }
-               res.send({code:0,message:res}) 
+               res.send({code:0,message:result}) 
                return
             } else{
                 res.send({code:-1,message:'login failed!'})

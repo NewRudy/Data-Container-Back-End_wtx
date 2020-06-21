@@ -2,6 +2,9 @@ const storageData=require('../service/dataStorage.js');
 
 const user=require('../service/user.js');
 
+
+const instances=require('../service/instances.js');
+
 //接口不可用
 //第一种接口上传数据到服务器
 exports.storageData=storageData.storage;
@@ -53,3 +56,14 @@ exports.login=user.login;
 exports.connectPortalUsr=user.connectPortalUsr;
 //创建用户
 exports.reg=user.reg;
+
+
+//条目
+exports.instances=instances.instances
+
+//新加项文件夹
+exports.newInstance=instances.newInstance
+//新加项文件
+exports.newFile=instances.newFile
+//删除
+exports.delInst=instances.delInst

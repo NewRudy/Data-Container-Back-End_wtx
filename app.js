@@ -78,11 +78,22 @@ app.get('/visualnocache',router.dataVisualNoCache)
 
 //用户登录
 app.post('/login',router.login)
-
 //用户关联
 app.post('/connectusr',router.connectPortalUsr)
 //创建用户
 app.post('/reg',router.reg)
+
+
+//获取instances
+app.get('/instances',router.instances)
+//新文件夹项
+app.post('/newInst',router.newInstance)
+//新文件项
+app.post('/newFile',router.newFile)
+
+//删除条目
+app.get('/delInst',router.delInst)
+
 
 
 
