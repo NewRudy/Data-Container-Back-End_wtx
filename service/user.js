@@ -25,7 +25,7 @@ exports.login=function(req,res,next){
             }
              
             if(fields.pwd===doc.pwd){
-               let result= {token:doc.uid,account:doc.name}
+               let result= {token:doc.uid,account:doc.name,oid:doc.oid}
 
                 //如果关联了用户则返回相关用户信息（加密的）
                if(doc.relatedUser&&doc.relatedUser.oid!=undefined){

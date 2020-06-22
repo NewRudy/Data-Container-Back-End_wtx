@@ -79,7 +79,7 @@ app.get('/visualnocache',router.dataVisualNoCache)
 //用户登录
 app.post('/login',router.login)
 //用户关联
-app.post('/connectusr',router.connectPortalUsr)
+app.put('/connectusr',router.connectPortalUsr)
 //创建用户
 app.post('/reg',router.reg)
 
@@ -87,14 +87,15 @@ app.post('/reg',router.reg)
 //获取instances
 app.get('/instances',router.instances)
 //新文件夹项
-app.post('/newInst',router.newInstance)
+app.put('/newInst',router.newInstance)
 //新文件项
-app.post('/newFile',router.newFile)
+app.put('/newFile',router.newFile)
 
 //删除条目
-app.get('/delInst',router.delInst)
+app.delete('/delInst',router.delInst)
 
-
+//下载
+app.get('/insitudownload',router.inSituDownload)
 
 
 

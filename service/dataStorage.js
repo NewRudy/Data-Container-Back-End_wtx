@@ -262,7 +262,7 @@ exports.noTemplate=function(req,res,next){
                                         throw err;
                                     });
                                     archive.on('end',(err)=>{
-                                        delDir(dirPath)
+                                        delDir.delDir(dirPath)
                                          //存库记录
                                         let ret={source_store_id:uid,file_name:fields.name}
                                     
@@ -1497,7 +1497,7 @@ exports.del=function(req,res,next){
                 res.send(err)
             }else{
                 try{
-                    delDir(doc.path)
+                    delDir.delDir(doc.path)
 
                     DataSet.deleteOne({uid:uid},function(err){
                         if(err){
