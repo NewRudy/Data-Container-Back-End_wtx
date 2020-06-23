@@ -3,6 +3,10 @@ const express = require('express')
 const router=require('./router/router.js')
 const config=require('./config/config.js')
 
+let server = require('http').createServer(app);
+let io = require('socket.io')(server);
+
+
 var bodyParser = require('body-parser');
 var app = express()
 
@@ -96,7 +100,8 @@ app.delete('/delInst',router.delInst)
 
 //下载
 app.get('/insitudownload',router.inSituDownload)
-
+//权限设置
+app.put('/authority',router.authority)
 
 
 // respond with "hello world" when a GET request is made to the homepage

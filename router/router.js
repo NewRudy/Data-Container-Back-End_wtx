@@ -69,3 +69,5 @@ exports.newFile=instances.newFile
 exports.delInst=instances.delInst
 //下载
 exports.inSituDownload=instances.inSituDownload
+//authority
+exports.authority=instances.authority
