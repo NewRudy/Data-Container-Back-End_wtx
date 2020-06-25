@@ -104,8 +104,12 @@ app.get('/insitudownload',router.inSituDownload)
 app.put('/authority',router.authority)
 
 
+//上传数据到中转服务器
+app.get('/transition',router.transition)
+
 // respond with "hello world" when a GET request is made to the homepage
-app.get('/', function (req, res) {
+app.get('/state', function (req, res) {
+  res.send({code:0,state:'online'})
   console.log('hello world')
 })
 

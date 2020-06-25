@@ -2,8 +2,9 @@ const storageData=require('../service/dataStorage.js');
 
 const user=require('../service/user.js');
 
-
 const instances=require('../service/instances.js');
+
+const transition=require('../service/transition.js');
 
 //接口不可用
 //第一种接口上传数据到服务器
@@ -71,3 +72,5 @@ exports.delInst=instances.delInst
 exports.inSituDownload=instances.inSituDownload
 //authority
 exports.authority=instances.authority
+//transit
+exports.transition=transition.transition
