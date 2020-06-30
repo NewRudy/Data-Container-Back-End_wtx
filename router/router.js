@@ -79,3 +79,5 @@ exports.transition=transition.transition
 
 //new processing method
 exports.newProcessing=processing.newProcessing
+//删除处理方法
+exports.delProcessing=processing.delProcessing

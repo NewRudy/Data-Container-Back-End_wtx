@@ -145,6 +145,7 @@ exports.newFile=function(req,res,next){
             authority:fields.authority,
             meta:fields.meta
         }
+       
         newFile.meta.currentPath=dataStoragePath+'/'+newFile.id//存到当前系统下的路径
         console.log('path',newFile.meta.currentPath)
         Instances.findOne(query,(find_err,doc)=>{

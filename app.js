@@ -97,6 +97,8 @@ app.put('/newFile',router.newFile)
 
 //删除条目
 app.delete('/delInst',router.delInst)
+//删除处理方法
+app.delete('/delpro',router.delProcessing)
 
 //下载
 app.get('/insitudownload',router.inSituDownload)
@@ -108,7 +110,7 @@ app.put('/authority',router.authority)
 app.get('/transition',router.transition)
 
 //上传处理方法
-app.get('/newprocessing',router.newProcessing)
+app.post('/newprocess',router.newProcessing)
 
 
 

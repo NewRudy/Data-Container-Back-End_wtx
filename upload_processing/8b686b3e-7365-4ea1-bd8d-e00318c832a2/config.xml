@@ -1,0 +1,14 @@
+<Method id="" name="Spatial_Clip">
+    <Dependency>
+        <Item name="pyshp" url=""/>
+    </Dependency>
+    <Input count="1">
+        <Item name="china" type="path" description="original shp file"/>
+    </Input>
+    <Parameter count="1">
+        <Item name="city_name" type="string" description="the name of a city in china"/>
+    </Parameter>
+    <Output count="1">
+        <Item name="clipped_city" type="string" description="clipped_result"/>
+    </Output>
+</Method>
