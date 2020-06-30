@@ -107,10 +107,16 @@ app.put('/authority',router.authority)
 //上传数据到中转服务器
 app.get('/transition',router.transition)
 
+//上传处理方法
+app.get('/newprocessing',router.newProcessing)
+
+
+
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {
   res.send({code:0,state:'online'})
-  console.log('hello world')
+  console.log('state check')
 })
 
 
@@ -119,6 +125,6 @@ app.listen(config.port,()=>{
   console.log("server online")
 });
 
-process.on('uncaughtException', function (err) {
-  console.log('Caught Exception:' + err);//直接捕获method()未定义函数，Node进程未被退出。
-});
+// process.on('uncaughtException', function (err) {
+//   console.log('Caught Exception:' + err);//直接捕获method()未定义函数，Node进程未被退出。
+// });

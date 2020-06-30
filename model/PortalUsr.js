@@ -61,9 +61,9 @@ insituUsr:String
 
 },{
     versionKey: false,
-    collection: "portalUser"
+    collection: "user"
 });
 
 //创建model
-var portalUser=DB.DB2.model('portalUser',dataSChema,'portalUser')
+var portalUser=DB.DB2.model('portalUser',dataSChema)
 exports.PUser=portalUser;

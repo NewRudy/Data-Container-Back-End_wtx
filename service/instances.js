@@ -266,6 +266,7 @@ var exists = function( src, dst, callback ){
 exports.delInst=function(req,res,next){
     let query={
         uid:req.query.uid,
+        type:req.query.instType
     }
     Instances.findOne(query,(err,doc)=>{
         if(err){

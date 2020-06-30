@@ -6,6 +6,8 @@ const instances=require('../service/instances.js');
 
 const transition=require('../service/transition.js');
 
+
+const processing=require('../service/processing.js')
 //接口不可用
 //第一种接口上传数据到服务器
 exports.storageData=storageData.storage;
@@ -74,3 +76,6 @@ exports.inSituDownload=instances.inSituDownload
 exports.authority=instances.authority
 //transit
 exports.transition=transition.transition
+
+//new processing method
+exports.newProcessing=processing.newProcessing

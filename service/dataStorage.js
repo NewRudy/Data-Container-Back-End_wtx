@@ -1120,7 +1120,7 @@ exports.dataVisual=function(req,res,next){
             
             
                                             // }
-                                            const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,temp_path,picId]);
+                                            const ls = cp.spawn('C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python36-32\\python.exe', [ py_script_path,temp_path,picId]);//python安装路径，python脚本路径，shp路径，照片结果路径
             
                                             ls.stdout.on('data', (data) => {
                                                     console.log(`stdout: ${data}`);
