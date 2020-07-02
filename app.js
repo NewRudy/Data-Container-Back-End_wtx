@@ -112,8 +112,11 @@ app.get('/transition',router.transition)
 //上传处理方法
 app.post('/newprocess',router.newProcessing)
 
+//关联处理方法
+app.get('/bindprocessing',router.bindProcessing)
 
-
+//执行处理方法
+app.get('/executeprcs',router.executePrcs)
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {

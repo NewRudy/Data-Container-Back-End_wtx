@@ -7,7 +7,7 @@ const archiver =require('archiver')
 
 const utils=require('../utils/utils.js')
 const dataStoragePath=__dirname+'/../dataStorage' 
-
+const path=require('path')
 const instances=require('../model/instances.js');
 const { Console } = require('console');
 const { query } = require('express');
@@ -146,7 +146,7 @@ exports.newFile=function(req,res,next){
             meta:fields.meta
         }
        
-        newFile.meta.currentPath=dataStoragePath+'/'+newFile.id//存到当前系统下的路径
+        newFile.meta.currentPath=path.normalize(dataStoragePath+'/'+newFile.id) //存到当前系统下的路径
         console.log('path',newFile.meta.currentPath)
         Instances.findOne(query,(find_err,doc)=>{
             if(find_err){
@@ -164,6 +164,8 @@ exports.newFile=function(req,res,next){
                                 res.send({code:-1,message:'new file error!'})
                                 return
                             }else {
+
+
                                 //单文件直接拷贝到指定目录下
                                 console.log("s")
                                 exists(newFile.meta.dataPath,newFile.meta.currentPath,copy)

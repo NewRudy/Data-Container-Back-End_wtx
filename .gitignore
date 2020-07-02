@@ -9,3 +9,5 @@ upload_ogms/
 temp/
 snapShotCache/
 dataStorage/
+processing_result/
+upload_processing/

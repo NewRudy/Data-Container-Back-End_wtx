@@ -2,6 +2,7 @@
 const fs=require('fs')
 const axios=require('axios')
 const FormData=require('form-data')
+const cfg=require('../config/config.js')
 
 const Request=require('request')
 const Jsdom=require('jsdom')
@@ -12,7 +13,7 @@ const dom = new JSDOM(`<!DOCTYPE html><input type="file" id="file" multiple>`)
 
 const config_path=__filename+'/../../config/config.udxcfg'
 const data_path=__filename+'/../../dataStorage/'
-const transitUrl='http://111.229.14.128:8899'
+const transitUrl=cfg.transitUrl
 // const transitUrl='http://localhost:8899'
 
 exports.transition=function(req,res,next){

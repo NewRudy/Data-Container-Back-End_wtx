@@ -81,3 +81,8 @@ exports.transition=transition.transition
 exports.newProcessing=processing.newProcessing
 //删除处理方法
 exports.delProcessing=processing.delProcessing
+//绑定处理方法 executePrcs
+exports.bindProcessing=processing.bindProcessing
+//执行数据处理方法
+exports.executePrcs=processing.executePrcs
+ 
