@@ -143,10 +143,11 @@ exports.bindProcessing=function(req,res,next){
         
         let postData={
             'proName':item.name,
-            'dataIds':item.relatedData.join(""),
+            'dataIds':item.relatedData.join(","),
             'proId':item.id,
             'proDescription':item.description,
             'token':req.query.token,
+            'type':item.type
              
         }
         let form=new FormData()
@@ -174,6 +175,9 @@ exports.bindProcessing=function(req,res,next){
                         res.send({code:0,data:re.data})
                         return
                       }
+                    }else {
+                        res.send({code:-1,data:'error'})
+                        return
                     }
                   });
 
@@ -234,10 +238,12 @@ exports.executePrcs=function(req,res,next){
             mkdirPromise.then((v)=>{
                 let par= [ py_script_path,input,output]
                 //将参数数组填入
-                let r=req.query.param.split(',')
-                r.forEach(v=>{
-                    par.push(v)
-                })
+                if(req.query.param!=''){
+                    let r=req.query.param.split(',')
+                    r.forEach(v=>{
+                        par.push(v)
+                    })
+                }
                 const ls = cp.spawn(cfg.pythonExePath, par);//python安装路径，python脚本路径，shp路径，照片结果路径
                 ls.on('error',(err)=>{
                     console.log(`错误 ${err}`);
@@ -283,15 +289,17 @@ exports.executePrcs=function(req,res,next){
                                 udxcfg+=templateId.shp[0]
                             }else if(dataType=="tiff"){
                                 udxcfg+=templateId.tiff[0]
+                            }else{
+                                udxcfg+=templateId.shp[0]
                             }
                             udxcfg+=cfg.configUdxCfg[5]+'\n'
                             udxcfg+=cfg.configUdxCfg[6]+'\n'
 
 
 
-                            fs.writeFileSync(input+'/config.udxcfg',udxcfg)
+                            fs.writeFileSync(output+'/config.udxcfg',udxcfg)
 
-                            upObj['ogmsdata'].push(fs.createReadStream(input+'/config.udxcfg')) 
+                            upObj['ogmsdata'].push(fs.createReadStream(output+'/config.udxcfg')) 
 
                             
                             let options = {
@@ -313,6 +321,9 @@ exports.executePrcs=function(req,res,next){
                             });
                             //返回数据下载id
                             promise.then(function(v){
+                                //删除配置文件
+                                fs.unlinkSync(output+'/config.udxcfg',udxcfg)
+
                                 console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
                                 let r=JSON.parse(v.body)
                                 res.send({code:0,uid:r.data.source_store_id})

@@ -118,6 +118,9 @@ app.get('/bindprocessing',router.bindProcessing)
 //执行处理方法
 app.get('/executeprcs',router.executePrcs)
 
+//添加dataitem路径
+// app.get('/puturl',router.putUrl)
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {
   res.send({code:0,state:'online'})

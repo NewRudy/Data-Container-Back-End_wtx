@@ -9,7 +9,7 @@ module.exports={
     //数据上传接口路径
     transitUrl:'http://111.229.14.128:8899',
     //绑定处理方法路径，明远机器测试路径
-    bindPcsUrl:'http://223.2.38.183:8080/dataItem/bindDataItem',
+    bindPcsUrl:'http://111.229.14.128:8898/dataItem/bindDataItem',
     //python安装路径
     pythonExePath:'D:\\python\\python.exe',
 
