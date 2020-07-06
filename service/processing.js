@@ -148,7 +148,6 @@ exports.bindProcessing=function(req,res,next){
             'proDescription':item.description,
             'token':req.query.token,
             'type':item.type
-             
         }
         let form=new FormData()
         for(let it in postData){
@@ -161,7 +160,6 @@ exports.bindProcessing=function(req,res,next){
             // form.append('xml',xmlContent)
             postData['xml']=xmlContent
 
-                
                 let options = {
                     method : 'POST',
                     url : bindPcsUrl ,
@@ -174,22 +172,16 @@ exports.bindProcessing=function(req,res,next){
                       if(re.code===0){
                         res.send({code:0,data:re.data})
                         return
+                      }else if(re.code===-2){
+                        res.send({code:-2,data:re.data})
+                        return
                       }
                     }else {
                         res.send({code:-1,data:'error'})
                         return
                     }
-                  });
-
-
-            
+                  });  
         })
-        
-
-
-
-
-
     })
 }
 
