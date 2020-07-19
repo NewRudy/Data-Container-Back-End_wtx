@@ -1363,7 +1363,8 @@ exports.dataVisualNoCache=function(req,res,next){
 }
 
 exports.test=function test(req,res,next){
-    console.log("test")
+    next(new Error("eoor"))
+
 }
 
 //添加描述信息

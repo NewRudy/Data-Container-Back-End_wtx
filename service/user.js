@@ -31,6 +31,8 @@ exports.login=function(req,res,next){
                if(doc.relatedUser&&doc.relatedUser.oid!=undefined){
                     result.relatedUser=doc.relatedUser
                }
+
+               req.session.user = {token:doc.uid,account:doc.name}
                res.send({code:0,message:result}) 
                return
             } else{

@@ -17,8 +17,10 @@ var Instances=instances.instances;
 
 //获取列表
 exports.instances=function(req,res,next){
-
-    Instances.findOne({uid:req.query.uid,userToken:req.query.userToken,type:req.query.type},(err,doc)=>{
+    //依据会话判断用户
+    let userToken=req.session.user.token
+    
+    Instances.findOne({uid:req.query.uid,userToken:userToken,type:req.query.type},(err,doc)=>{
         if(err){
             res.send({code:-1,message:'instances error'})
             return
@@ -28,7 +30,7 @@ exports.instances=function(req,res,next){
             //若是第一层则直接用uid=0,parentLevel=-1
             let initInstances={
                 uid:req.query.uid,
-                userToken:req.query.userToken,
+                userToken:userToken,
                 type:req.query.type,
                 parentLevel:req.query.parentLevel,
                 list:[]

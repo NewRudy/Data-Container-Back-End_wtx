@@ -116,10 +116,13 @@ exports.delProcessing=function(req,res,next){
                             res.send({code:-1,message:"error"})
                             return
                         }else{
+
+                            
                             res.send({code:0,data:{id:req.query.id}})
                             return
                         }
                     })
+                    break
 
                 }
             }

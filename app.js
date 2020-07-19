@@ -2,7 +2,8 @@ const path = require('path');
 const express = require('express')
 const router=require('./router/router.js')
 const config=require('./config/config.js')
-
+const session=require('express-session')
+const MongoStore = require('connect-mongo')(session)
 let server = require('http').createServer(app);
 let io = require('socket.io')(server);
 
@@ -46,8 +47,7 @@ app.get('/snapshot',router.snapShot)
 //第一种接口的下载
 app.get('/zipsource',router.datasource)
 app.get('/single',router.singleDatasource)
-//test
-app.get('/test',router.test)
+
 //批量下载
 app.get('/datasources',)
 //获取服务器数据列表
@@ -79,6 +79,26 @@ app.get('/visualnocache',router.dataVisualNoCache)
 //********************************************************** */
 
 //就地共享系统接口
+
+app.use(session({
+  name: "admin", // 设置 cookie 中保存 session id 的字段名称
+  secret: 'insitushare', // 通过设置 secret 来计算 hash 值并放在 cookie 中，使产生的 signedCookie 防篡改
+  resave: true, // 强制更新 session
+  saveUninitialized: false, // 设置为 false，强制创建一个 session，即使用户未登录
+  cookie: {
+    maxAge: 2592000000// 过期时间，过期后 cookie 中的 session id 自动删除
+  },
+  store: new MongoStore({// 将 session 存储到 mongodb
+    url: config.db// mongodb 地址
+  })
+}))
+
+
+//test测试接口
+app.get('/test',router.test)
+
+
+
 
 //用户登录
 app.post('/login',router.login)
@@ -125,6 +145,15 @@ app.get('/executeprcs',router.executePrcs)
 app.get('/state', function (req, res) {
   res.send({code:0,state:'online'})
   console.log('state check')
+})
+
+
+
+
+//错误处理，使用自定义的中间件
+app.use(function (err, req, res, next) {
+  // console.error(err.stack)
+  res.status(500).send('server error')
 })
 
 
