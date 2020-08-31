@@ -19,7 +19,7 @@ var urlencodedParser = bodyParser.urlencoded({extended: false});
 
 
 
-//跨域设置
+//CORS跨域设置
 app.all('*', function (req, res, next) {
     // res.header("Access-Control-Allow-Origin", "http://localhost:1708");
     res.header('Access-Control-Allow-Origin', '*') // 使用session时不能使用*，只能对具体的ip开放。

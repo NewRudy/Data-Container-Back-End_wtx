@@ -1363,8 +1363,26 @@ exports.dataVisualNoCache=function(req,res,next){
 }
 
 exports.test=function test(req,res,next){
-    next(new Error("eoor"))
+    let url='D:/Projects/transitDataServer/service/user.js'
+    f(url).then((data)=>{
+        data
+    }).catch(err=>{
+        console.log(err)
+    })
+}
 
+function f(url){
+    let p=new Promise((res,rej)=>{
+        fs.readFile(url,(err,data)=>{
+           if(err){
+               rej(new Error("error"))
+           }else{
+               res(data)   
+           }
+            
+        })
+    })
+    return p
 }
 
 //添加描述信息
