@@ -7,7 +7,7 @@ const MongoStore = require('connect-mongo')(session)
 let server = require('http').createServer(app);
 let io = require('socket.io')(server);
 
-
+const os = require('os');
 var bodyParser = require('body-parser');
 var app = express()
 
@@ -141,13 +141,31 @@ app.get('/executeprcs',router.executePrcs)
 //添加dataitem路径
 // app.get('/puturl',router.putUrl)
 
+
+//注册到参与式平台GSP
+app.post('/newDataIndexGSP',router.newDataIndexGSP)
+
+
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {
-  res.send({code:0,state:'online'})
+
+  res.send({code:0,state:'online',ip:getIPAdress()})
   console.log('state check')
 })
 
-
+function getIPAdress() {
+    var interfaces = os.networkInterfaces();
+    for (var devName in interfaces) {
+        var iface = interfaces[devName];
+        for (var i = 0; i < iface.length; i++) {
+            var alias = iface[i];
+            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
+                return alias.address;
+            }
+        }
+    }
+}
 
 
 //错误处理，使用自定义的中间件
@@ -161,6 +179,10 @@ app.listen(config.port,()=>{
   console.log(config.port,process.pid)
   console.log("server online")
 });
+
+
+
+
 
 // process.on('uncaughtException', function (err) {
 //   console.log('Caught Exception:' + err);//直接捕获method()未定义函数，Node进程未被退出。

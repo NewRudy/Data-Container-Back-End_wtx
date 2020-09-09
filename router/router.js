@@ -6,8 +6,9 @@ const instances=require('../service/instances.js');
 
 const transition=require('../service/transition.js');
 
-
 const processing=require('../service/processing.js')
+
+const geoProbems=require('../service/geoProblems.js')
 //接口不可用
 //第一种接口上传数据到服务器
 exports.storageData=storageData.storage;
@@ -85,4 +86,8 @@ exports.delProcessing=processing.delProcessing
 exports.bindProcessing=processing.bindProcessing
 //执行数据处理方法
 exports.executePrcs=processing.executePrcs
+
+
+//注册到参与式平台
+exports.newDataIndexGSP=geoProbems.newDataIndexGSP
  
