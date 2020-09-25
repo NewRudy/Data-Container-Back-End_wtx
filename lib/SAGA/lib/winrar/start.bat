@@ -1,0 +1,1 @@
+E:\DEVELOPERKIT\Work\QtPackagerNow\build\debug\templates\winrar\WinRAR.exe a -ep1 -r -m3 -ibck C:\Users\CK\Desktop\wraper\Test.zip C:\Users\CK\Desktop\wraper\

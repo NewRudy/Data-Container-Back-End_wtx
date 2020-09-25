@@ -147,6 +147,12 @@ app.post('/newDataIndexGSP',router.newDataIndexGSP)
 
 
 
+//服务化调用SAGA
+
+app.get('/saga',router.newDataIndexGSP)
+
+
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {
 
