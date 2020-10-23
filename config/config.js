@@ -17,7 +17,10 @@ module.exports={
     configUdxCfg:['<UDXZip>','<Name>', ' <add value="data" />','</Name>','<DataTemplate type="id">','</DataTemplate>','</UDXZip>'],
 
     //参与式平台地址，本来要放在公网服务器上，现在先用本机来测
-
     geoProblemsSolvingIp:'http://223.2.40.210:8081',
+
+
+    //saga执行路径
+    sagaExe:__dirname+'/../lib/SAGA/saga_cmd.exe'
 
 }

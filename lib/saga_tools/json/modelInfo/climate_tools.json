@@ -1,0 +1,1495 @@
+{
+  "Version": "1.0",
+  "author": "O.Conrad (c) 2012",
+  "library_description": "Tools for weather and climate data.",
+  "library_name": "climate_tools",
+  "library_name_title": "Climate Tools",
+  "tools": [
+    {
+    "author": "O.Conrad (c) 2012",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "VARIABLE",
+        "name": "Variable",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "X_GRIDS",
+        "name": "Level Heights",
+        "optional": "true",
+        "type": "Grid list (optional input)"
+      }, {
+        "constraints": "",
+        "description": "if set, only values with level heights above DEM will be used",
+        "identifier": "X_GRIDS_CHECK",
+        "name": "Minimum Height",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "SURFACE",
+        "name": "Surface",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "RESULT",
+        "name": "Interpolation",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] table\n[1] grid list\nDefault: 1",
+        "description": "",
+        "identifier": "X_SOURCE",
+        "name": "Get Heights from ...",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] Nearest Neighbour\n[1] Bilinear Interpolation\n[2] Bicubic Spline Interpolation\n[3] B-Spline Interpolation\nDefault: 3",
+        "description": "",
+        "identifier": "H_METHOD",
+        "name": "Horizontal Interpolation Method",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] linear\n[1] spline\n[2] polynomial trend\n[3] polynomial trend (coefficient interpolation)\nDefault: 0",
+        "description": "",
+        "identifier": "V_METHOD",
+        "name": "Vertical Interpolation Method",
+        "type": "Choice"
+      }, {
+        "constraints": "Default: 0",
+        "description": "",
+        "identifier": "LINEAR_SORTED",
+        "name": "Sorted Levels",
+        "type": "Boolean"
+      }, {
+        "constraints": "Default: 0",
+        "description": "",
+        "identifier": "SPLINE_ALL",
+        "name": "Pre-analyze",
+        "type": "Boolean"
+      }, {
+        "constraints": "Minimum: 1\nDefault: 3",
+        "description": "",
+        "identifier": "TREND_ORDER",
+        "name": "Polynomial Order",
+        "type": "Integer"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }]
+    }],
+    "tool_description": "",
+    "tool_id": "0",
+    "tool_name": "Multi Level to Surface Interpolation",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NWY1ZWIzMDEtZjhjOS00ZTQ4LTkwZTItYWQ2MDI0YTQ2MmUxNTI=",
+    "oid": "5b90e7bbd15d75093cb586bf",
+    "stateId": "AF3EDED6-95E9-4e58-85DE-C38D65F75FEF",
+    "mdlId": "F64A69E1-7107-4126-B06A-C010BECF640D"
+  }, {
+    "author": "O.Conrad (c) 2012",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "VARIABLE",
+        "name": "Variable",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "X_GRIDS",
+        "name": "Level Heights",
+        "optional": "true",
+        "type": "Grid list (optional input)"
+      }, {
+        "constraints": "",
+        "description": "if set, only values with level heights above DEM will be used",
+        "identifier": "X_GRIDS_CHECK",
+        "name": "Minimum Height",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "POINTS",
+        "name": "Points",
+        "optional": "false",
+        "type": "Shapes (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "RESULT",
+        "name": "Result",
+        "optional": "true",
+        "type": "Shapes (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] table\n[1] grid list\nDefault: 1",
+        "description": "",
+        "identifier": "X_SOURCE",
+        "name": "Get Heights from ...",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] Nearest Neighbour\n[1] Bilinear Interpolation\n[2] Bicubic Spline Interpolation\n[3] B-Spline Interpolation\nDefault: 3",
+        "description": "",
+        "identifier": "H_METHOD",
+        "name": "Horizontal Interpolation Method",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] linear\n[1] spline\n[2] polynomial trend\n[3] polynomial trend (coefficient interpolation)\nDefault: 0",
+        "description": "",
+        "identifier": "V_METHOD",
+        "name": "Vertical Interpolation Method",
+        "type": "Choice"
+      }, {
+        "constraints": "Default: 0",
+        "description": "",
+        "identifier": "LINEAR_SORTED",
+        "name": "Sorted Levels",
+        "type": "Boolean"
+      }, {
+        "constraints": "Default: 0",
+        "description": "",
+        "identifier": "SPLINE_ALL",
+        "name": "Pre-analyze",
+        "type": "Boolean"
+      }, {
+        "constraints": "Minimum: 1\nDefault: 3",
+        "description": "",
+        "identifier": "TREND_ORDER",
+        "name": "Polynomial Order",
+        "type": "Integer"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "ZFIELD",
+        "name": "Height",
+        "type": "Table field"
+      }, {
+        "constraints": "Default: Variable",
+        "description": "",
+        "identifier": "NAME",
+        "name": "Field Name",
+        "type": "Text"
+      }]
+    }],
+    "tool_description": "",
+    "tool_id": "1",
+    "tool_name": "Multi Level to Points Interpolation",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?N2JhOWY1OTUtM2FmZi00NTA0LWI0YTMtN2VlNjIwZjEwYTg1NmM=",
+    "oid": "5b90e7bbd15d75093cb586c0",
+    "stateId": "DB1DC84B-0CD9-4812-B711-F5500815A3DB",
+    "mdlId": "066D7BA6-8758-45fc-94CB-85887B527D78"
+  }, {
+    "author": "O.Conrad (c) 2012",
+    "parameters": [null, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "ORBPAR",
+        "name": "Earth's Orbital Parameters",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "Default: -200.000000",
+        "description": "",
+        "identifier": "START",
+        "name": "Start [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Default: 2.000000",
+        "description": "",
+        "identifier": "STOP",
+        "name": "Stop [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.001000\nDefault: 1.000000",
+        "description": "",
+        "identifier": "STEP",
+        "name": "Step [ka]",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "Orbital parameters used here are based on the work of Andre L. Berger and its implementation from the NASA Goddard Institute for Space Studies (GISS). Berger's orbital parameters are considered to be valid for approximately 1 million years. ",
+    "tool_id": "2",
+    "tool_name": "Earth's Orbital Parameters",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NDVjZGRjZTgtNDA5Ni00Njc1LTg0YWQtMDJjNDkzZDBmOWE2YzI=",
+    "oid": "5b90e7bbd15d75093cb586ca",
+    "stateId": "5EF2FAC9-D47D-4494-9D84-68EDEF642463",
+    "mdlId": "5FFBAB62-2C50-4532-96F3-C9921AA1D4DF"
+  }, {
+    "author": "O.Conrad (c) 2012",
+    "parameters": [null, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "SOLARRAD",
+        "name": "Solar Radiation",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "Default: -200.000000",
+        "description": "",
+        "identifier": "START",
+        "name": "Start [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Default: 2.000000",
+        "description": "",
+        "identifier": "STOP",
+        "name": "Stop [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.001000\nDefault: 1.000000",
+        "description": "",
+        "identifier": "STEP",
+        "name": "Step [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: -90.000000\nMaximum: 90.000000\nDefault: 53.000000",
+        "description": "",
+        "identifier": "LAT",
+        "name": "Latitude [Degree]",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "Orbital parameters used here are based on the work of Andre L. Berger and its implementation from the NASA Goddard Institute for Space Studies (GISS). Berger's orbital parameters are considered to be valid for approximately 1 million years. ",
+    "tool_id": "3",
+    "tool_name": "Annual Course of Daily Insolation",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?YmMzYzZkMWYtNTMyZi00OWFlLTg4M2MtYzY0NWViOTc3NDJhODA=",
+    "oid": "5b90e7bbd15d75093cb586cb",
+    "stateId": "8978259D-FD7B-4b22-BD91-11665F9457FE",
+    "mdlId": "AE8A9E63-63DA-4237-AE84-6AD5C33CFF74"
+  }, {
+    "author": "O.Conrad (c) 2012",
+    "parameters": [null, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "SOLARRAD",
+        "name": "Solar Radiation",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "Default: -200.000000",
+        "description": "",
+        "identifier": "START",
+        "name": "Start [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Default: 2.000000",
+        "description": "",
+        "identifier": "STOP",
+        "name": "Stop [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.001000\nDefault: 1.000000",
+        "description": "",
+        "identifier": "STEP",
+        "name": "Step [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 1\nMaximum: 90\nDefault: 5",
+        "description": "",
+        "identifier": "DLAT",
+        "name": "Latitude Increment [Degree]",
+        "type": "Integer"
+      }, {
+        "constraints": "Minimum: 0\nMaximum: 366\nDefault: 181",
+        "description": "",
+        "identifier": "DAY",
+        "name": "Day of Year",
+        "type": "Integer"
+      }]
+    }],
+    "tool_description": "Orbital parameters used here are based on the work of Andre L. Berger and its implementation from the NASA Goddard Institute for Space Studies (GISS). Berger's orbital parameters are considered to be valid for approximately 1 million years. ",
+    "tool_id": "4",
+    "tool_name": "Daily Insolation over Latitude",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NDk5YjBjYTAtYjk5Mi00NTQyLThkMjUtNjA5ZGY5YTI2YTQ4ODU=",
+    "oid": "5b90e7bbd15d75093cb586cc",
+    "stateId": "EB1BC9B2-486B-4ee0-87E1-816C6AAFB908",
+    "mdlId": "D550981F-9FFB-46d2-9228-2DA2C244C666"
+  }, {
+    "author": "O.Conrad (c) 2012",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "ALBEDO",
+        "name": "Albedo",
+        "optional": "true",
+        "type": "Table (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "SOLARRAD",
+        "name": "Solar Radiation",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "FIELD",
+        "name": "Field",
+        "type": "Table field"
+      }, {
+        "constraints": "Default: 2.000000",
+        "description": "",
+        "identifier": "YEAR",
+        "name": "Year [ka]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 1\nMaximum: 90\nDefault: 5",
+        "description": "",
+        "identifier": "DLAT",
+        "name": "Latitude Increment [Degree]",
+        "type": "Integer"
+      }]
+    }],
+    "tool_description": "Orbital parameters used here are based on the work of Andre L. Berger and its implementation from the NASA Goddard Institute for Space Studies (GISS). Berger's orbital parameters are considered to be valid for approximately 1 million years. ",
+    "tool_id": "5",
+    "tool_name": "Monthly Global by Latitude",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ZmRmMzM3N2MtYzZmNC00MzBhLWJlM2ItZWQyMjM3NTIzMmQ2ZjQ=",
+    "oid": "5b90e7bbd15d75093cb586cd",
+    "stateId": "093E7665-096A-4303-A6D0-496ACF757C82",
+    "mdlId": "B3314F8C-9B44-489b-B044-B85F14EE2874"
+  }, {
+    "author": "O.Conrad (c) 2011",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "TABLE",
+        "name": "Data",
+        "optional": "false",
+        "type": "Table (input)"
+      }]
+    }, null, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "JD",
+        "name": "Julian Day",
+        "type": "Table field"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "T",
+        "name": "Mean Temperature",
+        "type": "Table field"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "T_MIN",
+        "name": "Minimum Temperature",
+        "type": "Table field"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "T_MAX",
+        "name": "Maximum Temperature",
+        "type": "Table field"
+      }, {
+        "constraints": "Minimum: -90.000000\nMaximum: 90.000000\nDefault: 53.000000",
+        "description": "",
+        "identifier": "LAT",
+        "name": "Latitude",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "Estimation of daily potential evapotranspiration from daily average, minimum and maximum temperatures using Hargreave's empirical equation. In order to estimate extraterrestrial net radiation geographic latitude of observation and Julian day have to be supplied too. ",
+    "tool_id": "6",
+    "tool_name": "ETpot (after Hargreaves, Table)",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ZjY4N2ViYmUtMjcyOS00OTJhLWI4ZDgtNzMwYzEyMGE3NDc4NDc=",
+    "oid": "",
+    "stateId": "",
+    "mdlId": ""
+  }, {
+    "author": "O.Conrad (c) 2011",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "DAYS",
+        "name": "Daily Data",
+        "optional": "false",
+        "type": "Table (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "HOURS",
+        "name": "Hourly Data",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "JD",
+        "name": "Julian Day",
+        "type": "Table field"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "ET",
+        "name": "Evapotranspiration",
+        "type": "Table field"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "P",
+        "name": "Precipitation",
+        "type": "Table field"
+      }, {
+        "constraints": "Minimum: -90.000000\nMaximum: 90.000000\nDefault: 53.000000",
+        "description": "",
+        "identifier": "LAT",
+        "name": "Latitude",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "Derive hourly from daily evapotranspiration using sinusoidal distribution. ",
+    "tool_id": "7",
+    "tool_name": "Daily to Hourly ETpot",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?MTAwNGYxNzUtNzRiYi00NGI1LTkxYzktNGMyNzMyYjlhYmExMjc=",
+    "oid": "5b90e7bbd15d75093cb586ce",
+    "stateId": "F8C4E970-07D7-4835-933F-5D7CD9665EE2",
+    "mdlId": "70583800-53C2-4bdb-AA15-12AD2182656E"
+  }, {
+    "author": "O.Conrad (c) 2015",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "T",
+        "name": "Mean Temperature",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "T_MIN",
+        "name": "Minimum Temperature",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "T_MAX",
+        "name": "Maximum Temperature",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PET",
+        "name": "Potential Evapotranspiration",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Minimum: -90.000000\nMaximum: 90.000000\nDefault: 53.000000",
+        "description": "",
+        "identifier": "LAT",
+        "name": "Latitude [Degree]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Available Choices:\n[0] day\n[1] month\nDefault: 0",
+        "description": "",
+        "identifier": "TIME",
+        "name": "Time",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] January\n[1] February\n[2] March\n[3] April\n[4] May\n[5] June\n[6] July\n[7] August\n[8] September\n[9] October\n[10] November\n[11] December\nDefault: 5",
+        "description": "",
+        "identifier": "MONTH",
+        "name": "Month",
+        "type": "Choice"
+      }, {
+        "constraints": "Minimum: 1\nMaximum: 31\nDefault: 22",
+        "description": "",
+        "identifier": "DAY",
+        "name": "Day of Month",
+        "type": "Integer"
+      }]
+    }],
+    "tool_description": "Estimation of daily potential evapotranspiration from daily average, minimum and maximum temperatures using Hargreave's empirical equation. In order to estimate extraterrestrial net radiation geographic latitude of observation and Julian day have to be supplied too. ",
+    "tool_id": "8",
+    "tool_name": "ETpot (after Hargreaves, Grid)",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?Y2MzM2Y0M2UtOGY0YS00NzY0LWE0MWUtZDY3MDM5NzA5ZDhlZDk=",
+    "oid": "5b90e7bbd15d75093cb586cf",
+    "stateId": "9B9C4593-D12F-468e-82E4-952A9F898993",
+    "mdlId": "ECDFD0BB-F45D-4a6e-93C6-062B63C9EA17"
+  }, {
+    "author": "O.Conrad (c) 2015",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "TARGET",
+        "name": "Target System",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "SUNRISE",
+        "name": "Sunrise",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "SUNSET",
+        "name": "Sunset",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "LENGTH",
+        "name": "Day Length",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 2018-06-23",
+        "description": "",
+        "identifier": "DAY",
+        "name": "Day of Month",
+        "type": "Date"
+      }, {
+        "constraints": "Available Choices:\n[0] local\n[1] world\nDefault: 0",
+        "description": "",
+        "identifier": "TIME",
+        "name": "Time",
+        "type": "Choice"
+      }]
+    }],
+    "tool_description": "This tool calculates the time of sunrise and sunset and the resulting day length for each cell of the target grid. The target grid needs to provide information about its coordinate system. ",
+    "tool_id": "9",
+    "tool_name": "Sunrise and Sunset",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?YmJlMDkzYzQtZWI0NS00MDkwLTg2ZDEtODljMDQwOGFhZjNmMjI=",
+    "oid": "5b90e7bbd15d75093cb586d0",
+    "stateId": "3DB1B3A3-CE83-417a-9E69-5CCB6056A169",
+    "mdlId": "061167F9-4B93-4c61-8FF6-79E5C634CE17"
+  }, {
+    "author": "O.Conrad (c) 2016",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "TMEAN",
+        "name": "Mean Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "TMIN",
+        "name": "Minimum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "TMAX",
+        "name": "Maximum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "P",
+        "name": "Precipitation",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_01",
+        "name": "Annual Mean Temperature",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_02",
+        "name": "Mean Diurnal Range",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_03",
+        "name": "Isothermality",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_04",
+        "name": "Temperature Seasonality",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_05",
+        "name": "Maximum Temperature of Warmest Month",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_06",
+        "name": "Minimum Temperature of Coldest Month",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_07",
+        "name": "Temperature Annual Range",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_08",
+        "name": "Mean Temperature of Wettest Quarter",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_09",
+        "name": "Mean Temperature of Driest Quarter",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_10",
+        "name": "Mean Temperature of Warmest Quarter",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_11",
+        "name": "Mean Temperature of Coldest Quarter",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_12",
+        "name": "Annual Precipitation",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_13",
+        "name": "Precipitation of Wettest Month",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_14",
+        "name": "Precipitation of Driest Month",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_15",
+        "name": "Precipitation Seasonality",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_16",
+        "name": "Precipitation of Wettest Quarter",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_17",
+        "name": "Precipitation of Driest Quarter",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_18",
+        "name": "Precipitation of Warmest Quarter",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "BIO_19",
+        "name": "Precipitation of Coldest Quarter",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] Coefficient of Variation\n[1] Standard Deviation\nDefault: 1",
+        "description": "",
+        "identifier": "SEASONALITY",
+        "name": "Temperature Seasonality",
+        "type": "Choice"
+      }]
+    }],
+    "tool_description": "This tool calculates biogically meaningful variables from monthly climate data (mean, minimum and maximum temperature and precipitation), as provided e.g. by the <a href=\"http://worldclim.org\">WorldClim - Global Climate Data</a> project.\n<p>The implementation follows the definitions given by Jeremy van der Wal at <a href=\"https://rforge.net/doc/packages/climates/bioclim.html\">BioClim - Bioclimatic Variables</a>:<ol><li><b>Annual Mean Temperature:</b> The mean of all the monthly mean temperatures. Each monthly mean temperature is the mean of that month's maximum and minimum temperature.</li><li><b>Mean Diurnal Range:</b> The annual mean of all the monthly diurnal temperature ranges. Each monthly diurnal range is the difference between that month's maximum and minimum temperature.</li><li><b>Isothermality:</b> The mean diurnal range (parameter 2) divided by the annual temperature range (parameter 7).</li><li><b>Temperature Seasonality:</b> returns either<ul><li> the temperature coefficient of variation as the standard deviation of the monthly mean temperatures expressed as a percentage of the mean of those temperatures (i.e. the annual mean). For this calculation, the mean in degrees Kelvin is used. This avoids the possibility of having to divide by zero, but does mean that the values are usually quite small.</li><li> the standard deviation of the monthly mean temperatures.</li></ul><li><b>Maximum Temperature of Warmest Period:</b> The highest temperature of any monthly maximum temperature.</li><li><b>Minimum Temperature of Coldest Period:</b> The lowest temperature of any monthly minimum temperature.</li><li><b>Temperature Annual Range:</b> The difference between the Maximum Temperature of Warmest Period and the Minimum Temperature of Coldest Period.</li><li><b>Mean Temperature of Wettest Quarter:</b> The wettest quarter of the year is determined (to the nearest month), and the mean temperature of this period is calculated.</li><li><b>Mean Temperature of Driest Quarter:</b> The driest quarter of the year is determined (to the nearest month), and the mean temperature of this period is calculated.</li><li><b>Mean Temperature of Warmest Quarter:</b> The warmest quarter of the year is determined (to the nearest month), and the mean temperature of this period is calculated.</li><li><b>Mean Temperature of Coldest Quarter:</b> The coldest quarter of the year is determined (to the nearest month), and the mean temperature of this period is calculated.</li><li><b>Annual Precipitation:</b> The sum of all the monthly precipitation estimates.</li><li><b>Precipitation of Wettest Period:</b> The precipitation of the wettest month.</li><li><b>Precipitation of Driest Period:</b> The precipitation of the driest month.</li><li><b>Precipitation Seasonality:</b> The Coefficient of Variation is the standard deviation of the monthly precipitation estimates expressed as a percentage of the mean of those estimates (i.e. the annual mean).</li><li><b>Precipitation of Wettest Quarter:</b> The wettest quarter of the year is determined (to the nearest month), and the total precipitation over this period is calculated.</li><li><b>Precipitation of Driest Quarter:</b> The driest quarter of the year is determined (to the nearest month), and the total precipitation over this period is calculated.</li><li><b>Precipitation of Warmest Quarter:</b> The warmest quarter of the year is determined (to the nearest month), and the total precipitation over this period is calculated.</li><li><b>Precipitation of Coldest Quarter:</b> The coldest quarter of the year is determined (to the nearest month), and the total precipitation over this period is calculated.</li></ol></p><p>The quarterly parameters are not aligned to any calendar quarters. BioClim's definition of a quarter is any consecutive 3 months. For example, the driest quarter will be the 3 consecutive months that are drier than any other set of 3 consecutive months.</p>",
+    "tool_id": "10",
+    "tool_name": "Bioclimatic Variables",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ODZjNTM4NTctNzU2Zi00MzY3LWFlZTEtZGVmYzMyNDNkNWRiY2Y=",
+    "oid": "5b90e7bbd15d75093cb586c1",
+    "stateId": "959D7DFB-13FE-4e8f-A3AE-0063A8596DD2",
+    "mdlId": "2460C0A3-A0FE-47fb-B889-1442BE4024E1"
+  }, {
+    "author": "O.Conrad, L.Landschreiber (c) 2016",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "T",
+        "name": "Mean Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "TMIN",
+        "name": "Minimum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "TMAX",
+        "name": "Maximum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "P",
+        "name": "Precipitation",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "Total soil water capacity (mm H2O).",
+        "identifier": "SWC",
+        "name": "Soil Water Capacity of Profile",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Mean temperature of the growing season.",
+        "identifier": "SMT",
+        "name": "Mean Temperature",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Number of days of the growing season.",
+        "identifier": "LGS",
+        "name": "Length",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "First growing day of the year (1-365).",
+        "identifier": "FIRST",
+        "name": "First Growing Day",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "Last degree day of the year (1-365).",
+        "identifier": "LAST",
+        "name": "Last Growing Day",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "Estimated relative tree line height.",
+        "identifier": "TLH",
+        "name": "Tree Line Height",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 220.000000",
+        "description": "default value if no grid has been selected",
+        "identifier": "SWC_DEFAULT",
+        "name": "Default",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 10.000000",
+        "description": "",
+        "identifier": "SWC_SURFACE",
+        "name": "Top Soil Water Capacity",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.100000\nDefault: 1.000000",
+        "description": "",
+        "identifier": "SW1_RESIST",
+        "name": "Transpiration Resistance",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: -90.000000\nMaximum: 90.000000\nDefault: 50.000000",
+        "description": "",
+        "identifier": "LAT_DEF",
+        "name": "Default Latitude",
+        "type": "Floating point"
+      }, {
+        "constraints": "Default: 0.900000",
+        "description": "Threshold temperature (C) that constrains the growing season.",
+        "identifier": "DT_MIN",
+        "name": "Threshold Temperature",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 2.000000",
+        "description": "",
+        "identifier": "SW_MIN",
+        "name": "Minimum Soil Water Content (Percent)",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 1\nDefault: 94",
+        "description": "Minimum length (days) of the growing season.",
+        "identifier": "LGS_MIN",
+        "name": "Minimum Length",
+        "type": "Integer"
+      }, {
+        "constraints": "Default: 6.400000",
+        "description": "Minimum mean temperature (C) for all days of the growing season.",
+        "identifier": "SMT_MIN",
+        "name": "Minimum Mean Temperature",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 1000.000000",
+        "description": "",
+        "identifier": "TLH_MAX_DIFF",
+        "name": "Maximum Tree Line Height Difference",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "The 'Tree Growth Season' tool estimates the potential number of days suitable for tree growth as well as the average temperature for these days. The estimation needs monthly data of mean, minimum, and maximum temperature and precipitation. Internally a soil water balance model is run on a daily basis. Using the given thresholds a relative tree line height can optionally be estimated.",
+    "tool_id": "11",
+    "tool_name": "Tree Growth Season",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NGFmOGE4MTUtYmRlMi00NWYyLWI4MGItOTljODc2N2RjYjZiODg=",
+    "oid": "5b90e7bbd15d75093cb586c2",
+    "stateId": "AA8F9033-D3EF-4e28-B1B1-3BEC73B9F76F",
+    "mdlId": "86D8A5C5-2376-4592-9539-35C7DB01230B"
+  }, {
+    "author": "O.Conrad, L.Landschreiber (c) 2016",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "T",
+        "name": "Mean Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "TMIN",
+        "name": "Minimum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "TMAX",
+        "name": "Maximum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "P",
+        "name": "Precipitation",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "Total soil water capacity (mm H2O).",
+        "identifier": "SWC",
+        "name": "Soil Water Capacity of Profile",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "SUMMARY",
+        "name": "Summary",
+        "optional": "false",
+        "type": "Table (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "DAILY",
+        "name": "Daily",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 220.000000",
+        "description": "default value if no grid has been selected",
+        "identifier": "SWC_DEFAULT",
+        "name": "Default",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 10.000000",
+        "description": "",
+        "identifier": "SWC_SURFACE",
+        "name": "Top Soil Water Capacity",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.100000\nDefault: 1.000000",
+        "description": "",
+        "identifier": "SW1_RESIST",
+        "name": "Transpiration Resistance",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: -90.000000\nMaximum: 90.000000\nDefault: 50.000000",
+        "description": "",
+        "identifier": "LAT_DEF",
+        "name": "Default Latitude",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "This tool calculates the water balance for the selected position on a daily basis. Needed input is monthly data of mean, minimum, and maximum temperature as well as precipitation.",
+    "tool_id": "12",
+    "tool_name": "Soil Water Balance",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?MzlmZDVlYTMtOTQxOC00MmQ2LWFhZmQtZmM3NWU1ZmExMDIwY2M=",
+    "oid": "5b90e7bbd15d75093cb586c3",
+    "stateId": "2778F59F-89E5-44de-B49C-E9F4E342C885",
+    "mdlId": "0F907932-2DEF-49ac-8C84-5F5217CDFA54"
+  }, {
+    "author": "D.N.Karger, O.Conrad (c) 2016",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "The absolute vertical distance to the boundary layer.",
+        "identifier": "BOUNDARY",
+        "name": "Boundary Layer",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "WIND",
+        "name": "Wind Effect",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "Observations used for local scaling factor calibration (e.g. precipitation, cloudiness).",
+        "identifier": "OBSERVED",
+        "name": "Observations",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Calibrated scaling factor used in the wind effect correction.",
+        "identifier": "B_GRID",
+        "name": "Calibrated Scaling Factor",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "WINDCORR",
+        "name": "Corrected Wind Effect",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] constant\n[1] calibrate\nDefault: 1",
+        "description": "",
+        "identifier": "B_SOURCE",
+        "name": "Scaling Factor",
+        "type": "Choice"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 0.010000",
+        "description": "Constant scaling factor used in the wind effect correction.",
+        "identifier": "B_CONST",
+        "name": "Constant Scaling Factor",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 0.050000",
+        "description": "",
+        "identifier": "B_MAX",
+        "name": "Maximum Scaling Factor",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 1\nDefault: 10",
+        "description": "",
+        "identifier": "B_STEPS",
+        "name": "Number of Steps",
+        "type": "Integer"
+      }, {
+        "constraints": "Available Choices:\n[0] Square\n[1] Circle\nDefault: 1",
+        "description": "Kernel specification used to request observations for local scaling factor calibration.",
+        "identifier": "KERNEL_TYPE",
+        "name": "Kernel Type",
+        "type": "Choice"
+      }, {
+        "constraints": "Minimum: 1\nDefault: 2",
+        "description": "Kernel specification used to request observations for local scaling factor calibration.",
+        "identifier": "KERNEL_SIZE",
+        "name": "Kernel Size",
+        "type": "Integer"
+      }]
+    }],
+    "tool_description": "Wind effect correction using generalized logistic functions.",
+    "tool_id": "13",
+    "tool_name": "Wind Effect Correction",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?OTg2OGI5YTAtMzFjYy00OTUyLWFhNjEtNjM1MWM0Njg5N2ViM2U=",
+    "oid": "5b90e7bbd15d75093cb586c4",
+    "stateId": "585BA1FA-A711-426e-8930-3426E2C23F1E",
+    "mdlId": "D46178C5-C8F2-4ca9-8AD7-C0FB0544EB93"
+  }, {
+    "author": "O.Conrad (c) 2016",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Monthly (12) or daily (365) temperature observations.",
+        "identifier": "TMIN",
+        "name": "Minimum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "Monthly (12) or daily (365) temperature observations.",
+        "identifier": "TMAX",
+        "name": "Maximum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "The number of days with frost change.",
+        "identifier": "FREQUENCY",
+        "name": "Frost Change Frequency",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Mean daily temperature span of frost change days.",
+        "identifier": "DT_MEAN",
+        "name": "Mean Temperature Span",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "Maximum daily temperature span of frost change days.",
+        "identifier": "DT_MAX",
+        "name": "Maximum Temperature Span",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "Standard deviation of daily temperature span of frost change days.",
+        "identifier": "DT_STDV",
+        "name": "Standard Deviation of Temperature Span",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "Mean daily minimum temperature of frost change days.",
+        "identifier": "TMIN_MEAN",
+        "name": "Mean Minimum Temperature",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "Coldest daily minimum temperature of all frost change days.",
+        "identifier": "TMIN_MIN",
+        "name": "Minimum Temperature",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }]
+    }],
+    "tool_description": "This tool calculates statistics about the frost change frequency either from monthly or daily minimum and maximum temperatures. In case of monthly observations these will be spline interpolated to gain a daily resolution. ",
+    "tool_id": "14",
+    "tool_name": "Frost Change Frequency",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?OGE3OWE1NDEtOTkwNi00OGFhLThlYmEtODA5OTEzODI1MDdmYmY=",
+    "oid": "5b90e7bbd15d75093cb586c5",
+    "stateId": "DA732FDB-EFAB-46f8-A80F-7CC4CF3F177C",
+    "mdlId": "240001E8-0F63-4492-AA71-716A75711BA0"
+  }, {
+    "author": "Dirk Nikolaus Karger",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Growing season length given as number of days of a year.",
+        "identifier": "GSL",
+        "name": "Growing Season Length",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "Mean temperature of the growing season.",
+        "identifier": "GST",
+        "name": "Mean Temperature",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "Frost occurence as binary factor.",
+        "identifier": "FROST",
+        "name": "Frost occurence",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "ATB",
+        "name": "Thermal Belts",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 3.500000",
+        "description": "Minimum Temperature for nival belt.",
+        "identifier": "NIVAL_TEMP",
+        "name": "Minimum Temperature Nival",
+        "type": "Floating point"
+      }, {
+        "constraints": "Default: 6.400000",
+        "description": "Minimum Temperature for treeline.",
+        "identifier": "TREE_TEMP",
+        "name": "Minimum Temperature Treeline",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "Calculates the thermal belts based on mean temperature and length of the growing season.",
+    "tool_id": "15",
+    "tool_name": "Thermic Belt Classification",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ZmU2MTkzZWYtMWExOC00NGZmLWFmNjEtYWRlMjNlZThlNzViYzc=",
+    "oid": "5b90e7bbd15d75093cb586c6",
+    "stateId": "40EEDD93-FC15-436a-86CF-DA82A1568F51",
+    "mdlId": "BDCBE49C-DBE4-45af-AE17-25C883581939"
+  }, {
+    "author": "O.Conrad (c) 2016",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Monthly (12) or daily (365) temperature observations.",
+        "identifier": "TMIN",
+        "name": "Minimum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "Monthly (12) or daily (365) temperature observations.",
+        "identifier": "TMAX",
+        "name": "Maximum Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "STATISTICS",
+        "name": "Frost Change Statistics",
+        "optional": "false",
+        "type": "Table (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "TDAILY",
+        "name": "Daily Temperatures",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }]
+    }],
+    "tool_description": "This tool calculates statistics about the frost change frequency either from monthly or daily minimum and maximum temperatures. In case of monthly observations these will be spline interpolated to gain a daily resolution. ",
+    "tool_id": "16",
+    "tool_name": "Frost Change Frequency",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ZjZjNTIxMjYtOTYxZi00MTY2LWI1MDEtMzA4OGRlN2QzNzZkNmE=",
+    "oid": "5b90e7bbd15d75093cb586c7",
+    "stateId": "1883AEB0-D810-4642-8A38-8D440F5F2DF0",
+    "mdlId": "D3394939-AF21-4ef0-B9F8-ACC54F7FA79A"
+  }, {
+    "author": "O.Conrad (c) 2017",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "T",
+        "name": "Mean Temperature",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "P",
+        "name": "Precipitation",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "DAYS",
+        "name": "Snow Cover Days",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "MEAN",
+        "name": "Average",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "MAXIMUM",
+        "name": "Maximum",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "QUANTILE",
+        "name": "Quantile",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Minimum: 0.000000\nMaximum: 100.000000\nDefault: 50.000000",
+        "description": "",
+        "identifier": "QUANT_VAL",
+        "name": "Value",
+        "type": "Floating point"
+      }, {
+        "constraints": "Available Choices:\n[0] Year\n[1] January - March\n[2] April - June\n[3] July - September\n[4] October - December\n[5] Single Month\nDefault: 0",
+        "description": "",
+        "identifier": "TIME",
+        "name": "Time",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] January\n[1] February\n[2] March\n[3] April\n[4] May\n[5] June\n[6] July\n[7] August\n[8] September\n[9] October\n[10] November\n[11] December\nDefault: 0",
+        "description": "",
+        "identifier": "MONTH",
+        "name": "Month",
+        "type": "Choice"
+      }]
+    }],
+    "tool_description": "The 'Snow Cover' tool uses a simple model to estimate snow cover statistics from climate data. When temperature falls below zero any precipitation is accumulated as snow. Temperatures above zero will diminish accumulated snow successively until it is gone completely. Simulation is done on a daily basis. If you supply the tool with monthly averages, temperatures will be interpolated using a spline and precipitation will be splitted into separate events. The latter is done with respect to the monthly mean temperature, i.e. the higher the temperature the more concentrated are precipitation events and vice versa. ",
+    "tool_id": "17",
+    "tool_name": "Snow Cover",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?YmMxMDQ2NGEtYjg3MC00MDBiLWE3YjQtNjhmMTc3YzAwNGJjMTQ=",
+    "oid": "5b90e7bbd15d75093cb586c8",
+    "stateId": "E856BDDD-FE6B-4418-AB74-ECCD7B6C4E68",
+    "mdlId": "2E0CD7E2-4DEE-41f9-8B9F-EE71DB5E9BF5"
+  }, {
+    "author": "D.N. Karger (c) 2017",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Monthly (12) temperature observations.",
+        "identifier": "TMEAN",
+        "name": "Mean Monthly Temperatures",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Number of days above base temperature.",
+        "identifier": "NGDD",
+        "name": "Number of Days above Base Temperature",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Integral of daily temperature above base temperature.",
+        "identifier": "TSUM",
+        "name": "Growing Degree Days",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "First growing degree day of the year (1-365).",
+        "identifier": "FIRST",
+        "name": "First Growing Degree Day",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "Last growing degree day of the year (1-365).",
+        "identifier": "LAST",
+        "name": "Last Growing Degree Day",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 0.000000",
+        "description": "Base temperature in degree Celsius",
+        "identifier": "TBASE",
+        "name": "Base Temperature",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "This tool calculates growing degree days from daily or from spline interpolated monthly observations.",
+    "tool_id": "18",
+    "tool_name": "Growing Degree Days",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NzEyMTdjOTEtNThkMS00N2I3LTkzZmMtZDJiM2E3ZjMwMzYyNzg=",
+    "oid": "5b90e7bbd15d75093cb586c9",
+    "stateId": "CB45EF2A-A474-4e35-99E0-4AAC5F7539D4",
+    "mdlId": "EE876755-C4F8-44c6-92BA-5BB1FD6DA128"
+  }]
+}

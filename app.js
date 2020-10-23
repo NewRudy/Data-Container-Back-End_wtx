@@ -149,8 +149,13 @@ app.post('/newDataIndexGSP',router.newDataIndexGSP)
 
 //服务化调用SAGA
 
-app.get('/saga',router.newDataIndexGSP)
+// app.get('/saga',router.sagaCapabilities)
 
+//get 获取元数据
+app.get('/ogms',router.indexGet)
+
+//post执行
+app.post('/ogms',router.indexPost)
 
 
 // respond with "hello world" when a GET request is made to the homepage

@@ -1,0 +1,1341 @@
+{
+  "Version": "1.0",
+  "author": "Various authors.",
+  "library_description": "Some Grid Analysis Tools.",
+  "library_name": "grid_analysis",
+  "library_name_title": "Grid Analysis",
+  "tools": [{
+    "author": "Victor Olaya (c) 2004",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "DEST_POINTS",
+        "name": "Destinations",
+        "optional": "false",
+        "type": "Shapes (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "DEST_GRID",
+        "name": "Destinations",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "COST",
+        "name": "Local Cost",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "DIR_MAXCOST",
+        "name": "Direction of Maximum Cost",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "ACCUMULATED",
+        "name": "Accumulated Cost",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "ALLOCATION",
+        "name": "Allocation",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] Point\n[1] Grid\nDefault: 0",
+        "description": "",
+        "identifier": "DEST_TYPE",
+        "name": "Input Type of Destinations",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] radians\n[1] degree\nDefault: 0",
+        "description": "",
+        "identifier": "DIR_UNIT",
+        "name": "Units of Direction",
+        "type": "Choice"
+      }, {
+        "constraints": "Default: 2.000000",
+        "description": "effective friction = stated friction ^f , where f = cos(DifAngle)^k.",
+        "identifier": "DIR_K",
+        "name": "K Factor",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 0.000000",
+        "description": "",
+        "identifier": "THRESHOLD",
+        "name": "Threshold for different route",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "Calculation of accumulated cost, either isotropic or anisotropic, if direction of maximum cost is specified. ",
+    "tool_id": "0",
+    "tool_name": "Accumulated Cost",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?OWM3ZDZmM2EtNjNlNC00ODZjLWI1YTItM2VmNDAwYWFiNTljMGQ=",
+    "oid": "5b90e7bbd15d75093cb58705",
+    "stateId": "B866583A-2A1E-47d3-B128-206EEE88C470",
+    "mdlId": "74D4B703-89B9-4feb-8BFB-593B60B566CD"
+  }, {
+    "author": "Victor Olaya (c) 2004",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "DEM",
+        "name": "Accumulated cost",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "VALUES",
+        "name": "Values",
+        "optional": "true",
+        "type": "Grid list (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "POINTS",
+        "name": "Profile Points",
+        "optional": "false",
+        "type": "Shapes (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "LINE",
+        "name": "Profile Line",
+        "optional": "false",
+        "type": "Shapes (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }]
+    }],
+    "tool_description": "Creates a least cost past profile using an accumulated cost surface.",
+    "tool_id": "4",
+    "tool_name": "Least Cost Path",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?YTgxZDRiZGMtNzZlOS00MmZmLWEwOTctOWZkNzMyMzJhMjAwN2U=",
+    "oid": "5b90e7bbd15d75093cb58712",
+    "stateId": "FEE52BAB-1F1F-4ca3-91B0-C7A440BC6515",
+    "mdlId": "8C250CBA-F2F1-4416-B4FD-B57506D2D969"
+  }, {
+    "author": "O. Conrad, V. Olaya, V. Wichmann (c) 2004-2010",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Point shapefile with source point(s)",
+        "identifier": "SOURCE",
+        "name": "Source Point(s)",
+        "optional": "false",
+        "type": "Shapes (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "DEM",
+        "name": "Accumulated Cost Surface",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "Allows writing cell values from additional grids to the output",
+        "identifier": "VALUES",
+        "name": "Values",
+        "optional": "true",
+        "type": "Grid list (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Least cost path profile points",
+        "identifier": "POINTS",
+        "name": "Profile Points",
+        "optional": "false",
+        "type": "Shapes list (output)"
+      }, {
+        "constraints": "",
+        "description": "Least cost path profile lines",
+        "identifier": "LINE",
+        "name": "Profile Lines",
+        "optional": "false",
+        "type": "Shapes list (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }]
+    }],
+    "tool_description": "This tool allows one to compute least cost path profile(s). It takes an accumulated cost surface grid and a point shapefile as input. Each point in the shapefile represents a source for which the least cost path is calculated.\nIn case the point shapefile has more than one source point defined, a separate least cost path is calculated for each point. The tool outputs a point and a line shapefile for each least cost path.\n The tool allows for optional input grids. The cell values of these grids along the least cost path are written to the outputs as additional table fields.\n",
+    "tool_id": "5",
+    "tool_name": "Least Cost Paths",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NTE2NWU5MjQtMDY3ZC00ZjYzLTg4NTctZjUyN2JmMWZlZTQ2NDM=",
+    "oid": "5b90e7bbd15d75093cb58713",
+    "stateId": "D0765B7F-85BF-4de6-A2EE-43E805532B3E",
+    "mdlId": "8F37BACF-D3A8-469b-AAA7-1997F61DA065"
+  }, {
+    "author": "V.Olaya (c) 2004, O.Conrad (c) 2012",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "A",
+        "name": "Initial State",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "B",
+        "name": "Final State",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "DIST",
+        "name": "Distance",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "DIR",
+        "name": "Direction",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "C",
+        "name": "Change Vector",
+        "optional": "true",
+        "type": "Grid list (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 1",
+        "description": "angle calculation is only available when exact two features are compared",
+        "identifier": "ANGLE",
+        "name": "Angle Calculation",
+        "type": "Boolean"
+      }, {
+        "constraints": "Default: 0",
+        "description": "",
+        "identifier": "C_OUT",
+        "name": "Output of Change Vector",
+        "type": "Boolean"
+      }]
+    }],
+    "tool_description": "This tool performs a change vector analysis (CVA) for the given input features. Input features are supplied as grid lists for initial and final state. In both lists features have to be given in the same order. Distance is measured as Euclidean distance in features space. When analyzing two features direction is calculated as angle (radians) by default. Otherwise direction is coded as the quadrant it points to in terms of feature space. ",
+    "tool_id": "6",
+    "tool_name": "Change Vector Analysis",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?MzRlYTliZjctZDVhYy00NzI4LTlkNDAtY2Y2MjY2Yzk5N2RlNDg=",
+    "oid": "5b90e7bbd15d75093cb58714",
+    "stateId": "8F2933B7-0569-40a4-8E9D-CA99B074C7A9",
+    "mdlId": "24DF86D1-32CC-4cf3-B162-CC8E1BF52475"
+  }, {
+    "author": "V. Olaya (c) 2005",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "INPUT",
+        "name": "Grids",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "RESULT",
+        "name": "Covered Distance",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }]
+    }],
+    "tool_description": "",
+    "tool_id": "7",
+    "tool_name": "Covered Distance",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NTgzOTIwODItNThlNC00NDg4LWE2MGMtNmVkY2Y2YzUxMjNiMmE=",
+    "oid": "5b90e7bbd15d75093cb58715",
+    "stateId": "3947A980-9C75-415e-B49E-A87D53025643",
+    "mdlId": "2B388BD6-EC02-4693-A8B6-C7ED155026AF"
+  }, {
+    "author": "Copyrights (c) 2004 by Victor Olaya",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "INPUT",
+        "name": "Input Grid",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "RELATIVE",
+        "name": "Relative Richness",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "DIVERSITY",
+        "name": "Diversity",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "DOMINANCE",
+        "name": "Dominance",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "FRAGMENTATION",
+        "name": "Fragmentation",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "NDC",
+        "name": "Number of Different Classes",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "CVN",
+        "name": "Center Versus Neighbours",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] 3 X 3\n[1] 5 X 5\n[2] 7 X 7\nDefault: 0",
+        "description": "",
+        "identifier": "WINSIZE",
+        "name": "Size of Analysis Window",
+        "type": "Choice"
+      }, {
+        "constraints": "Default: 10",
+        "description": "Maximum number of classes in entire grid.",
+        "identifier": "MAXNUMCLASS",
+        "name": "Max. Number of Classes",
+        "type": "Integer"
+      }]
+    }],
+    "tool_description": "(c) 2004 by Victor Olaya. Pattern Analysis",
+    "tool_id": "8",
+    "tool_name": "Pattern Analysis",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ZjkyYzc0MzktMmJiNC00OTMxLWFlMTYtYTFhZWFlODE5ZGE2ZWY=",
+    "oid": "5b90e7bbd15d75093cb58716",
+    "stateId": "613CF7E4-382D-457a-A388-64325046BBAB",
+    "mdlId": "DD44B77A-9417-4abd-AF53-D762CE12B355"
+  }, {
+    "author": "",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "GRIDS",
+        "name": "Grids",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "RESULT",
+        "name": "Result",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] Maximum\n[1] Minimum\nDefault: 0",
+        "description": "",
+        "identifier": "CRITERIA",
+        "name": "Method",
+        "type": "Choice"
+      }]
+    }],
+    "tool_description": "It creates a new grid containing the ID of the grid with the maximum (minimum) value.\r\nCopyright 2005 Victor Olaya: e-mail: volaya@ya.com",
+    "tool_id": "9",
+    "tool_name": "Layer of extreme value",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NjVlNGY1ODEtMDgyZi00MTYzLTg2MzYtMDZlMjRlNzBkMzMyZjI=",
+    "oid": "5b90e7bbd15d75093cb58717",
+    "stateId": "B9806D2F-E030-4569-A5A9-2AE59F2FBAFB",
+    "mdlId": "10387754-56EE-4ac5-AC6E-C3F5619DC4D9"
+  }, {
+    "author": "",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Input Grids",
+        "identifier": "GRIDS",
+        "name": "Input Grids",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "TABLE",
+        "name": "Pairwise Comparisons Table ",
+        "optional": "false",
+        "type": "Table (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "OUTPUT",
+        "name": "Output Grid",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }]
+    }],
+    "tool_description": "(c) 2004 by Victor Olaya. Analytical Hierarchy Process",
+    "tool_id": "10",
+    "tool_name": "Analytical Hierarchy Process",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?N2Y4YmIxZTYtNzEwMC00ZWMxLTkzZDQtYWU4MzA4ZWQ3YjNjMDA=",
+    "oid": "5b90e7bbd15d75093cb58706",
+    "stateId": "E921B40E-2796-4746-8F04-62BE0721629C",
+    "mdlId": "75FD987C-3798-48c8-B795-876AD5E38F79"
+  }, {
+    "author": "",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Input Grids",
+        "identifier": "GRIDS",
+        "name": "Input Grids",
+        "optional": "false",
+        "type": "Grid list (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "OUTPUT",
+        "name": "Output Grid",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }]
+    }],
+    "tool_description": "(c) 2006 by Victor Olaya. Ordered Weighted Averaging (OWA)",
+    "tool_id": "11",
+    "tool_name": "Ordered Weighted Averaging (OWA)",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NWRjZDhjZTAtYTllYi00YTAzLWI2YzItM2E1OWNjY2ZhYjBiNWQ=",
+    "oid": "5b90e7bbd15d75093cb58707",
+    "stateId": "DC2BEEED-A0DA-4f58-9D07-AE4CC0A6D8AB",
+    "mdlId": "53E43805-FA4C-4427-B239-249C6907221F"
+  }, {
+    "author": "",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "INPUT",
+        "name": "Input Grid",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "RESULT",
+        "name": "Result",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 10",
+        "description": "Maximum number of classes in the entire grid.",
+        "identifier": "MAXNUMCLASS",
+        "name": "Max. Number of Classes",
+        "type": "Integer"
+      }]
+    }],
+    "tool_description": "(c) 2004 by Victor Olaya. Aggregation Index\r\nReferences:\r\n1. Hong S. He, et al. An aggregation index to quantify spatial patterns of landscapes, Landscape Ecology 15, 591-601,2000\r\n",
+    "tool_id": "12",
+    "tool_name": "Aggregation Index",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ODEyMDlmNmQtZTg1MC00ZWQzLTgxMDItZjQ5NmZjNjc2NzU0ZDk=",
+    "oid": "5b90e7bbd15d75093cb58708",
+    "stateId": "E709702B-C12F-4c1d-B9EE-7F76F153B10F",
+    "mdlId": "4AE654BE-734D-4eeb-B9F0-3150204DF673"
+  }, {
+    "author": "",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "INPUT",
+        "name": "Input Grid 1",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "INPUT2",
+        "name": "Input Grid 2",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "RESULTGRID",
+        "name": "Cross-Classification Grid",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "RESULTTABLE",
+        "name": "Cross-Tabulation Table",
+        "optional": "false",
+        "type": "Table (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 10",
+        "description": "Maximum number of classes in the entire grid.",
+        "identifier": "MAXNUMCLASS",
+        "name": "Max. Number of Classes",
+        "type": "Integer"
+      }]
+    }],
+    "tool_description": "(c) 2004 by Victor Olaya. Cross-Classification and Tabulation",
+    "tool_id": "13",
+    "tool_name": "Cross-Classification and Tabulation",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NGVhMGUxNDgtOGE5ZC00ZTk0LWJkMGEtNTcxZjgyNmUzZGZiNTc=",
+    "oid": "5b90e7bbd15d75093cb58709",
+    "stateId": "5447062C-DE47-4dea-932E-A75F94B1C53D",
+    "mdlId": "D082657C-F336-4c61-9A2B-707D3F343D9B"
+  }, {
+    "author": "Gianluca Massei (c) 2007 (g_massa@libero.it), L.Landschreiber, O.Conrad (c) 2017",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "sand content given as percentage",
+        "identifier": "SAND",
+        "name": "Sand",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }, {
+        "constraints": "",
+        "description": "silt content given as percentage",
+        "identifier": "SILT",
+        "name": "Silt",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }, {
+        "constraints": "",
+        "description": "clay content given as percentage",
+        "identifier": "CLAY",
+        "name": "Clay",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "soil texture",
+        "identifier": "TEXTURE",
+        "name": "Soil Texture",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Sum of percentages",
+        "identifier": "SUM",
+        "name": "Sum",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "POLYGONS",
+        "name": "Scheme as Polygons",
+        "optional": "true",
+        "type": "Shapes (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] USDA\n[1] Germany KA5\n[2] Belgium/France\n[3] user defined\nDefault: 0",
+        "description": "",
+        "identifier": "SCHEME",
+        "name": "Classification",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] Scheme 1\n[1] Scheme 2\n[2] Scheme 3\nDefault: 0",
+        "description": "",
+        "identifier": "COLORS",
+        "name": "Default Colour Scheme",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] Sand and Clay\n[1] Sand and Silt\n[2] Silt and Sand\n[3] Silt and Clay\n[4] Clay and Sand\n[5] Clay and Silt\nDefault: 3",
+        "description": "",
+        "identifier": "XY_AXES",
+        "name": "X/Y Axes",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] right-angled\n[1] isosceles\nDefault: 1",
+        "description": "",
+        "identifier": "TRIANGLE",
+        "name": "Triangle",
+        "type": "Choice"
+      }]
+    }],
+    "tool_description": "Derive soil texture classes from sand, silt and clay contents. Currently supported schemes are USDA and German Kartieranleitung 5. ",
+    "tool_id": "14",
+    "tool_name": "Soil Texture Classification",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NTljOWM2MDEtYWM2ZS00YTE4LTgzNTctOTQ4NTMzY2VhODQ5Yjg=",
+    "oid": "5b90e7bbd15d75093cb5870a",
+    "stateId": "876C06A9-7DF4-4ac4-B1AF-7F105794ADC3",
+    "mdlId": "C48EC6D4-9AC9-4749-AC6F-1C1676A8AAFB"
+  }, {
+    "author": "(c) 2008 by O.Conrad",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "CLASSES",
+        "name": "Classification",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Density Index (Pf).",
+        "identifier": "DENSITY",
+        "name": "Density [Percent]",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Connectivity Index (Pff).",
+        "identifier": "CONNECTIVITY",
+        "name": "Connectivity [Percent]",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Fragmentation Index",
+        "identifier": "FRAGMENTATION",
+        "name": "Fragmentation",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "FRAGSTATS",
+        "name": "Summary",
+        "optional": "true",
+        "type": "Table (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 1",
+        "description": "",
+        "identifier": "CLASS",
+        "name": "Class Identifier",
+        "type": "Integer"
+      }, {
+        "constraints": "",
+        "description": "Moving window size = 1 + 2 * Neighborhood.",
+        "identifier": "NEIGHBORHOOD",
+        "name": "Neighborhood",
+        "type": "Value range"
+      }, {
+        "constraints": "Available Choices:\n[0] average\n[1] multiplicative\nDefault: 0",
+        "description": "",
+        "identifier": "AGGREGATION",
+        "name": "Level Aggregation",
+        "type": "Choice"
+      }, {
+        "constraints": "Default: 0",
+        "description": "",
+        "identifier": "BORDER",
+        "name": "Add Border",
+        "type": "Boolean"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 1.100000",
+        "description": "",
+        "identifier": "WEIGHT",
+        "name": "Connectivity Weighting",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nMaximum: 100.000000\nDefault: 10.000000",
+        "description": "",
+        "identifier": "DENSITY_MIN",
+        "name": "Minimum Density [Percent]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nMaximum: 100.000000\nDefault: 99.000000",
+        "description": "if less than 100, it is distinguished between interior and core forest",
+        "identifier": "DENSITY_INT",
+        "name": "Minimum Density for Interior Forest [Percent]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Available Choices:\n[0] square\n[1] circle\nDefault: 1",
+        "description": "",
+        "identifier": "CIRCULAR",
+        "name": "Neighborhood Type",
+        "type": "Choice"
+      }, {
+        "constraints": "Default: 1",
+        "description": "",
+        "identifier": "DIAGONAL",
+        "name": "Include diagonal neighbour relations",
+        "type": "Boolean"
+      }]
+    }],
+    "tool_description": "Grid based fragmentation analysis after Riitters et al. (2000).\n\n(1) interior, if Density = 1.0\n(2) undetermined, if Density > 0.6 and Density = Connectivity\n(3) perforated, if Density > 0.6 and Density - Connectivity > 0\n(4) edge, if Density > 0.6 and Density - Connectivity < 0\n(5) transitional, if 0.4 < Density < 0.6\n(6) patch, if Density < 0.4\n\n\nReferences:\nRiitters, K., Wickham, J., O'Neill, R., Jones, B., Smith, E. (2000): \nGlobal-scale patterns of forest fragmentation. Conservation Ecology 4(2): 3\n<a href=\"http://www.ecologyandsociety.org/vol4/iss2/art3/\">http://www.ecologyandsociety.org/vol4/iss2/art3/</a>\n",
+    "tool_id": "15",
+    "tool_name": "Fragmentation (Standard)",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ZjliNGIyM2EtYzFhZS00NTY2LWI1NWUtMmZlZTlhYTEwOTJkYTA=",
+    "oid": "5b90e7bbd15d75093cb5870b",
+    "stateId": "F09FB432-8831-48af-A89A-D0E275BDE5C6",
+    "mdlId": "166DB40E-0172-4145-ABEF-F848C70A0CC6"
+  }, {
+    "author": "(c) 2008 by O.Conrad",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "CLASSES",
+        "name": "Classification",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Density Index (Pf).",
+        "identifier": "DENSITY",
+        "name": "Density [Percent]",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Connectivity Index (Pff).",
+        "identifier": "CONNECTIVITY",
+        "name": "Connectivity [Percent]",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Fragmentation Index",
+        "identifier": "FRAGMENTATION",
+        "name": "Fragmentation",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "FRAGSTATS",
+        "name": "Summary",
+        "optional": "true",
+        "type": "Table (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 1",
+        "description": "",
+        "identifier": "CLASS",
+        "name": "Class Identifier",
+        "type": "Integer"
+      }, {
+        "constraints": "",
+        "description": "Moving window size = 1 + 2 * Neighborhood.",
+        "identifier": "NEIGHBORHOOD",
+        "name": "Neighborhood",
+        "type": "Value range"
+      }, {
+        "constraints": "Available Choices:\n[0] average\n[1] multiplicative\nDefault: 0",
+        "description": "",
+        "identifier": "AGGREGATION",
+        "name": "Level Aggregation",
+        "type": "Choice"
+      }, {
+        "constraints": "Default: 0",
+        "description": "",
+        "identifier": "BORDER",
+        "name": "Add Border",
+        "type": "Boolean"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 1.100000",
+        "description": "",
+        "identifier": "WEIGHT",
+        "name": "Connectivity Weighting",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nMaximum: 100.000000\nDefault: 10.000000",
+        "description": "",
+        "identifier": "DENSITY_MIN",
+        "name": "Minimum Density [Percent]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nMaximum: 100.000000\nDefault: 99.000000",
+        "description": "if less than 100, it is distinguished between interior and core forest",
+        "identifier": "DENSITY_INT",
+        "name": "Minimum Density for Interior Forest [Percent]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 1.000000",
+        "description": "",
+        "identifier": "LEVEL_GROW",
+        "name": "Search Distance Increment",
+        "type": "Floating point"
+      }, {
+        "constraints": "Default: 1",
+        "description": "",
+        "identifier": "DENSITY_MEAN",
+        "name": "Density from Neighbourhood",
+        "type": "Boolean"
+      }]
+    }],
+    "tool_description": "\n(1) interior, if Density = 1.0\n(2) undetermined, if Density > 0.6 and Density = Connectivity\n(3) perforated, if Density > 0.6 and Density - Connectivity > 0\n(4) edge, if Density > 0.6 and Density - Connectivity < 0\n(5) transitional, if 0.4 < Density < 0.6\n(6) patch, if Density < 0.4\n\n\nReferences:\nRiitters, K., Wickham, J., O'Neill, R., Jones, B., Smith, E. (2000): \nGlobal-scale patterns of forest fragmentation. Conservation Ecology 4(2): 3\n<a href=\"http://www.ecologyandsociety.org/vol4/iss2/art3/\">http://www.ecologyandsociety.org/vol4/iss2/art3/</a>\n",
+    "tool_id": "16",
+    "tool_name": "Fragmentation (Alternative)",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ODNjODgyNjUtM2NkZS00NTJkLWI3MzMtMDE2NGU3OGQ4OWI4MjY=",
+    "oid": "5b90e7bbd15d75093cb5870c",
+    "stateId": "71E710EC-0170-4c6e-AE40-48E996C12EAB",
+    "mdlId": "86F80F26-5323-41d0-8F97-7A56BB3511DF"
+  }, {
+    "author": "(c) 2008 by O.Conrad",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Density Index (Pf).",
+        "identifier": "DENSITY",
+        "name": "Density [Percent]",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "Connectivity Index (Pff).",
+        "identifier": "CONNECTIVITY",
+        "name": "Connectivity [Percent]",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Fragmentation Index",
+        "identifier": "FRAGMENTATION",
+        "name": "Fragmentation",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Default: 0",
+        "description": "",
+        "identifier": "BORDER",
+        "name": "Add Border",
+        "type": "Boolean"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 1.100000",
+        "description": "",
+        "identifier": "WEIGHT",
+        "name": "Connectivity Weighting",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nMaximum: 100.000000\nDefault: 10.000000",
+        "description": "",
+        "identifier": "DENSITY_MIN",
+        "name": "Minimum Density [Percent]",
+        "type": "Floating point"
+      }, {
+        "constraints": "Minimum: 0.000000\nMaximum: 100.000000\nDefault: 99.000000",
+        "description": "if less than 100, it is distinguished between interior and core forest",
+        "identifier": "DENSITY_INT",
+        "name": "Minimum Density for Interior Forest [Percent]",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "\n(1) interior, if Density = 1.0\n(2) undetermined, if Density > 0.6 and Density = Connectivity\n(3) perforated, if Density > 0.6 and Density - Connectivity > 0\n(4) edge, if Density > 0.6 and Density - Connectivity < 0\n(5) transitional, if 0.4 < Density < 0.6\n(6) patch, if Density < 0.4\n\n\nReferences:\nRiitters, K., Wickham, J., O'Neill, R., Jones, B., Smith, E. (2000): \nGlobal-scale patterns of forest fragmentation. Conservation Ecology 4(2): 3\n<a href=\"http://www.ecologyandsociety.org/vol4/iss2/art3/\">http://www.ecologyandsociety.org/vol4/iss2/art3/</a>\n",
+    "tool_id": "17",
+    "tool_name": "Fragmentation Classes from Density and Connectivity",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?MTU3ZGUwZjktNzQ1Yy00Y2UxLWI4ODMtZTRiMTYwMmI1MzVhYmI=",
+    "oid": "5b90e7bbd15d75093cb5870d",
+    "stateId": "9274D652-F63A-4841-9135-F105924EB2F6",
+    "mdlId": "7A643966-674A-42b8-B6EB-F7D5F6B4534F"
+  }, {
+    "author": "Copyrights (c) 2009 by Volker Wichmann",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "Surface used to derive the LDD network, e.g. a DTM.",
+        "identifier": "SURFACE",
+        "name": "Surface",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "Grid with the input values to accumulate.",
+        "identifier": "INPUT",
+        "name": "Input",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "Grid describing the state of each cell at timestep t.",
+        "identifier": "STATE_IN",
+        "name": "State t",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }, {
+        "constraints": "",
+        "description": "Depending on mode of operation either transport capacity, transport fraction, threshold value or trigger value.",
+        "identifier": "CONTROL",
+        "name": "Operation Control",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }, {
+        "constraints": "",
+        "description": "The values of this grid are checked against the linear flow threshold to decide on the flow-routing algorithm.",
+        "identifier": "CTRL_LINEAR",
+        "name": "Linear Flow Control Grid",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Flux out of each cell, i.e. everything accumulated so far.",
+        "identifier": "FLUX",
+        "name": "Flux",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "Grid describing the state of each cell at timestep t + 1.",
+        "identifier": "STATE_OUT",
+        "name": "State t + 1",
+        "optional": "true",
+        "type": "Grid (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] accuflux\n[1] accucapacityflux / state\n[2] accufractionflux / state\n[3] accuthresholdflux / state\n[4] accutriggerflux / state\nDefault: 0",
+        "description": "Select a mode of operation",
+        "identifier": "OPERATION",
+        "name": "Operation",
+        "type": "Choice"
+      }, {
+        "constraints": "Default: 1",
+        "description": "Switch from MFD8 to D8 if linear flow threshold is crossed.",
+        "identifier": "LINEAR",
+        "name": "Switch to Linear Flow",
+        "type": "Boolean"
+      }, {
+        "constraints": "Default: 0.000000",
+        "description": "Threshold for linear flow, if exceeded D8 is used.",
+        "identifier": "THRES_LINEAR",
+        "name": "Threshold Linear Flow",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "Provides \"accumulation functions\" that can be used to e.g. move material over a \"local drain direction\" (LDD) network. The LDD net is computed for the supplied surface by MFD and D8 flow-routing algorithms. It is possible to switch from MFD to D8 as soon as a threshold is exceeded.\nThe input to each cell on the grid can be supplied from e.g. time series and the material can be moved over the net in several ways. All of these, except the \"accuflux\" operation, compute both the flux and the state for a given cell. For time series modelling (batch processing), the state of each cell at time t can be initialized with the previous state t - 1.\nThe capacity, fraction, threshold and trigger operations compute the fluxes and cell states at time t + 1 according to cell-specific parameters that control the way the flux is computed. The capacity function limits the cell-to-cell flux by a (channel) capacity control; the fraction function transports only a given proportion of material from cell to cell, the threshold function transports material only once a given threshold has been exceeded, and the trigger function transports nothing until a trigger value has been exceeded (at which point all accumulated material in the state of the cell is discharged to its downstream neighbour(s)).\n\nThe following operations are supported:\n\n\t* ACCUFLUX: The accuflux function computes the new state of the attributes for the cell as the sum of the input cell values plus the cumulative sum of all upstream elements draining through the cell.\n\n\t* ACCUCAPACITYFLUX / STATE: The operation modifies the accumulation of flow over the network by a limiting transport capacity given in absolute values.\n\n\t* ACCUFRACTIONFLUX / STATE: The operation limits the flow over the network by a parameter which controls the proportion (0-1) of the material that can flow through each cell.\n\n\t* ACCUTHRESHOLDFLUX / STATE: The operation modifies the accummulation of flow over the network by limiting transport to values greater than a minimum threshold value per cell. No flow occurs if the threshold is not exceeded.\n\n\t* ACCUTRIGGERFLUX / STATE: The operation only allows transport (flux) to occur if a trigger value is exceeded, otherwise no transport occurs and storage accumulates.\n\nReferences:\nBURROUGH, P.A. (1998): Dynamic Modelling and Geocomputation.- In: LONGLEY, P.A., BROOKS, S.M., MCDONNELL, R. & B. MACMILLAN [Eds.]: Geocomputation: A Primer. John Wiley & Sons, pp. 165-191.\r\n",
+    "tool_id": "18",
+    "tool_name": "Accumulation Functions",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?ZWU5ZWE2Y2MtMzEyOC00ZDJlLWIwMzctOWRkZmUyODQxYzA3ZTQ=",
+    "oid": "5b90e7bbd15d75093cb5870e",
+    "stateId": "7EC0583B-830E-43ad-AA74-5C4CCB9A4D18",
+    "mdlId": "C6E6A7D4-1A1A-473d-8663-11D1963BC969"
+  }, {
+    "author": "Magnus Bremer (c) 2012",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "The first grid to correlate",
+        "identifier": "GRID_1",
+        "name": "Grid 1",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "The second grid to correlate",
+        "identifier": "GRID_2",
+        "name": "Grid 2",
+        "optional": "false",
+        "type": "Grid (input)"
+      }, {
+        "constraints": "",
+        "description": "The first DTM used to assign height information to grid 1",
+        "identifier": "DTM_1",
+        "name": "DTM 1",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }, {
+        "constraints": "",
+        "description": "The second DTM used to assign height information to grid 2",
+        "identifier": "DTM_2",
+        "name": "DTM 2",
+        "optional": "true",
+        "type": "Grid (optional input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "Correlated points with displacement and correlation information",
+        "identifier": "CORRPOINTS",
+        "name": "Correlated Points",
+        "optional": "false",
+        "type": "Shapes (output)"
+      }, {
+        "constraints": "",
+        "description": "Displacement vectors between correlated points",
+        "identifier": "CORRLINES",
+        "name": "Displacement Vector",
+        "optional": "false",
+        "type": "Shapes (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] 16x16\n[1] 32x32\n[2] 64x64\n[3] 128x128\n[4] 256x256\nDefault: 2",
+        "description": "Chip size of search chip, used to find correlating reference chip",
+        "identifier": "SEARCH_CHIPSIZE",
+        "name": "Search Chip Size (Cells)",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] 16x16\n[1] 32x32\n[2] 64x64\n[3] 128x128\nDefault: 1",
+        "description": "Chip size of reference chip to be found in search chip",
+        "identifier": "REF_CHIPSIZE",
+        "name": "Reference Chip Size (Cells)",
+        "type": "Choice"
+      }, {
+        "constraints": "Minimum: 0.100000\nMaximum: 256.000000\nDefault: 10.000000",
+        "description": "Grid spacing used for the construction of correlated points [map units]",
+        "identifier": "GRID_SPACING",
+        "name": "Grid Spacing (Map Units)",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "The tool performs an image correlation based on two raster data sets.\nAdditionally, two DTMs can be given and used to optain 3D displacement vectors.\n\nThis is a SAGA implementation of the standalone IMCORR software provided by the National Snow and Ice Data Center in Boulder, Colorado / US.\n\nThe standalone software and documentation is available from:\n<a href=\"http://nsidc.org/data/velmap/imcorr.html\">http://nsidc.org/data/velmap/imcorr.html</a>\n\nReferences:\nScambos, T. A., Dutkiewicz, M. J., Wilson, J. C., and R. A. Bindschadler (1992): Application of image cross-correlation to the measurement of glacier velocity using satellite image data. Remote Sensing Environ., 42(3), 177-186.\n\nFahnestock, M. A., Scambos, T.A., and R. A. Bindschadler (1992): Semi-automated ice velocity determination from satellite imagery. Eos, 73, 493.\n\n",
+    "tool_id": "19",
+    "tool_name": "IMCORR - Feature Tracking",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NGJlNjEwNDMtY2VmMC00NjY5LWJlMDEtNmY0YTdiZDg0YTUzYjE=",
+    "oid": "5b90e7bbd15d75093cb5870f",
+    "stateId": "052F48BF-0E14-4f7f-9431-776BBA073699",
+    "mdlId": "0BECCBFE-04F1-4a3f-BA1F-ACCC26FE3174"
+  }, {
+    "author": "Gianluca Massei (c) 2007 (g_massa@libero.it), L.Landschreiber, O.Conrad (c) 2017",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "TABLE",
+        "name": "Table",
+        "optional": "false",
+        "type": "Table (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "POLYGONS",
+        "name": "Scheme as Polygons",
+        "optional": "true",
+        "type": "Shapes (optional output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "sand content given as percentage",
+        "identifier": "SAND",
+        "name": "Sand",
+        "type": "Table field"
+      }, {
+        "constraints": "",
+        "description": "silt content given as percentage",
+        "identifier": "SILT",
+        "name": "Silt",
+        "type": "Table field"
+      }, {
+        "constraints": "",
+        "description": "clay content given as percentage",
+        "identifier": "CLAY",
+        "name": "Clay",
+        "type": "Table field"
+      }, {
+        "constraints": "",
+        "description": "soil texture",
+        "identifier": "TEXTURE",
+        "name": "Texture",
+        "type": "Table field"
+      }, {
+        "constraints": "Available Choices:\n[0] USDA\n[1] Germany KA5\n[2] Belgium/France\n[3] user defined\nDefault: 0",
+        "description": "",
+        "identifier": "SCHEME",
+        "name": "Classification",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] Scheme 1\n[1] Scheme 2\n[2] Scheme 3\nDefault: 0",
+        "description": "",
+        "identifier": "COLORS",
+        "name": "Default Colour Scheme",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] Sand and Clay\n[1] Sand and Silt\n[2] Silt and Sand\n[3] Silt and Clay\n[4] Clay and Sand\n[5] Clay and Silt\nDefault: 3",
+        "description": "",
+        "identifier": "XY_AXES",
+        "name": "X/Y Axes",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] right-angled\n[1] isosceles\nDefault: 1",
+        "description": "",
+        "identifier": "TRIANGLE",
+        "name": "Triangle",
+        "type": "Choice"
+      }]
+    }],
+    "tool_description": "Derive soil texture classes from sand, silt and clay contents. Currently supported schemes are USDA and German Kartieranleitung 5. ",
+    "tool_id": "20",
+    "tool_name": "Soil Texture Classification for Tables",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?MDc1ZDg3NmMtYmU5Yy00OTRlLWIzZjItODBhYWM5ODQ0N2Y2M2I=",
+    "oid": "5b90e7bbd15d75093cb58710",
+    "stateId": "3A80AB1C-FB93-4883-86F4-788420825F6F",
+    "mdlId": "782D3F6B-17ED-4413-96F8-E5665B74CA2B"
+  }, {
+    "author": "O.Conrad (c) 2015",
+    "parameters": [{
+      "inputs": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "CATEGORIES",
+        "name": "Categories",
+        "optional": "false",
+        "type": "Grid (input)"
+      }]
+    }, {
+      "outputs": [{
+        "constraints": "",
+        "description": "number of different categories (unique values) within search area",
+        "identifier": "COUNT",
+        "name": "Number of Categories",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "distance weighted average of the number of different categories for distance classes",
+        "identifier": "DIVERSITY",
+        "name": "Diversity",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "",
+        "identifier": "CONNECTIVITY",
+        "name": "Connectivity",
+        "optional": "false",
+        "type": "Grid (output)"
+      }, {
+        "constraints": "",
+        "description": "average size of the area covered by each category that occurs within search area",
+        "identifier": "CONNECTEDAVG",
+        "name": "Averaged Connectivity",
+        "optional": "false",
+        "type": "Grid (output)"
+      }]
+    }, {
+      "optionals": [{
+        "constraints": "",
+        "description": "",
+        "identifier": "PARAMETERS_GRID_SYSTEM",
+        "name": "Grid system",
+        "type": "Grid system"
+      }, {
+        "constraints": "Available Choices:\n[0] Square\n[1] Circle\nDefault: 1",
+        "description": "",
+        "identifier": "SEARCH_MODE",
+        "name": "Search Mode",
+        "type": "Choice"
+      }, {
+        "constraints": "Minimum: 1\nDefault: 3",
+        "description": "Search distance given as number cells.",
+        "identifier": "SEARCH_RADIUS",
+        "name": "Search Distance",
+        "type": "Integer"
+      }, {
+        "constraints": "Available Choices:\n[0] Rook's case\n[1] Queen's case\nDefault: 1",
+        "description": "",
+        "identifier": "NB_CASE",
+        "name": "Connectivity Neighbourhood",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] no\n[1] by number of cells\n[2] by area size\nDefault: 0",
+        "description": "",
+        "identifier": "NORMALIZE",
+        "name": "Normalize",
+        "type": "Choice"
+      }, {
+        "constraints": "Available Choices:\n[0] no distance weighting\n[1] inverse distance to a power\n[2] exponential\n[3] gaussian weighting\nDefault: 3",
+        "description": "",
+        "identifier": "DW_WEIGHTING",
+        "name": "Weighting Function",
+        "type": "Choice"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 1.000000",
+        "description": "",
+        "identifier": "DW_IDW_POWER",
+        "name": "Inverse Distance Weighting Power",
+        "type": "Floating point"
+      }, {
+        "constraints": "Default: 1",
+        "description": "Calculates weights for distance plus one, avoiding division by zero for zero distances",
+        "identifier": "DW_IDW_OFFSET",
+        "name": "Inverse Distance Offset",
+        "type": "Boolean"
+      }, {
+        "constraints": "Minimum: 0.000000\nDefault: 0.700000",
+        "description": "",
+        "identifier": "DW_BANDWIDTH",
+        "name": "Gaussian and Exponential Weighting Bandwidth",
+        "type": "Floating point"
+      }]
+    }],
+    "tool_description": "Grid based analysis of diversity. It is assumed that the input grid provides a classification (i.e. not a contiuous field). For each cell it counts the number of different categories (classes) as well as the connectivity within the chosen search window. ",
+    "tool_id": "21",
+    "tool_name": "Diversity of Categories",
+    "tool_path": "http://geomodeling.njnu.edu.cn/OpenGMS/page/model-item-info/model-item-info.html?NmUxMGNmNzUtMDI0OC00MGMyLTgzZTgtNWI0NmU1Zjg5ZTVmZDQ=",
+    "oid": "5b90e7bbd15d75093cb58711",
+    "stateId": "3C21660D-E21C-4c75-AF6B-3BA227474638",
+    "mdlId": "3AE40586-9310-47b5-BBAC-09EA006816D9"
+  }]
+}

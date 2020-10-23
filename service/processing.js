@@ -13,11 +13,17 @@ const utils=require('../utils/utils.js')
 const xml2js =require('xml2js')
 var parser = new xml2js.Parser();
 const cfg=require('../config/config.js')
-const templateId=require('../lib/data/templateIdOfVisualSolution')
+const templateId=require('../lib/data/templateIdOfVisualSolution');
+
 const transitUrl=cfg.transitUrl
 const bindPcsUrl=cfg.bindPcsUrl
 
-const processing_result=__dirname+'/../processing_result'
+const processing_result=__dirname+'/../processing_result';
+
+
+const tree=__dirname+'/../saga_tools/tree.json';
+const tools_tree=__dirname+'/../saga_tools/tools_tree.json';
+
 exports.newProcessing=function(req,res,next){
     let script_uid=uuid.v4()
     let path=__dirname+'/../upload_processing/'+script_uid
@@ -97,7 +103,6 @@ exports.newProcessing=function(req,res,next){
   
 
 }
-
 exports.delProcessing=function(req,res,next){
 
     instances.findOne({uid:req.query.uid,type:req.query.instType},(err,doc)=>{
@@ -132,8 +137,6 @@ exports.delProcessing=function(req,res,next){
     
 
 };
-
-
 exports.bindProcessing=function(req,res,next){
     instances.findOne({'list.id':req.query.id},(err,doc)=>{
         let item
@@ -187,7 +190,6 @@ exports.bindProcessing=function(req,res,next){
         })
     })
 }
-
 exports.executePrcs=function(req,res,next){
     
     instances.findOne({'list.id':req.query.pcsId},(err,doc)=>{
@@ -333,4 +335,152 @@ exports.executePrcs=function(req,res,next){
             })
         })
     })
+}
+
+
+// saga service
+
+exports.sagaCapabilities=function(req,res){
+
+    
+
+        let tree_path='./lib/saga_tools/json/tree.json';
+        let tools_tree='./lib/saga_tools/json/tools_tree.json';
+
+        let library,tool,funcIdx;
+
+        let result;
+
+        fsPromises.readFile(tree_path).then(data=>{            
+            let json=JSON.parse(data);            
+            //获取工具项 Climite->Tool
+            if(!req.query.library){
+                result={'tools':'Based on SAGA Version 6.3.0'}
+                              
+                for(let k in json){
+                    result[k]=[];
+                    for(let v in json[k]){
+                        result[k].push(v);
+                    }
+                }
+                res.send(result);
+                return;
+
+            }else
+          //获取对应工具项下的所有工具 Tool->Multi Level to Surface Interpolation
+            if(req.query.library&&req.query.tool&&!req.query.funcIdx){
+                result={}
+                library=req.query.library;                                
+                tool=req.query.tool;
+                result['library']=library;
+                result['tool']=tool;
+                result['func']=[]
+                fsPromises.readFile(tools_tree).then(data2=>{
+                    let json2=JSON.parse(data2);
+
+                    for(let t of json2['tools']){
+                        if(t.value==library){
+                            for (const t2 of t.children) {
+                                if(t2.value==tool){
+                                    for (const t3 of t2.children) {
+                                        result['func'].push({'index':t3.id,'func':t3.value})
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    res.send(result);
+                    return;
+
+
+                }).catch(err=>{
+                    res.send(err);
+                    return;
+                })
+            }else
+            //获取对应工具详情Multi Level to Surface Interpolation-> input
+            if(req.query.library&&req.query.tool&&req.query.funcIdx){
+                result={}
+                library=req.query.library;                                
+                tool=req.query.tool;
+                funcIdx=req.query.funcIdx;
+
+                result['library']=library;
+                result['tool']=tool;
+                result['func Index']=funcIdx;
+
+                fsPromises.readFile(tools_tree).then(data2=>{
+                    let json2=JSON.parse(data2);
+
+                    for(let t of json2['tools']){
+                        if(t.value==library){
+                            for (const t2 of t.children) {
+                                if(t2.value==tool){
+                                    
+                                    fsPromises.readFile(t2.id).then(data3=>{
+                                        //获取最下层具体工具的元数据
+                                        let json3=JSON.parse(data3)
+                                        result['tool name']=json3['tools'][funcIdx]['tool_name'];
+                                        result['info']=json3['tools'][funcIdx];
+
+                                        res.send(result);
+                                        return;
+                                    }).catch(err=>{
+                                        res.send(err);
+                                        return;
+                                    })
+                                }
+                            }
+                        }
+                    }
+
+                
+
+                }).catch(err=>{
+                    res.send(err);
+                    return;
+                });
+            
+            }else{
+                res.send({'err':'parameter or else error'});
+                return;
+            }            
+        }).catch(err=>{
+            res.send(err);
+            return;
+        })
+
+       
+    
+    
+}
+
+exports.executeSaga=function(req,res,next){
+    let par= []
+
+    if(req.query.library){
+        par.push(req.query.library)
+    }
+    if(req.query.tool){
+        par.push(req.query.tool)
+    }
+
+    try{
+        const ls = cp.spawn(cfg.sagaExe,par);
+        ls.on('error',(err)=>{
+            console.log(`错误 ${err}`);
+        })
+        ls.on('close', (code) => {
+            console.log(`子进程退出，退出码 ${code}`);
+        });
+        ls.stdout.on('data', (data) => {
+    
+            let str=data.toString('utf-8')
+
+            res.end(str)
+            
+        });
+    }catch(err){
+        if(err){res.end(err)}
+    }
 }

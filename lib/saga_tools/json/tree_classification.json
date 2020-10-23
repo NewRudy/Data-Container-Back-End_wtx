@@ -1,0 +1,1919 @@
+{
+  "oid": "054442d7-8950-40b1-e979-e34b279bd5ae",
+  "label": "SAGA",
+  "parentId": "3afc51dc-930d-4ab5-8a59-3e057b7eb086",
+  "children": [{
+    "label": "Climate",
+    "id": "Climate",
+    "parentId": "3afc51dc-930d-4ab5-8a59-3e057b7eb086",
+    "oid": "210dbb49-32de-4128-ab1b-05eb983348b6",
+    "children": [{
+      "label": "Tools",
+      "id": "json/modelInfo/climate_tools.json",
+      "parentId": "210dbb49-32de-4128-ab1b-05eb983348b6",
+      "oid": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad",
+      "children": [
+          {
+        "label": "Multi Level to Surface Interpolation",
+        "id": "0",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Multi Level to Points Interpolation",
+        "id": "1",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Earth's Orbital Parameters",
+        "id": "2",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Annual Course of Daily Insolation",
+        "id": "3",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Daily Insolation over Latitude",
+        "id": "4",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Monthly Global by Latitude",
+        "id": "5",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "ETpot (after Hargreaves, Table)",
+        "id": "6",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Daily to Hourly ETpot",
+        "id": "7",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "ETpot (after Hargreaves, Grid)",
+        "id": "8",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Sunrise and Sunset",
+        "id": "9",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Bioclimatic Variables",
+        "id": "10",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Tree Growth Season",
+        "id": "11",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Soil Water Balance",
+        "id": "12",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Wind Effect Correction",
+        "id": "13",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Frost Change Frequency",
+        "id": "14",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Thermic Belt Classification",
+        "id": "15",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Frost Change Frequency",
+        "id": "16",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Snow Cover",
+        "id": "17",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }, {
+        "label": "Growing Degree Days",
+        "id": "18",
+        "parentId": "40b78ccf-e430-4756-84d7-9dfdd9ccfcad"
+      }]
+    }]
+  }, {
+    "label": "Grid",
+    "id": "Grid",
+    "parentId": "3afc51dc-930d-4ab5-8a59-3e057b7eb086",
+    "oid": "944d3c82-ddeb-4b02-a56c-44eb419ecc13",
+    "children": [{
+      "label": "Analysis",
+      "id": "json/modelInfo/grid_analysis.json",
+      "parentId": "944d3c82-ddeb-4b02-a56c-44eb419ecc13",
+      "oid": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b",
+      "children": [{
+        "label": "Accumulated Cost",
+        "id": "0",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Least Cost Path",
+        "id": "4",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Least Cost Paths",
+        "id": "5",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Change Vector Analysis",
+        "id": "6",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Covered Distance",
+        "id": "7",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Pattern Analysis",
+        "id": "8",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Layer of extreme value",
+        "id": "9",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Analytical Hierarchy Process",
+        "id": "10",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Ordered Weighted Averaging (OWA)",
+        "id": "11",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Aggregation Index",
+        "id": "12",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Cross-Classification and Tabulation",
+        "id": "13",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Soil Texture Classification",
+        "id": "14",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Fragmentation (Standard)",
+        "id": "15",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Fragmentation (Alternative)",
+        "id": "16",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Fragmentation Classes from Density and Connectivity",
+        "id": "17",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Accumulation Functions",
+        "id": "18",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "IMCORR - Feature Tracking",
+        "id": "19",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Soil Texture Classification for Tables",
+        "id": "20",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }, {
+        "label": "Diversity of Categories",
+        "id": "21",
+        "parentId": "a0d66b8c-6bcb-41b7-afe2-421d3a506d7b"
+      }]
+    }, {
+      "label": "Calculus",
+      "id": "json/modelInfo/grid_calculus.json",
+      "parentId": "944d3c82-ddeb-4b02-a56c-44eb419ecc13",
+      "oid": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe",
+      "children": [{
+        "label": "Grid Normalisation",
+        "id": "0",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Grid Calculator",
+        "id": "1",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Grid Volume",
+        "id": "2",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Grid Difference",
+        "id": "3",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Function Plotter",
+        "id": "4",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Geometric Figures",
+        "id": "5",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Random Terrain",
+        "id": "6",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Random Field",
+        "id": "7",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Grids Sum",
+        "id": "8",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Grids Product",
+        "id": "9",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Grid Standardisation",
+        "id": "10",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Fuzzify",
+        "id": "11",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Fuzzy Intersection (AND)",
+        "id": "12",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Fuzzy Union (OR)",
+        "id": "13",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Metric Conversions",
+        "id": "14",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Gradient Vector from Cartesian to Polar Coordinates",
+        "id": "15",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Gradient Vector from Polar to Cartesian Coordinates",
+        "id": "16",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Fractal Brownian Noise",
+        "id": "17",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Grid Division",
+        "id": "18",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }, {
+        "label": "Spherical Harmonic Synthesis",
+        "id": "19",
+        "parentId": "3eb8a261-c8d8-4a65-a7dd-f49cfaa7fffe"
+      }]
+    }, {
+      "label": "Filter",
+      "id": "json/modelInfo/grid_filter.json",
+      "parentId": "944d3c82-ddeb-4b02-a56c-44eb419ecc13",
+      "oid": "74febce6-c6b4-4c5a-957e-784ec73600aa",
+      "children": [{
+        "label": "Simple Filter",
+        "id": "0",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Gaussian Filter",
+        "id": "1",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Laplacian Filter",
+        "id": "2",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Multi Direction Lee Filter",
+        "id": "3",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "User Defined Filter",
+        "id": "4",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Filter Clumps",
+        "id": "5",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Majority/Minority Filter",
+        "id": "6",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "DTM Filter (slope-based)",
+        "id": "7",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Morphological Filter",
+        "id": "8",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Rank Filter",
+        "id": "9",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Mesh Denoise",
+        "id": "10",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Resampling Filter",
+        "id": "11",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Geodesic Morphological Reconstruction",
+        "id": "12",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Binary Erosion-Reconstruction",
+        "id": "13",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Connectivity Analysis",
+        "id": "14",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Sieve Classes",
+        "id": "15",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Wombling (Edge Detection)",
+        "id": "16",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Wombling for Multiple Features (Edge Detection)",
+        "id": "17",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }, {
+        "label": "Simple Filter (Restricted to Polygons)",
+        "id": "18",
+        "parentId": "74febce6-c6b4-4c5a-957e-784ec73600aa"
+      }]
+    }, {
+      "label": "Gridding",
+      "id": "json/modelInfo/grid_gridding.json",
+      "parentId": "944d3c82-ddeb-4b02-a56c-44eb419ecc13",
+      "oid": "b97fd1cf-6c75-44b5-a533-b6c035eb9793",
+      "children": [{
+        "label": "Shapes to Grid",
+        "id": "0",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Inverse Distance Weighted",
+        "id": "1",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Nearest Neighbour",
+        "id": "2",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Natural Neighbour",
+        "id": "3",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Modifed Quadratic Shepard",
+        "id": "4",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Triangulation",
+        "id": "5",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Kernel Density Estimation",
+        "id": "6",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Angular Distance Weighted",
+        "id": "7",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Grid Cell Area Covered by Polygons",
+        "id": "8",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Polygons to Grid",
+        "id": "9",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }, {
+        "label": "Polygon Categories to Grid",
+        "id": "10",
+        "parentId": "b97fd1cf-6c75-44b5-a533-b6c035eb9793"
+      }]
+    }, {
+      "label": "Tools",
+      "id": "json/modelInfo/grid_tools.json",
+      "parentId": "944d3c82-ddeb-4b02-a56c-44eb419ecc13",
+      "oid": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca",
+      "children": [{
+        "label": "Resampling",
+        "id": "0",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Aggregate",
+        "id": "1",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Clip Grids",
+        "id": "2",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Mosaicking",
+        "id": "3",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Constant Grid",
+        "id": "4",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Patching",
+        "id": "5",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Close One Cell Gaps",
+        "id": "6",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Close Gaps",
+        "id": "7",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Grid Buffer",
+        "id": "8",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Threshold Buffer",
+        "id": "9",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Grid Proximity Buffer",
+        "id": "10",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Change Data Storage",
+        "id": "11",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Change Grid Values",
+        "id": "12",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Change Cell Values",
+        "id": "13",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Grid Value Request",
+        "id": "14",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Reclassify Grid Values",
+        "id": "15",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Change Grid Values - Flood Fill",
+        "id": "16",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Crop to Data",
+        "id": "17",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Invert Data/No-Data",
+        "id": "18",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Combine Grids",
+        "id": "20",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Grid Cell Index",
+        "id": "21",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Grids from classified grid and table",
+        "id": "22",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Create Grid System",
+        "id": "23",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Grid Masking",
+        "id": "24",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Close Gaps with Spline",
+        "id": "25",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Proximity Grid",
+        "id": "26",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Tiling",
+        "id": "27",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Shrink and Expand",
+        "id": "28",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Close Gaps with Stepwise Resampling",
+        "id": "29",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Transpose Grids",
+        "id": "30",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Clip Grids",
+        "id": "31",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Select Grid from List",
+        "id": "32",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Copy Grid",
+        "id": "33",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Invert Grid",
+        "id": "34",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Mirror Grid",
+        "id": "35",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Change a Grid's No-Data Value",
+        "id": "36",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Combine Classes",
+        "id": "37",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }, {
+        "label": "Mosaicking (Grid Collections)",
+        "id": "38",
+        "parentId": "346fb4f9-a649-45d7-ff5a-9224fe9dfaca"
+      }]
+    }]
+  }, {
+    "label": "Imagery",
+    "id": "Imagery",
+    "parentId": "3afc51dc-930d-4ab5-8a59-3e057b7eb086",
+    "oid": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
+    "children": [{
+      "label": "Classification",
+      "id": "json/modelInfo/imagery_classification.json",
+      "parentId": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
+      "oid": "4ec056d6-fe73-4861-d7f7-0e1c165ba550",
+      "children": [{
+        "label": "Supervised Classification for Grids",
+        "id": "0",
+        "parentId": "4ec056d6-fe73-4861-d7f7-0e1c165ba550"
+      }, {
+        "label": "K-Means Clustering for Grids",
+        "id": "1",
+        "parentId": "4ec056d6-fe73-4861-d7f7-0e1c165ba550"
+      }, {
+        "label": "Confusion Matrix (Two Grids)",
+        "id": "2",
+        "parentId": "4ec056d6-fe73-4861-d7f7-0e1c165ba550"
+      }, {
+        "label": "Decision Tree",
+        "id": "3",
+        "parentId": "4ec056d6-fe73-4861-d7f7-0e1c165ba550"
+      }, {
+        "label": "Supervised Classification for Shapes",
+        "id": "4",
+        "parentId": "4ec056d6-fe73-4861-d7f7-0e1c165ba550"
+      }, {
+        "label": "Supervised Classification for Tables",
+        "id": "5",
+        "parentId": "4ec056d6-fe73-4861-d7f7-0e1c165ba550"
+      }, {
+        "label": "Confusion Matrix (Polygons / Grid)",
+        "id": "6",
+        "parentId": "4ec056d6-fe73-4861-d7f7-0e1c165ba550"
+      }]
+    }, {
+      "label": "ISODATA Clustering",
+      "id": "json/modelInfo/imagery_isocluster.json",
+      "parentId": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
+      "oid": "b9b9e967-73f3-4fed-f932-89078fedb022",
+      "children": [{
+        "label": "ISODATA Clustering for Grids",
+        "id": "0",
+        "parentId": "b9b9e967-73f3-4fed-f932-89078fedb022"
+      }]
+    }, {
+      "label": "Maximum Entropy",
+      "id": "json/modelInfo/imagery_maxent.json",
+      "parentId": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
+      "oid": "6c5946ae-f000-485c-dcb5-f97233f4a643",
+      "children": [{
+        "label": "Maximum Entropy Classifcation",
+        "id": "0",
+        "parentId": "6c5946ae-f000-485c-dcb5-f97233f4a643"
+      }, {
+        "label": "Maximum Entropy Presence Prediction",
+        "id": "1",
+        "parentId": "6c5946ae-f000-485c-dcb5-f97233f4a643"
+      }]
+    }, {
+      "label": "Photogrammetry",
+      "id": "json/modelInfo/imagery_photogrammetry.json",
+      "parentId": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
+      "oid": "ee063b3d-502e-4527-ffab-c586091767f8",
+      "children": [{
+        "label": "Resection (Terrestrial)",
+        "id": "0",
+        "parentId": "ee063b3d-502e-4527-ffab-c586091767f8"
+      }, {
+        "label": "Colorisation (PC)",
+        "id": "1",
+        "parentId": "ee063b3d-502e-4527-ffab-c586091767f8"
+      }]
+    }, {
+      "label": "SVM",
+      "id": "json/modelInfo/imagery_svm.json",
+      "parentId": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
+      "oid": "6ce92c92-f2e3-4042-b542-c1364d3bba93",
+      "children": [{
+        "label": "SVM Classification",
+        "id": "0",
+        "parentId": "6ce92c92-f2e3-4042-b542-c1364d3bba93"
+      }]
+    }, {
+      "label": "Segmentation",
+      "id": "json/modelInfo/imagery_segmentation.json",
+      "parentId": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
+      "oid": "6b79588c-f60c-4b05-b658-07a7aa08eb43",
+      "children": [{
+        "label": "Watershed Segmentation",
+        "id": "0",
+        "parentId": "6b79588c-f60c-4b05-b658-07a7aa08eb43"
+      }, {
+        "label": "Grid Skeletonization",
+        "id": "1",
+        "parentId": "6b79588c-f60c-4b05-b658-07a7aa08eb43"
+      }, {
+        "label": "Seed Generation",
+        "id": "2",
+        "parentId": "6b79588c-f60c-4b05-b658-07a7aa08eb43"
+      }, {
+        "label": "Seeded Region Growing",
+        "id": "3",
+        "parentId": "6b79588c-f60c-4b05-b658-07a7aa08eb43"
+      }]
+    }, {
+      "label": "Tools",
+      "id": "json/modelInfo/imagery_tools.json",
+      "parentId": "5e184a2e-2579-49bf-ebac-7c28b24a38e3",
+      "oid": "6f82fb3a-22b5-46b5-a397-6002d506293e",
+      "children": [{
+        "label": "Vegetation Index (Distance Based)",
+        "id": "0",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Vegetation Index (Slope Based)",
+        "id": "1",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Enhanced Vegetation Index",
+        "id": "2",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Tasseled Cap Transformation",
+        "id": "3",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "IHS Sharpening",
+        "id": "4",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Colour Normalized Brovey Sharpening",
+        "id": "5",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Colour Normalized Spectral Sharpening",
+        "id": "6",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Principle Components Based Image Sharpening",
+        "id": "7",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Top of Atmosphere Reflectance",
+        "id": "8",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Automated Cloud Cover Assessment",
+        "id": "9",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Landsat Import with Options",
+        "id": "10",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Textural Features",
+        "id": "11",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Local Statistical Measures",
+        "id": "12",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Universal Image Quality Index",
+        "id": "13",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }, {
+        "label": "Import Landsat Scene",
+        "id": "14",
+        "parentId": "6f82fb3a-22b5-46b5-a397-6002d506293e"
+      }]
+    }]
+  }, {
+    "label": "Shapes",
+    "id": "Shapes",
+    "parentId": "3afc51dc-930d-4ab5-8a59-3e057b7eb086",
+    "oid": "e6984ef1-4f69-4f6e-be2b-c77f917de5a5",
+    "children": [{
+      "label": "Grid Tools",
+      "id": "json/modelInfo/shapes_grid.json",
+      "parentId": "e6984ef1-4f69-4f6e-be2b-c77f917de5a5",
+      "oid": "0ba4c923-f24f-43e4-d97a-6d5a468240ba",
+      "children": [{
+        "label": "Add Grid Values to Points",
+        "id": "0",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Add Grid Values to Shapes",
+        "id": "1",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Grid Statistics for Polygons",
+        "id": "2",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Grid Values to Points",
+        "id": "3",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Grid Values to Points (randomly)",
+        "id": "4",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Contour Lines from Grid",
+        "id": "5",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Vectorising Grid Classes",
+        "id": "6",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Clip Grid with Polygon",
+        "id": "7",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Grid Statistics for Points",
+        "id": "8",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Local Minima and Maxima",
+        "id": "9",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Grid System Extent",
+        "id": "10",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Clip Grid with Rectangle",
+        "id": "11",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Gradient Vectors from Surface",
+        "id": "15",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Gradient Vectors from Direction and Length",
+        "id": "16",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Gradient Vectors from Directional Components",
+        "id": "17",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }, {
+        "label": "Grid Classes Area for Polygons",
+        "id": "18",
+        "parentId": "0ba4c923-f24f-43e4-d97a-6d5a468240ba"
+      }]
+    }, {
+      "label": "Lines",
+      "id": "json/modelInfo/shapes_lines.json",
+      "parentId": "e6984ef1-4f69-4f6e-be2b-c77f917de5a5",
+      "oid": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5",
+      "children": [{
+        "label": "Convert Polygons to Lines",
+        "id": "0",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Convert Points to Line(s)",
+        "id": "1",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Line Properties",
+        "id": "2",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Line-Polygon Intersection",
+        "id": "3",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Line Simplification",
+        "id": "4",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Line Dissolve",
+        "id": "5",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Split Lines with Lines",
+        "id": "6",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Line Smoothing",
+        "id": "7",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Split Lines at Points",
+        "id": "8",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }, {
+        "label": "Line Crossings",
+        "id": "9",
+        "parentId": "88c3c7e5-6d71-4639-be40-46d69f2fb6c5"
+      }]
+    }, {
+      "label": "Points",
+      "id": "json/modelInfo/shapes_points.json",
+      "parentId": "e6984ef1-4f69-4f6e-be2b-c77f917de5a5",
+      "oid": "c48c040f-73c1-4a71-fa84-11b7d5901cd3",
+      "children": [{
+        "label": "Convert Table to Points",
+        "id": "0",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Count Points in Polygons",
+        "id": "1",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Create Point Grid",
+        "id": "2",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Point Distances",
+        "id": "3",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Fit N Points to shape",
+        "id": "4",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Convert Lines to Points",
+        "id": "5",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Add Coordinates to Points",
+        "id": "6",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Remove Duplicate Points",
+        "id": "7",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Clip Points with Polygons",
+        "id": "8",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Separate points by direction",
+        "id": "9",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Add Polygon Attributes to Points",
+        "id": "10",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Points Filter",
+        "id": "11",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Convex Hull",
+        "id": "12",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Select Points",
+        "id": "13",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Points Thinning",
+        "id": "14",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Convert Multipoints to Points",
+        "id": "15",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Thiessen Polygons",
+        "id": "16",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Aggregate Point Observations",
+        "id": "17",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Snap Points to Points",
+        "id": "18",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Snap Points to Lines",
+        "id": "19",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }, {
+        "label": "Snap Points to Grid",
+        "id": "20",
+        "parentId": "c48c040f-73c1-4a71-fa84-11b7d5901cd3"
+      }]
+    }, {
+      "label": "Polygons",
+      "id": "json/modelInfo/shapes_polygons.json",
+      "parentId": "e6984ef1-4f69-4f6e-be2b-c77f917de5a5",
+      "oid": "08211c7b-bf55-499d-ab98-6f038defd199",
+      "children": [{
+        "label": "Polygon Centroids",
+        "id": "1",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Polygon Properties",
+        "id": "2",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Convert Lines to Polygons",
+        "id": "3",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Point Statistics for Polygons",
+        "id": "4",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Polygon Dissolve",
+        "id": "5",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Convert Polygon/Line Vertices to Points",
+        "id": "6",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Polygon Shape Indices",
+        "id": "7",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Polygon-Line Intersection",
+        "id": "8",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Polygons to Edges and Nodes",
+        "id": "9",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Polygon Parts to Separate Polygons",
+        "id": "10",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Polygon Clipping",
+        "id": "11",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Polygon Self-Intersection",
+        "id": "12",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Intersect",
+        "id": "14",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Difference",
+        "id": "15",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Symmetrical Difference",
+        "id": "16",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Union",
+        "id": "17",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Update",
+        "id": "18",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Identity",
+        "id": "19",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Add Point Attributes to Polygons",
+        "id": "20",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Flatten Polygon Layer",
+        "id": "21",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }, {
+        "label": "Shared Polygon Edges",
+        "id": "22",
+        "parentId": "08211c7b-bf55-499d-ab98-6f038defd199"
+      }]
+    }, {
+      "label": "Tools",
+      "id": "json/modelInfo/shapes_tools.json",
+      "parentId": "e6984ef1-4f69-4f6e-be2b-c77f917de5a5",
+      "oid": "3114da34-df12-4ae7-e9b9-53b660fd0f49",
+      "children": [{
+        "label": "Create New Shapes Layer",
+        "id": "0",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Merge Layers",
+        "id": "2",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Select by Attributes... (Numerical Expression)",
+        "id": "3",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Select by Attributes... (String Expression)",
+        "id": "4",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Select by Location...",
+        "id": "5",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Copy Selection to New Shapes Layer",
+        "id": "6",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Delete Selection from Shapes Layer",
+        "id": "7",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Invert Selection of Shapes Layer",
+        "id": "8",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Split Shapes Layer Completely",
+        "id": "9",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Transform Shapes",
+        "id": "10",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Create Chart Layer (bars/sectors)",
+        "id": "11",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Create Graticule",
+        "id": "12",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Copy Shapes from Region",
+        "id": "13",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Copy Shapes from Region",
+        "id": "14",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Split Shapes Layer",
+        "id": "15",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Split Shapes Layer Randomly",
+        "id": "16",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Split Table/Shapes by Attribute",
+        "id": "17",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Shapes Buffer",
+        "id": "18",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Get Shapes Extents",
+        "id": "19",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "QuadTree Structure to Shapes",
+        "id": "20",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Polar to Cartesian Coordinates",
+        "id": "21",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Generate Shapes",
+        "id": "22",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Convert Vertex Type (2D/3D)",
+        "id": "23",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Merge Tables",
+        "id": "24",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Land Use Scenario Generator",
+        "id": "25",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Select Shapes from List",
+        "id": "26",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Remove Invalid Shapes",
+        "id": "27",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }, {
+        "label": "Copy Shapes",
+        "id": "28",
+        "parentId": "3114da34-df12-4ae7-e9b9-53b660fd0f49"
+      }]
+    }, {
+      "label": "Transects",
+      "id": "json/modelInfo/shapes_transect.json",
+      "parentId": "e6984ef1-4f69-4f6e-be2b-c77f917de5a5",
+      "oid": "f7320983-8834-47ca-82d5-f9c160ab854b",
+      "children": [{
+        "label": "Transect through polygon shapefile",
+        "id": "0",
+        "parentId": "f7320983-8834-47ca-82d5-f9c160ab854b"
+      }]
+    }]
+  }, {
+    "label": "Simulation",
+    "id": "Simulation",
+    "parentId": "3afc51dc-930d-4ab5-8a59-3e057b7eb086",
+    "oid": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
+    "children": [{
+      "label": "Cellular Automata",
+      "id": "json/modelInfo/sim_cellular_automata.json",
+      "parentId": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
+      "oid": "092b14f4-cbd6-40d9-e039-0afbd08a6ec3",
+      "children": [{
+        "label": "Conway's Game of Life",
+        "id": "0",
+        "parentId": "092b14f4-cbd6-40d9-e039-0afbd08a6ec3"
+      }, {
+        "label": "Wa-Tor",
+        "id": "1",
+        "parentId": "092b14f4-cbd6-40d9-e039-0afbd08a6ec3"
+      }]
+    }, {
+      "label": "Erosion",
+      "id": "json/modelInfo/sim_erosion.json",
+      "parentId": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
+      "oid": "84f7f2fb-b631-42cf-985e-8e7eeb56a0c2",
+      "children": [{
+        "label": "MMF-SAGA Soil Erosion Model",
+        "id": "0",
+        "parentId": "84f7f2fb-b631-42cf-985e-8e7eeb56a0c2"
+      }]
+    }, {
+      "label": "Fire Spreading Analysis",
+      "id": "json/modelInfo/sim_fire_spreading.json",
+      "parentId": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
+      "oid": "4093e853-7b26-422b-d4d7-ef995fb7a6c6",
+      "children": [{
+        "label": "Fire Risk Analysis",
+        "id": "0",
+        "parentId": "4093e853-7b26-422b-d4d7-ef995fb7a6c6"
+      }, {
+        "label": "Simulation",
+        "id": "1",
+        "parentId": "4093e853-7b26-422b-d4d7-ef995fb7a6c6"
+      }]
+    }, {
+      "label": "Hydrology",
+      "id": "json/modelInfo/sim_hydrology.json",
+      "parentId": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
+      "oid": "7baf9d64-4b95-4284-b867-0b69f1d5f943",
+      "children": [{
+        "label": "Soil Moisture Content",
+        "id": "0",
+        "parentId": "7baf9d64-4b95-4284-b867-0b69f1d5f943"
+      }, {
+        "label": "Overland Flow - Kinematic Wave D8",
+        "id": "1",
+        "parentId": "7baf9d64-4b95-4284-b867-0b69f1d5f943"
+      }, {
+        "label": "TOPMODEL",
+        "id": "2",
+        "parentId": "7baf9d64-4b95-4284-b867-0b69f1d5f943"
+      }, {
+        "label": "Water Retention Capacity",
+        "id": "3",
+        "parentId": "7baf9d64-4b95-4284-b867-0b69f1d5f943"
+      }, {
+        "label": "Diffuse Pollution Risk",
+        "id": "4",
+        "parentId": "7baf9d64-4b95-4284-b867-0b69f1d5f943"
+      }, {
+        "label": "Surface and Gradient",
+        "id": "5",
+        "parentId": "7baf9d64-4b95-4284-b867-0b69f1d5f943"
+      }, {
+        "label": "Concentration",
+        "id": "6",
+        "parentId": "7baf9d64-4b95-4284-b867-0b69f1d5f943"
+      }, {
+        "label": "Surface, Gradient and Concentration",
+        "id": "7",
+        "parentId": "7baf9d64-4b95-4284-b867-0b69f1d5f943"
+      }]
+    }, {
+      "label": "Hydrology:IHACRES",
+      "id": "json/modelInfo/sim_ihacres.json",
+      "parentId": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
+      "oid": "13644fb4-9bab-4cae-a9d3-b26ab7833383",
+      "children": [{
+        "label": "IHACRES Calibration (2)",
+        "id": "0",
+        "parentId": "13644fb4-9bab-4cae-a9d3-b26ab7833383"
+      }, {
+        "label": "IHACRES Version 1.0",
+        "id": "1",
+        "parentId": "13644fb4-9bab-4cae-a9d3-b26ab7833383"
+      }, {
+        "label": "IHACRES Basin",
+        "id": "2",
+        "parentId": "13644fb4-9bab-4cae-a9d3-b26ab7833383"
+      }, {
+        "label": "IHACRES Elevation Bands",
+        "id": "3",
+        "parentId": "13644fb4-9bab-4cae-a9d3-b26ab7833383"
+      }, {
+        "label": "IHACRES Elevation Bands Calibration",
+        "id": "4",
+        "parentId": "13644fb4-9bab-4cae-a9d3-b26ab7833383"
+      }]
+    }, {
+      "label": "RivFlow",
+      "id": "json/modelInfo/sim_rivflow.json",
+      "parentId": "ab1f3806-1ed8-4fd9-ff06-b6c2ca020ae9",
+      "oid": "0bf7856b-03ed-4e36-ca15-56b96cb8272c",
+      "children": [{
+        "label": "RiverBasin",
+        "id": "0",
+        "parentId": "0bf7856b-03ed-4e36-ca15-56b96cb8272c"
+      }, {
+        "label": "LandFlow Version 1.0 (build 3.5.1b)",
+        "id": "1",
+        "parentId": "0bf7856b-03ed-4e36-ca15-56b96cb8272c"
+      }, {
+        "label": "GridManipulation",
+        "id": "2",
+        "parentId": "0bf7856b-03ed-4e36-ca15-56b96cb8272c"
+      }, {
+        "label": "RiverGridGeneration",
+        "id": "3",
+        "parentId": "0bf7856b-03ed-4e36-ca15-56b96cb8272c"
+      }, {
+        "label": "GridCombination",
+        "id": "4",
+        "parentId": "0bf7856b-03ed-4e36-ca15-56b96cb8272c"
+      }]
+    }]
+  }, {
+    "label": "Spatial and Geostatistics",
+    "id": "Spatial and Geostatistics",
+    "parentId": "3afc51dc-930d-4ab5-8a59-3e057b7eb086",
+    "oid": "d7f96d42-b6c5-4984-81f6-6589cff37285",
+    "children": [{
+      "label": "Grids",
+      "id": "json/modelInfo/statistics_grid.json",
+      "parentId": "d7f96d42-b6c5-4984-81f6-6589cff37285",
+      "oid": "7a13988c-4d04-4849-dcff-dc469711aa5d",
+      "children": [{
+        "label": "Fast Representativeness",
+        "id": "0",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Residual Analysis (Grid)",
+        "id": "1",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Representativeness (Grid)",
+        "id": "2",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Radius of Variance (Grid)",
+        "id": "3",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Statistics for Grids",
+        "id": "4",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Zonal Grid Statistics",
+        "id": "5",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Directional Statistics for Single Grid",
+        "id": "6",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Global Moran's I for Grids",
+        "id": "7",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Principle Components Analysis",
+        "id": "8",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Multi-Band Variation",
+        "id": "9",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Inverse Principle Components Rotation",
+        "id": "10",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Longitudinal Grid Statistics",
+        "id": "11",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Meridional Grid Statistics",
+        "id": "12",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Save Grid Statistics to Table",
+        "id": "13",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Categorical Coincidence",
+        "id": "14",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }, {
+        "label": "Focal PCA on a Grid",
+        "id": "15",
+        "parentId": "7a13988c-4d04-4849-dcff-dc469711aa5d"
+      }]
+    }, {
+      "label": "Kriging",
+      "id": "json/modelInfo/statistics_kriging.json",
+      "parentId": "d7f96d42-b6c5-4984-81f6-6589cff37285",
+      "oid": "9904b0ee-88d7-416f-d485-8542947ce216",
+      "children": [{
+        "label": "Ordinary Kriging",
+        "id": "0",
+        "parentId": "9904b0ee-88d7-416f-d485-8542947ce216"
+      }, {
+        "label": "Simple Kriging",
+        "id": "1",
+        "parentId": "9904b0ee-88d7-416f-d485-8542947ce216"
+      }, {
+        "label": "Universal Kriging",
+        "id": "2",
+        "parentId": "9904b0ee-88d7-416f-d485-8542947ce216"
+      }, {
+        "label": "Regression Kriging",
+        "id": "3",
+        "parentId": "9904b0ee-88d7-416f-d485-8542947ce216"
+      }, {
+        "label": "Variogram (Dialog)",
+        "id": "4",
+        "parentId": "9904b0ee-88d7-416f-d485-8542947ce216"
+      }]
+    }, {
+      "label": "Points",
+      "id": "json/modelInfo/statistics_points.json",
+      "parentId": "d7f96d42-b6c5-4984-81f6-6589cff37285",
+      "oid": "60233f22-d068-4bf6-890f-7f338724ac09",
+      "children": [{
+        "label": "Variogram",
+        "id": "0",
+        "parentId": "60233f22-d068-4bf6-890f-7f338724ac09"
+      }, {
+        "label": "Variogram Cloud",
+        "id": "1",
+        "parentId": "60233f22-d068-4bf6-890f-7f338724ac09"
+      }, {
+        "label": "Variogram Surface",
+        "id": "2",
+        "parentId": "60233f22-d068-4bf6-890f-7f338724ac09"
+      }, {
+        "label": "Minimum Distance Analysis",
+        "id": "3",
+        "parentId": "60233f22-d068-4bf6-890f-7f338724ac09"
+      }, {
+        "label": "Spatial Point Pattern Analysis",
+        "id": "4",
+        "parentId": "60233f22-d068-4bf6-890f-7f338724ac09"
+      }]
+    }, {
+      "label": "Regression",
+      "id": "json/modelInfo/statistics_regression.json",
+      "parentId": "d7f96d42-b6c5-4984-81f6-6589cff37285",
+      "oid": "6075f90e-a508-4867-bbcc-5d28625ec51f",
+      "children": [{
+        "label": "Regression Analysis (Points and Predictor Grid)",
+        "id": "0",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Multiple Regression Analysis (Points and Predictor Grids)",
+        "id": "1",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Polynomial Regression",
+        "id": "2",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "GWR for Single Predictor (Gridded Model Output)",
+        "id": "3",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "GWR for Single Predictor Grid",
+        "id": "4",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "GWR for Multiple Predictors (Gridded Model Output)",
+        "id": "5",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "GWR for Multiple Predictor Grids",
+        "id": "6",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "GWR for Multiple Predictors",
+        "id": "7",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Multiple Regression Analysis (Grid and Predictor Grids)",
+        "id": "8",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Polynomial Trend from Grids",
+        "id": "9",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Trend Analysis",
+        "id": "10",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Trend Analysis (Shapes)",
+        "id": "11",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Multiple Linear Regression Analysis",
+        "id": "12",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Multiple Linear Regression Analysis (Shapes)",
+        "id": "13",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "GWR for Grid Downscaling",
+        "id": "14",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }, {
+        "label": "Zonal Multiple Regression Analysis (Points and Predictor Grids)",
+        "id": "15",
+        "parentId": "6075f90e-a508-4867-bbcc-5d28625ec51f"
+      }]
+    }]
+  }, {
+    "label": "Terrain Analysis",
+    "id": "Terrain Analysis",
+    "parentId": "3afc51dc-930d-4ab5-8a59-3e057b7eb086",
+    "oid": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+    "children": [{
+      "label": "Channels",
+      "id": "json/modelInfo/ta_channels.json",
+      "parentId": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+      "oid": "41c089ed-4bb5-43a3-83b5-2b8645da507e",
+      "children": [{
+        "label": "Channel Network",
+        "id": "0",
+        "parentId": "41c089ed-4bb5-43a3-83b5-2b8645da507e"
+      }, {
+        "label": "Watershed Basins",
+        "id": "1",
+        "parentId": "41c089ed-4bb5-43a3-83b5-2b8645da507e"
+      }, {
+        "label": "Watershed Basins (Extended)",
+        "id": "2",
+        "parentId": "41c089ed-4bb5-43a3-83b5-2b8645da507e"
+      }, {
+        "label": "Vertical Distance to Channel Network",
+        "id": "3",
+        "parentId": "41c089ed-4bb5-43a3-83b5-2b8645da507e"
+      }, {
+        "label": "Overland Flow Distance to Channel Network",
+        "id": "4",
+        "parentId": "41c089ed-4bb5-43a3-83b5-2b8645da507e"
+      }, {
+        "label": "Channel Network and Drainage Basins",
+        "id": "5",
+        "parentId": "41c089ed-4bb5-43a3-83b5-2b8645da507e"
+      }, {
+        "label": "Strahler Order",
+        "id": "6",
+        "parentId": "41c089ed-4bb5-43a3-83b5-2b8645da507e"
+      }, {
+        "label": "Valley Depth",
+        "id": "7",
+        "parentId": "41c089ed-4bb5-43a3-83b5-2b8645da507e"
+      }]
+    }, {
+      "label": "Compound Analyses",
+      "id": "json/modelInfo/ta_compound.json",
+      "parentId": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+      "oid": "7229a960-b1f5-432c-fa60-59b2b8972a98",
+      "children": [{
+        "label": "Basic Terrain Analysis",
+        "id": "0",
+        "parentId": "7229a960-b1f5-432c-fa60-59b2b8972a98"
+      }]
+    }, {
+      "label": "Hydrology",
+      "id": "json/modelInfo/ta_hydrology.json",
+      "parentId": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+      "oid": "e3d27336-cf7e-4148-8b3a-59e693c49b49",
+      "children": [{
+        "label": "Flow Accumulation (Top-Down)",
+        "id": "0",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Flow Accumulation (Recursive)",
+        "id": "1",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Flow Accumulation (Flow Tracing)",
+        "id": "2",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Upslope Area",
+        "id": "3",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Upslope Area",
+        "id": "4",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Downslope Area",
+        "id": "5",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Flow Path Length",
+        "id": "6",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Slope Length",
+        "id": "7",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Isochrones Constant Speed",
+        "id": "8",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Isochrones Variable Speed",
+        "id": "9",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Cell Balance",
+        "id": "10",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Flow Sinuosity",
+        "id": "11",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Flow Depth",
+        "id": "12",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Edge Contamination",
+        "id": "13",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "SAGA Wetness Index",
+        "id": "15",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Lake Flood",
+        "id": "16",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Lake Flood",
+        "id": "17",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Flow Accumulation (Mass-Flux Method)",
+        "id": "18",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Flow Width and Specific Catchment Area",
+        "id": "19",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Topographic Wetness Index (TWI)",
+        "id": "20",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Stream Power Index",
+        "id": "21",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "LS Factor",
+        "id": "22",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Melton Ruggedness Number",
+        "id": "23",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "TCI Low",
+        "id": "24",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "LS-Factor, Field Based",
+        "id": "25",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Slope Limited Flow Accumulation",
+        "id": "26",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }, {
+        "label": "Maximum Flow Path Length",
+        "id": "27",
+        "parentId": "e3d27336-cf7e-4148-8b3a-59e693c49b49"
+      }]
+    }, {
+      "label": "Lighting,Visibility",
+      "id": "json/modelInfo/ta_lighting.json",
+      "parentId": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+      "oid": "344befc8-6486-4a53-dc34-8b2be2e47a36",
+      "children": [{
+        "label": "Analytical Hillshading",
+        "id": "0",
+        "parentId": "344befc8-6486-4a53-dc34-8b2be2e47a36"
+      }, {
+        "label": "Visibility (single point)",
+        "id": "1",
+        "parentId": "344befc8-6486-4a53-dc34-8b2be2e47a36"
+      }, {
+        "label": "Potential Incoming Solar Radiation",
+        "id": "2",
+        "parentId": "344befc8-6486-4a53-dc34-8b2be2e47a36"
+      }, {
+        "label": "Sky View Factor",
+        "id": "3",
+        "parentId": "344befc8-6486-4a53-dc34-8b2be2e47a36"
+      }, {
+        "label": "Topographic Correction",
+        "id": "4",
+        "parentId": "344befc8-6486-4a53-dc34-8b2be2e47a36"
+      }, {
+        "label": "Topographic Openness",
+        "id": "5",
+        "parentId": "344befc8-6486-4a53-dc34-8b2be2e47a36"
+      }, {
+        "label": "Visibility (points)",
+        "id": "6",
+        "parentId": "344befc8-6486-4a53-dc34-8b2be2e47a36"
+      }, {
+        "label": "Potential Annual Insolation",
+        "id": "7",
+        "parentId": "344befc8-6486-4a53-dc34-8b2be2e47a36"
+      }]
+    }, {
+      "label": "Morphometry",
+      "id": "json/modelInfo/ta_morphometry.json",
+      "parentId": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+      "oid": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6",
+      "children": [{
+        "label": "Slope, Aspect, Curvature",
+        "id": "0",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Convergence Index",
+        "id": "1",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Convergence Index (Search Radius)",
+        "id": "2",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Surface Specific Points",
+        "id": "3",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Curvature Classification",
+        "id": "4",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Hypsometry",
+        "id": "5",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Real Surface Area",
+        "id": "6",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Morphometric Protection Index",
+        "id": "7",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Multiresolution Index of Valley Bottom Flatness (MRVBF)",
+        "id": "8",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Downslope Distance Gradient",
+        "id": "9",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Mass Balance Index",
+        "id": "10",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Effective Air Flow Heights",
+        "id": "11",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Diurnal Anisotropic Heating",
+        "id": "12",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Land Surface Temperature",
+        "id": "13",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Relative Heights and Slope Positions",
+        "id": "14",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Wind Effect (Windward / Leeward Index)",
+        "id": "15",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Terrain Ruggedness Index (TRI)",
+        "id": "16",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Vector Ruggedness Measure (VRM)",
+        "id": "17",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Topographic Position Index (TPI)",
+        "id": "18",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "TPI Based Landform Classification",
+        "id": "19",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Terrain Surface Texture",
+        "id": "20",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Terrain Surface Convexity",
+        "id": "21",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Terrain Surface Classification (Iwahashi and Pike)",
+        "id": "22",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Morphometric Features",
+        "id": "23",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Valley and Ridge Detection (Top Hat Approach)",
+        "id": "24",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Fuzzy Landform Element Classification",
+        "id": "25",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Upslope and Downslope Curvature",
+        "id": "26",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Wind Exposition Index",
+        "id": "27",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }, {
+        "label": "Multi-Scale Topographic Position Index (TPI)",
+        "id": "28",
+        "parentId": "efda93b7-5caa-426b-fe3a-3eb7d5101dc6"
+      }]
+    }, {
+      "label": "Preprocessing",
+      "id": "json/modelInfo/ta_preprocessor.json",
+      "parentId": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+      "oid": "3ed1ea29-743a-4190-9679-8642dbfef4b0",
+      "children": [{
+        "label": "Flat Detection",
+        "id": "0",
+        "parentId": "3ed1ea29-743a-4190-9679-8642dbfef4b0"
+      }, {
+        "label": "Sink Drainage Route Detection",
+        "id": "1",
+        "parentId": "3ed1ea29-743a-4190-9679-8642dbfef4b0"
+      }, {
+        "label": "Sink Removal",
+        "id": "2",
+        "parentId": "3ed1ea29-743a-4190-9679-8642dbfef4b0"
+      }, {
+        "label": "Fill Sinks (Planchon/Darboux, 2001)",
+        "id": "3",
+        "parentId": "3ed1ea29-743a-4190-9679-8642dbfef4b0"
+      }, {
+        "label": "Fill Sinks (Wang & Liu)",
+        "id": "4",
+        "parentId": "3ed1ea29-743a-4190-9679-8642dbfef4b0"
+      }, {
+        "label": "Fill Sinks XXL (Wang & Liu)",
+        "id": "5",
+        "parentId": "3ed1ea29-743a-4190-9679-8642dbfef4b0"
+      }, {
+        "label": "Burn Stream Network into DEM",
+        "id": "6",
+        "parentId": "3ed1ea29-743a-4190-9679-8642dbfef4b0"
+      }]
+    }, {
+      "label": "Profiles",
+      "id": "json/modelInfo/ta_profiles.json",
+      "parentId": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+      "oid": "df9a7f64-4451-4c3c-f311-e8549336c13b",
+      "children": [{
+        "label": "Profile",
+        "id": "0",
+        "parentId": "df9a7f64-4451-4c3c-f311-e8549336c13b"
+      }, {
+        "label": "Flow Path Profile",
+        "id": "1",
+        "parentId": "df9a7f64-4451-4c3c-f311-e8549336c13b"
+      }, {
+        "label": "Swath Profile",
+        "id": "2",
+        "parentId": "df9a7f64-4451-4c3c-f311-e8549336c13b"
+      }, {
+        "label": "Cross Profiles",
+        "id": "3",
+        "parentId": "df9a7f64-4451-4c3c-f311-e8549336c13b"
+      }, {
+        "label": "Profiles from Lines",
+        "id": "4",
+        "parentId": "df9a7f64-4451-4c3c-f311-e8549336c13b"
+      }, {
+        "label": "Profile from points",
+        "id": "5",
+        "parentId": "df9a7f64-4451-4c3c-f311-e8549336c13b"
+      }]
+    }, {
+      "label": "Slope Stability",
+      "id": "json/modelInfo/ta_slope_stability.json",
+      "parentId": "b74f0952-143b-4af7-8fa6-ad9bf4787cb9",
+      "oid": "46db7630-fe49-4555-dce9-cbdc5163b61b",
+      "children": [{
+        "label": "SAFETYFACTOR",
+        "id": "0",
+        "parentId": "46db7630-fe49-4555-dce9-cbdc5163b61b"
+      }, {
+        "label": "TOBIA",
+        "id": "1",
+        "parentId": "46db7630-fe49-4555-dce9-cbdc5163b61b"
+      }, {
+        "label": "SHALSTAB",
+        "id": "2",
+        "parentId": "46db7630-fe49-4555-dce9-cbdc5163b61b"
+      }, {
+        "label": "WETNESS",
+        "id": "3",
+        "parentId": "46db7630-fe49-4555-dce9-cbdc5163b61b"
+      }, {
+        "label": "WEDGEFAIL",
+        "id": "4",
+        "parentId": "46db7630-fe49-4555-dce9-cbdc5163b61b"
+      }, {
+        "label": "ANGMAP",
+        "id": "5",
+        "parentId": "46db7630-fe49-4555-dce9-cbdc5163b61b"
+      }]
+    }]
+  }]
+}

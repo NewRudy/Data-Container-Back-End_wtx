@@ -1,0 +1,1506 @@
+{"tools":[
+  {
+  "value": "Climate",
+  "id": "Climate",
+  "settings": {
+    "cssClasses": {
+      "expanded": "fa fa-caret-down",
+      "collapsed": "fa fa-caret-right",
+      "empty": "fa fa-caret-right disabled",
+      "leaf": "fa fa-lg"
+    },
+    "templates": {
+      "node": "<i class=\"fa fa-archive tree-node\"></i>",
+      "leaf": "<i class=\"fa fa-wrench tree-leaf\"></i>"
+    },
+    "isCollapsedOnInit": true
+  },
+  "children": [
+    {
+    "value": "Tools",
+    "id": "./lib/saga_tools/json/modelInfo/climate_tools.json",
+    "children": [{
+      "id": "0",
+      "value": "Multi Level to Surface Interpolation"
+    }, {
+      "id": "1",
+      "value": "Multi Level to Points Interpolation"
+    }, {
+      "id": "2",
+      "value": "Earth's Orbital Parameters"
+    }, {
+      "id": "3",
+      "value": "Annual Course of Daily Insolation"
+    }, {
+      "id": "4",
+      "value": "Daily Insolation over Latitude"
+    }, {
+      "id": "5",
+      "value": "Monthly Global by Latitude"
+    }, {
+      "id": "6",
+      "value": "ETpot (after Hargreaves, Table)"
+    }, {
+      "id": "7",
+      "value": "Daily to Hourly ETpot"
+    }, {
+      "id": "8",
+      "value": "ETpot (after Hargreaves, Grid)"
+    }, {
+      "id": "9",
+      "value": "Sunrise and Sunset"
+    }, {
+      "id": "10",
+      "value": "Bioclimatic Variables"
+    }, {
+      "id": "11",
+      "value": "Tree Growth Season"
+    }, {
+      "id": "12",
+      "value": "Soil Water Balance"
+    }, {
+      "id": "13",
+      "value": "Wind Effect Correction"
+    }, {
+      "id": "14",
+      "value": "Frost Change Frequency"
+    }, {
+      "id": "15",
+      "value": "Thermic Belt Classification"
+    }, {
+      "id": "16",
+      "value": "Frost Change Frequency"
+    }, {
+      "id": "17",
+      "value": "Snow Cover"
+    }, {
+      "id": "18",
+      "value": "Growing Degree Days"
+    }]
+  }]
+}, {
+  "value": "Grid",
+  "id": "Grid",
+  "settings": {
+    "cssClasses": {
+      "expanded": "fa fa-caret-down",
+      "collapsed": "fa fa-caret-right",
+      "empty": "fa fa-caret-right disabled",
+      "leaf": "fa fa-lg"
+    },
+    "templates": {
+      "node": "<i class=\"fa fa-archive tree-node\"></i>",
+      "leaf": "<i class=\"fa fa-wrench tree-leaf\"></i>"
+    },
+    "isCollapsedOnInit": true
+  },
+  "children": [{
+    "value": "Analysis",
+    "id": "./lib/saga_tools/json/modelInfo/grid_analysis.json",
+    "children": [{
+      "id": "0",
+      "value": "Accumulated Cost"
+    }, {
+      "id": "4",
+      "value": "Least Cost Path"
+    }, {
+      "id": "5",
+      "value": "Least Cost Paths"
+    }, {
+      "id": "6",
+      "value": "Change Vector Analysis"
+    }, {
+      "id": "7",
+      "value": "Covered Distance"
+    }, {
+      "id": "8",
+      "value": "Pattern Analysis"
+    }, {
+      "id": "9",
+      "value": "Layer of extreme value"
+    }, {
+      "id": "10",
+      "value": "Analytical Hierarchy Process"
+    }, {
+      "id": "11",
+      "value": "Ordered Weighted Averaging (OWA)"
+    }, {
+      "id": "12",
+      "value": "Aggregation Index"
+    }, {
+      "id": "13",
+      "value": "Cross-Classification and Tabulation"
+    }, {
+      "id": "14",
+      "value": "Soil Texture Classification"
+    }, {
+      "id": "15",
+      "value": "Fragmentation (Standard)"
+    }, {
+      "id": "16",
+      "value": "Fragmentation (Alternative)"
+    }, {
+      "id": "17",
+      "value": "Fragmentation Classes from Density and Connectivity"
+    }, {
+      "id": "18",
+      "value": "Accumulation Functions"
+    }, {
+      "id": "19",
+      "value": "IMCORR - Feature Tracking"
+    }, {
+      "id": "20",
+      "value": "Soil Texture Classification for Tables"
+    }, {
+      "id": "21",
+      "value": "Diversity of Categories"
+    }]
+  }, {
+    "value": "Calculus",
+    "id": "./lib/saga_tools/json/modelInfo/grid_calculus.json",
+    "children": [{
+      "id": "0",
+      "value": "Grid Normalisation"
+    }, {
+      "id": "1",
+      "value": "Grid Calculator"
+    }, {
+      "id": "2",
+      "value": "Grid Volume"
+    }, {
+      "id": "3",
+      "value": "Grid Difference"
+    }, {
+      "id": "4",
+      "value": "Function Plotter"
+    }, {
+      "id": "5",
+      "value": "Geometric Figures"
+    }, {
+      "id": "6",
+      "value": "Random Terrain"
+    }, {
+      "id": "7",
+      "value": "Random Field"
+    }, {
+      "id": "8",
+      "value": "Grids Sum"
+    }, {
+      "id": "9",
+      "value": "Grids Product"
+    }, {
+      "id": "10",
+      "value": "Grid Standardisation"
+    }, {
+      "id": "11",
+      "value": "Fuzzify"
+    }, {
+      "id": "12",
+      "value": "Fuzzy Intersection (AND)"
+    }, {
+      "id": "13",
+      "value": "Fuzzy Union (OR)"
+    }, {
+      "id": "14",
+      "value": "Metric Conversions"
+    }, {
+      "id": "15",
+      "value": "Gradient Vector from Cartesian to Polar Coordinates"
+    }, {
+      "id": "16",
+      "value": "Gradient Vector from Polar to Cartesian Coordinates"
+    }, {
+      "id": "17",
+      "value": "Fractal Brownian Noise"
+    }, {
+      "id": "18",
+      "value": "Grid Division"
+    }, {
+      "id": "19",
+      "value": "Spherical Harmonic Synthesis"
+    }]
+  }, {
+    "value": "Filter",
+    "id": "./lib/saga_tools/json/modelInfo/grid_filter.json",
+    "children": [{
+      "id": "0",
+      "value": "Simple Filter"
+    }, {
+      "id": "1",
+      "value": "Gaussian Filter"
+    }, {
+      "id": "2",
+      "value": "Laplacian Filter"
+    }, {
+      "id": "3",
+      "value": "Multi Direction Lee Filter"
+    }, {
+      "id": "4",
+      "value": "User Defined Filter"
+    }, {
+      "id": "5",
+      "value": "Filter Clumps"
+    }, {
+      "id": "6",
+      "value": "Majority/Minority Filter"
+    }, {
+      "id": "7",
+      "value": "DTM Filter (slope-based)"
+    }, {
+      "id": "8",
+      "value": "Morphological Filter"
+    }, {
+      "id": "9",
+      "value": "Rank Filter"
+    }, {
+      "id": "10",
+      "value": "Mesh Denoise"
+    }, {
+      "id": "11",
+      "value": "Resampling Filter"
+    }, {
+      "id": "12",
+      "value": "Geodesic Morphological Reconstruction"
+    }, {
+      "id": "13",
+      "value": "Binary Erosion-Reconstruction"
+    }, {
+      "id": "14",
+      "value": "Connectivity Analysis"
+    }, {
+      "id": "15",
+      "value": "Sieve Classes"
+    }, {
+      "id": "16",
+      "value": "Wombling (Edge Detection)"
+    }, {
+      "id": "17",
+      "value": "Wombling for Multiple Features (Edge Detection)"
+    }, {
+      "id": "18",
+      "value": "Simple Filter (Restricted to Polygons)"
+    }]
+  }, {
+    "value": "Gridding",
+    "id": "./lib/saga_tools/json/modelInfo/grid_gridding.json",
+    "children": [{
+      "id": "0",
+      "value": "Shapes to Grid"
+    }, {
+      "id": "1",
+      "value": "Inverse Distance Weighted"
+    }, {
+      "id": "2",
+      "value": "Nearest Neighbour"
+    }, {
+      "id": "3",
+      "value": "Natural Neighbour"
+    }, {
+      "id": "4",
+      "value": "Modifed Quadratic Shepard"
+    }, {
+      "id": "5",
+      "value": "Triangulation"
+    }, {
+      "id": "6",
+      "value": "Kernel Density Estimation"
+    }, {
+      "id": "7",
+      "value": "Angular Distance Weighted"
+    }, {
+      "id": "8",
+      "value": "Grid Cell Area Covered by Polygons"
+    }, {
+      "id": "9",
+      "value": "Polygons to Grid"
+    }, {
+      "id": "10",
+      "value": "Polygon Categories to Grid"
+    }]
+  }, {
+    "value": "Tools",
+    "id": "./lib/saga_tools/json/modelInfo/grid_tools.json",
+    "children": [{
+      "id": "0",
+      "value": "Resampling"
+    }, {
+      "id": "1",
+      "value": "Aggregate"
+    }, {
+      "id": "2",
+      "value": "Clip Grids"
+    }, {
+      "id": "3",
+      "value": "Mosaicking"
+    }, {
+      "id": "4",
+      "value": "Constant Grid"
+    }, {
+      "id": "5",
+      "value": "Patching"
+    }, {
+      "id": "6",
+      "value": "Close One Cell Gaps"
+    }, {
+      "id": "7",
+      "value": "Close Gaps"
+    }, {
+      "id": "8",
+      "value": "Grid Buffer"
+    }, {
+      "id": "9",
+      "value": "Threshold Buffer"
+    }, {
+      "id": "10",
+      "value": "Grid Proximity Buffer"
+    }, {
+      "id": "11",
+      "value": "Change Data Storage"
+    }, {
+      "id": "12",
+      "value": "Change Grid Values"
+    }, {
+      "id": "13",
+      "value": "Change Cell Values"
+    }, {
+      "id": "14",
+      "value": "Grid Value Request"
+    }, {
+      "id": "15",
+      "value": "Reclassify Grid Values"
+    }, {
+      "id": "16",
+      "value": "Change Grid Values - Flood Fill"
+    }, {
+      "id": "17",
+      "value": "Crop to Data"
+    }, {
+      "id": "18",
+      "value": "Invert Data/No-Data"
+    }, {
+      "id": "20",
+      "value": "Combine Grids"
+    }, {
+      "id": "21",
+      "value": "Grid Cell Index"
+    }, {
+      "id": "22",
+      "value": "Grids from classified grid and table"
+    }, {
+      "id": "23",
+      "value": "Create Grid System"
+    }, {
+      "id": "24",
+      "value": "Grid Masking"
+    }, {
+      "id": "25",
+      "value": "Close Gaps with Spline"
+    }, {
+      "id": "26",
+      "value": "Proximity Grid"
+    }, {
+      "id": "27",
+      "value": "Tiling"
+    }, {
+      "id": "28",
+      "value": "Shrink and Expand"
+    }, {
+      "id": "29",
+      "value": "Close Gaps with Stepwise Resampling"
+    }, {
+      "id": "30",
+      "value": "Transpose Grids"
+    }, {
+      "id": "31",
+      "value": "Clip Grids"
+    }, {
+      "id": "32",
+      "value": "Select Grid from List"
+    }, {
+      "id": "33",
+      "value": "Copy Grid"
+    }, {
+      "id": "34",
+      "value": "Invert Grid"
+    }, {
+      "id": "35",
+      "value": "Mirror Grid"
+    }, {
+      "id": "36",
+      "value": "Change a Grid's No-Data Value"
+    }, {
+      "id": "37",
+      "value": "Combine Classes"
+    }, {
+      "id": "38",
+      "value": "Mosaicking (Grid Collections)"
+    }]
+  }]
+}, {
+  "value": "Imagery",
+  "id": "Imagery",
+  "settings": {
+    "cssClasses": {
+      "expanded": "fa fa-caret-down",
+      "collapsed": "fa fa-caret-right",
+      "empty": "fa fa-caret-right disabled",
+      "leaf": "fa fa-lg"
+    },
+    "templates": {
+      "node": "<i class=\"fa fa-archive tree-node\"></i>",
+      "leaf": "<i class=\"fa fa-wrench tree-leaf\"></i>"
+    },
+    "isCollapsedOnInit": true
+  },
+  "children": [{
+    "value": "Classification",
+    "id": "./lib/saga_tools/json/modelInfo/imagery_classification.json",
+    "children": [{
+      "id": "0",
+      "value": "Supervised Classification for Grids"
+    }, {
+      "id": "1",
+      "value": "K-Means Clustering for Grids"
+    }, {
+      "id": "2",
+      "value": "Confusion Matrix (Two Grids)"
+    }, {
+      "id": "3",
+      "value": "Decision Tree"
+    }, {
+      "id": "4",
+      "value": "Supervised Classification for Shapes"
+    }, {
+      "id": "5",
+      "value": "Supervised Classification for Tables"
+    }, {
+      "id": "6",
+      "value": "Confusion Matrix (Polygons / Grid)"
+    }]
+  }, {
+    "value": "ISODATA Clustering",
+    "id": "./lib/saga_tools/json/modelInfo/imagery_isocluster.json",
+    "children": [{
+      "id": "0",
+      "value": "ISODATA Clustering for Grids"
+    }]
+  }, {
+    "value": "Maximum Entropy",
+    "id": "./lib/saga_tools/json/modelInfo/imagery_maxent.json",
+    "children": [{
+      "id": "0",
+      "value": "Maximum Entropy Classifcation"
+    }, {
+      "id": "1",
+      "value": "Maximum Entropy Presence Prediction"
+    }]
+  }, {
+    "value": "Photogrammetry",
+    "id": "./lib/saga_tools/json/modelInfo/imagery_photogrammetry.json",
+    "children": [{
+      "id": "0",
+      "value": "Resection (Terrestrial)"
+    }, {
+      "id": "1",
+      "value": "Colorisation (PC)"
+    }]
+  }, {
+    "value": "SVM",
+    "id": "./lib/saga_tools/json/modelInfo/imagery_svm.json",
+    "children": [{
+      "id": "0",
+      "value": "SVM Classification"
+    }]
+  }, {
+    "value": "Segmentation",
+    "id": "./lib/saga_tools/json/modelInfo/imagery_segmentation.json",
+    "children": [{
+      "id": "0",
+      "value": "Watershed Segmentation"
+    }, {
+      "id": "1",
+      "value": "Grid Skeletonization"
+    }, {
+      "id": "2",
+      "value": "Seed Generation"
+    }, {
+      "id": "3",
+      "value": "Seeded Region Growing"
+    }]
+  }, {
+    "value": "Tools",
+    "id": "./lib/saga_tools/json/modelInfo/imagery_tools.json",
+    "children": [{
+      "id": "0",
+      "value": "Vegetation Index (Distance Based)"
+    }, {
+      "id": "1",
+      "value": "Vegetation Index (Slope Based)"
+    }, {
+      "id": "2",
+      "value": "Enhanced Vegetation Index"
+    }, {
+      "id": "3",
+      "value": "Tasseled Cap Transformation"
+    }, {
+      "id": "4",
+      "value": "IHS Sharpening"
+    }, {
+      "id": "5",
+      "value": "Colour Normalized Brovey Sharpening"
+    }, {
+      "id": "6",
+      "value": "Colour Normalized Spectral Sharpening"
+    }, {
+      "id": "7",
+      "value": "Principle Components Based Image Sharpening"
+    }, {
+      "id": "8",
+      "value": "Top of Atmosphere Reflectance"
+    }, {
+      "id": "9",
+      "value": "Automated Cloud Cover Assessment"
+    }, {
+      "id": "10",
+      "value": "Landsat Import with Options"
+    }, {
+      "id": "11",
+      "value": "Textural Features"
+    }, {
+      "id": "12",
+      "value": "Local Statistical Measures"
+    }, {
+      "id": "13",
+      "value": "Universal Image Quality Index"
+    }, {
+      "id": "14",
+      "value": "Import Landsat Scene"
+    }]
+  }]
+}, {
+  "value": "Shapes",
+  "id": "Shapes",
+  "settings": {
+    "cssClasses": {
+      "expanded": "fa fa-caret-down",
+      "collapsed": "fa fa-caret-right",
+      "empty": "fa fa-caret-right disabled",
+      "leaf": "fa fa-lg"
+    },
+    "templates": {
+      "node": "<i class=\"fa fa-archive tree-node\"></i>",
+      "leaf": "<i class=\"fa fa-wrench tree-leaf\"></i>"
+    },
+    "isCollapsedOnInit": true
+  },
+  "children": [{
+    "value": "Grid Tools",
+    "id": "./lib/saga_tools/json/modelInfo/shapes_grid.json",
+    "children": [{
+      "id": "0",
+      "value": "Add Grid Values to Points"
+    }, {
+      "id": "1",
+      "value": "Add Grid Values to Shapes"
+    }, {
+      "id": "2",
+      "value": "Grid Statistics for Polygons"
+    }, {
+      "id": "3",
+      "value": "Grid Values to Points"
+    }, {
+      "id": "4",
+      "value": "Grid Values to Points (randomly)"
+    }, {
+      "id": "5",
+      "value": "Contour Lines from Grid"
+    }, {
+      "id": "6",
+      "value": "Vectorising Grid Classes"
+    }, {
+      "id": "7",
+      "value": "Clip Grid with Polygon"
+    }, {
+      "id": "8",
+      "value": "Grid Statistics for Points"
+    }, {
+      "id": "9",
+      "value": "Local Minima and Maxima"
+    }, {
+      "id": "10",
+      "value": "Grid System Extent"
+    }, {
+      "id": "11",
+      "value": "Clip Grid with Rectangle"
+    }, {
+      "id": "15",
+      "value": "Gradient Vectors from Surface"
+    }, {
+      "id": "16",
+      "value": "Gradient Vectors from Direction and Length"
+    }, {
+      "id": "17",
+      "value": "Gradient Vectors from Directional Components"
+    }, {
+      "id": "18",
+      "value": "Grid Classes Area for Polygons"
+    }]
+  }, {
+    "value": "Lines",
+    "id": "./lib/saga_tools/json/modelInfo/shapes_lines.json",
+    "children": [{
+      "id": "0",
+      "value": "Convert Polygons to Lines"
+    }, {
+      "id": "1",
+      "value": "Convert Points to Line(s)"
+    }, {
+      "id": "2",
+      "value": "Line Properties"
+    }, {
+      "id": "3",
+      "value": "Line-Polygon Intersection"
+    }, {
+      "id": "4",
+      "value": "Line Simplification"
+    }, {
+      "id": "5",
+      "value": "Line Dissolve"
+    }, {
+      "id": "6",
+      "value": "Split Lines with Lines"
+    }, {
+      "id": "7",
+      "value": "Line Smoothing"
+    }, {
+      "id": "8",
+      "value": "Split Lines at Points"
+    }, {
+      "id": "9",
+      "value": "Line Crossings"
+    }]
+  }, {
+    "value": "Points",
+    "id": "./lib/saga_tools/json/modelInfo/shapes_points.json",
+    "children": [{
+      "id": "0",
+      "value": "Convert Table to Points"
+    }, {
+      "id": "1",
+      "value": "Count Points in Polygons"
+    }, {
+      "id": "2",
+      "value": "Create Point Grid"
+    }, {
+      "id": "3",
+      "value": "Point Distances"
+    }, {
+      "id": "4",
+      "value": "Fit N Points to shape"
+    }, {
+      "id": "5",
+      "value": "Convert Lines to Points"
+    }, {
+      "id": "6",
+      "value": "Add Coordinates to Points"
+    }, {
+      "id": "7",
+      "value": "Remove Duplicate Points"
+    }, {
+      "id": "8",
+      "value": "Clip Points with Polygons"
+    }, {
+      "id": "9",
+      "value": "Separate points by direction"
+    }, {
+      "id": "10",
+      "value": "Add Polygon Attributes to Points"
+    }, {
+      "id": "11",
+      "value": "Points Filter"
+    }, {
+      "id": "12",
+      "value": "Convex Hull"
+    }, {
+      "id": "13",
+      "value": "Select Points"
+    }, {
+      "id": "14",
+      "value": "Points Thinning"
+    }, {
+      "id": "15",
+      "value": "Convert Multipoints to Points"
+    }, {
+      "id": "16",
+      "value": "Thiessen Polygons"
+    }, {
+      "id": "17",
+      "value": "Aggregate Point Observations"
+    }, {
+      "id": "18",
+      "value": "Snap Points to Points"
+    }, {
+      "id": "19",
+      "value": "Snap Points to Lines"
+    }, {
+      "id": "20",
+      "value": "Snap Points to Grid"
+    }]
+  }, {
+    "value": "Polygons",
+    "id": "./lib/saga_tools/json/modelInfo/shapes_polygons.json",
+    "children": [{
+      "id": "1",
+      "value": "Polygon Centroids"
+    }, {
+      "id": "2",
+      "value": "Polygon Properties"
+    }, {
+      "id": "3",
+      "value": "Convert Lines to Polygons"
+    }, {
+      "id": "4",
+      "value": "Point Statistics for Polygons"
+    }, {
+      "id": "5",
+      "value": "Polygon Dissolve"
+    }, {
+      "id": "6",
+      "value": "Convert Polygon/Line Vertices to Points"
+    }, {
+      "id": "7",
+      "value": "Polygon Shape Indices"
+    }, {
+      "id": "8",
+      "value": "Polygon-Line Intersection"
+    }, {
+      "id": "9",
+      "value": "Polygons to Edges and Nodes"
+    }, {
+      "id": "10",
+      "value": "Polygon Parts to Separate Polygons"
+    }, {
+      "id": "11",
+      "value": "Polygon Clipping"
+    }, {
+      "id": "12",
+      "value": "Polygon Self-Intersection"
+    }, {
+      "id": "14",
+      "value": "Intersect"
+    }, {
+      "id": "15",
+      "value": "Difference"
+    }, {
+      "id": "16",
+      "value": "Symmetrical Difference"
+    }, {
+      "id": "17",
+      "value": "Union"
+    }, {
+      "id": "18",
+      "value": "Update"
+    }, {
+      "id": "19",
+      "value": "Identity"
+    }, {
+      "id": "20",
+      "value": "Add Point Attributes to Polygons"
+    }, {
+      "id": "21",
+      "value": "Flatten Polygon Layer"
+    }, {
+      "id": "22",
+      "value": "Shared Polygon Edges"
+    }]
+  }, {
+    "value": "Tools",
+    "id": "./lib/saga_tools/json/modelInfo/shapes_tools.json",
+    "children": [{
+      "id": "0",
+      "value": "Create New Shapes Layer"
+    }, {
+      "id": "2",
+      "value": "Merge Layers"
+    }, {
+      "id": "3",
+      "value": "Select by Attributes... (Numerical Expression)"
+    }, {
+      "id": "4",
+      "value": "Select by Attributes... (String Expression)"
+    }, {
+      "id": "5",
+      "value": "Select by Location..."
+    }, {
+      "id": "6",
+      "value": "Copy Selection to New Shapes Layer"
+    }, {
+      "id": "7",
+      "value": "Delete Selection from Shapes Layer"
+    }, {
+      "id": "8",
+      "value": "Invert Selection of Shapes Layer"
+    }, {
+      "id": "9",
+      "value": "Split Shapes Layer Completely"
+    }, {
+      "id": "10",
+      "value": "Transform Shapes"
+    }, {
+      "id": "11",
+      "value": "Create Chart Layer (bars/sectors)"
+    }, {
+      "id": "12",
+      "value": "Create Graticule"
+    }, {
+      "id": "13",
+      "value": "Copy Shapes from Region"
+    }, {
+      "id": "14",
+      "value": "Copy Shapes from Region"
+    }, {
+      "id": "15",
+      "value": "Split Shapes Layer"
+    }, {
+      "id": "16",
+      "value": "Split Shapes Layer Randomly"
+    }, {
+      "id": "17",
+      "value": "Split Table/Shapes by Attribute"
+    }, {
+      "id": "18",
+      "value": "Shapes Buffer"
+    }, {
+      "id": "19",
+      "value": "Get Shapes Extents"
+    }, {
+      "id": "20",
+      "value": "QuadTree Structure to Shapes"
+    }, {
+      "id": "21",
+      "value": "Polar to Cartesian Coordinates"
+    }, {
+      "id": "22",
+      "value": "Generate Shapes"
+    }, {
+      "id": "23",
+      "value": "Convert Vertex Type (2D/3D)"
+    }, {
+      "id": "24",
+      "value": "Merge Tables"
+    }, {
+      "id": "25",
+      "value": "Land Use Scenario Generator"
+    }, {
+      "id": "26",
+      "value": "Select Shapes from List"
+    }, {
+      "id": "27",
+      "value": "Remove Invalid Shapes"
+    }, {
+      "id": "28",
+      "value": "Copy Shapes"
+    }]
+  }, {
+    "value": "Transects",
+    "id": "./lib/saga_tools/json/modelInfo/shapes_transect.json",
+    "children": [{
+      "id": "0",
+      "value": "Transect through polygon shapefile"
+    }]
+  }]
+}, {
+  "value": "Simulation",
+  "id": "Simulation",
+  "settings": {
+    "cssClasses": {
+      "expanded": "fa fa-caret-down",
+      "collapsed": "fa fa-caret-right",
+      "empty": "fa fa-caret-right disabled",
+      "leaf": "fa fa-lg"
+    },
+    "templates": {
+      "node": "<i class=\"fa fa-archive tree-node\"></i>",
+      "leaf": "<i class=\"fa fa-wrench tree-leaf\"></i>"
+    },
+    "isCollapsedOnInit": true
+  },
+  "children": [{
+    "value": "Cellular Automata",
+    "id": "./lib/saga_tools/json/modelInfo/sim_cellular_automata.json",
+    "children": [{
+      "id": "0",
+      "value": "Conway's Game of Life"
+    }, {
+      "id": "1",
+      "value": "Wa-Tor"
+    }]
+  }, {
+    "value": "Erosion",
+    "id": "./lib/saga_tools/json/modelInfo/sim_erosion.json",
+    "children": [{
+      "id": "0",
+      "value": "MMF-SAGA Soil Erosion Model"
+    }]
+  }, {
+    "value": "Fire Spreading Analysis",
+    "id": "./lib/saga_tools/json/modelInfo/sim_fire_spreading.json",
+    "children": [{
+      "id": "0",
+      "value": "Fire Risk Analysis"
+    }, {
+      "id": "1",
+      "value": "Simulation"
+    }]
+  }, {
+    "value": "Hydrology",
+    "id": "./lib/saga_tools/json/modelInfo/sim_hydrology.json",
+    "children": [{
+      "id": "0",
+      "value": "Soil Moisture Content"
+    }, {
+      "id": "1",
+      "value": "Overland Flow - Kinematic Wave D8"
+    }, {
+      "id": "2",
+      "value": "TOPMODEL"
+    }, {
+      "id": "3",
+      "value": "Water Retention Capacity"
+    }, {
+      "id": "4",
+      "value": "Diffuse Pollution Risk"
+    }, {
+      "id": "5",
+      "value": "Surface and Gradient"
+    }, {
+      "id": "6",
+      "value": "Concentration"
+    }, {
+      "id": "7",
+      "value": "Surface, Gradient and Concentration"
+    }]
+  }, {
+    "value": "Hydrology:IHACRES",
+    "id": "./lib/saga_tools/json/modelInfo/sim_ihacres.json",
+    "children": [{
+      "id": "0",
+      "value": "IHACRES Calibration (2)"
+    }, {
+      "id": "1",
+      "value": "IHACRES Version 1.0"
+    }, {
+      "id": "2",
+      "value": "IHACRES Basin"
+    }, {
+      "id": "3",
+      "value": "IHACRES Elevation Bands"
+    }, {
+      "id": "4",
+      "value": "IHACRES Elevation Bands Calibration"
+    }]
+  }, {
+    "value": "RivFlow",
+    "id": "./lib/saga_tools/json/modelInfo/sim_rivflow.json",
+    "children": [{
+      "id": "0",
+      "value": "RiverBasin"
+    }, {
+      "id": "1",
+      "value": "LandFlow Version 1.0 (build 3.5.1b)"
+    }, {
+      "id": "2",
+      "value": "GridManipulation"
+    }, {
+      "id": "3",
+      "value": "RiverGridGeneration"
+    }, {
+      "id": "4",
+      "value": "GridCombination"
+    }]
+  }]
+}, {
+  "value": "Spatial and Geostatistics",
+  "id": "Spatial and Geostatistics",
+  "settings": {
+    "cssClasses": {
+      "expanded": "fa fa-caret-down",
+      "collapsed": "fa fa-caret-right",
+      "empty": "fa fa-caret-right disabled",
+      "leaf": "fa fa-lg"
+    },
+    "templates": {
+      "node": "<i class=\"fa fa-archive tree-node\"></i>",
+      "leaf": "<i class=\"fa fa-wrench tree-leaf\"></i>"
+    },
+    "isCollapsedOnInit": true
+  },
+  "children": [{
+    "value": "Grids",
+    "id": "./lib/saga_tools/json/modelInfo/statistics_grid.json",
+    "children": [{
+      "id": "0",
+      "value": "Fast Representativeness"
+    }, {
+      "id": "1",
+      "value": "Residual Analysis (Grid)"
+    }, {
+      "id": "2",
+      "value": "Representativeness (Grid)"
+    }, {
+      "id": "3",
+      "value": "Radius of Variance (Grid)"
+    }, {
+      "id": "4",
+      "value": "Statistics for Grids"
+    }, {
+      "id": "5",
+      "value": "Zonal Grid Statistics"
+    }, {
+      "id": "6",
+      "value": "Directional Statistics for Single Grid"
+    }, {
+      "id": "7",
+      "value": "Global Moran's I for Grids"
+    }, {
+      "id": "8",
+      "value": "Principle Components Analysis"
+    }, {
+      "id": "9",
+      "value": "Multi-Band Variation"
+    }, {
+      "id": "10",
+      "value": "Inverse Principle Components Rotation"
+    }, {
+      "id": "11",
+      "value": "Longitudinal Grid Statistics"
+    }, {
+      "id": "12",
+      "value": "Meridional Grid Statistics"
+    }, {
+      "id": "13",
+      "value": "Save Grid Statistics to Table"
+    }, {
+      "id": "14",
+      "value": "Categorical Coincidence"
+    }, {
+      "id": "15",
+      "value": "Focal PCA on a Grid"
+    }]
+  }, {
+    "value": "Kriging",
+    "id": "./lib/saga_tools/json/modelInfo/statistics_kriging.json",
+    "children": [{
+      "id": "0",
+      "value": "Ordinary Kriging"
+    }, {
+      "id": "1",
+      "value": "Simple Kriging"
+    }, {
+      "id": "2",
+      "value": "Universal Kriging"
+    }, {
+      "id": "3",
+      "value": "Regression Kriging"
+    }, {
+      "id": "4",
+      "value": "Variogram (Dialog)"
+    }]
+  }, {
+    "value": "Points",
+    "id": "./lib/saga_tools/json/modelInfo/statistics_points.json",
+    "children": [{
+      "id": "0",
+      "value": "Variogram"
+    }, {
+      "id": "1",
+      "value": "Variogram Cloud"
+    }, {
+      "id": "2",
+      "value": "Variogram Surface"
+    }, {
+      "id": "3",
+      "value": "Minimum Distance Analysis"
+    }, {
+      "id": "4",
+      "value": "Spatial Point Pattern Analysis"
+    }]
+  }, {
+    "value": "Regression",
+    "id": "./lib/saga_tools/json/modelInfo/statistics_regression.json",
+    "children": [{
+      "id": "0",
+      "value": "Regression Analysis (Points and Predictor Grid)"
+    }, {
+      "id": "1",
+      "value": "Multiple Regression Analysis (Points and Predictor Grids)"
+    }, {
+      "id": "2",
+      "value": "Polynomial Regression"
+    }, {
+      "id": "3",
+      "value": "GWR for Single Predictor (Gridded Model Output)"
+    }, {
+      "id": "4",
+      "value": "GWR for Single Predictor Grid"
+    }, {
+      "id": "5",
+      "value": "GWR for Multiple Predictors (Gridded Model Output)"
+    }, {
+      "id": "6",
+      "value": "GWR for Multiple Predictor Grids"
+    }, {
+      "id": "7",
+      "value": "GWR for Multiple Predictors"
+    }, {
+      "id": "8",
+      "value": "Multiple Regression Analysis (Grid and Predictor Grids)"
+    }, {
+      "id": "9",
+      "value": "Polynomial Trend from Grids"
+    }, {
+      "id": "10",
+      "value": "Trend Analysis"
+    }, {
+      "id": "11",
+      "value": "Trend Analysis (Shapes)"
+    }, {
+      "id": "12",
+      "value": "Multiple Linear Regression Analysis"
+    }, {
+      "id": "13",
+      "value": "Multiple Linear Regression Analysis (Shapes)"
+    }, {
+      "id": "14",
+      "value": "GWR for Grid Downscaling"
+    }, {
+      "id": "15",
+      "value": "Zonal Multiple Regression Analysis (Points and Predictor Grids)"
+    }]
+  }]
+}, {
+  "value": "Terrain Analysis",
+  "id": "Terrain Analysis",
+  "settings": {
+    "cssClasses": {
+      "expanded": "fa fa-caret-down",
+      "collapsed": "fa fa-caret-right",
+      "empty": "fa fa-caret-right disabled",
+      "leaf": "fa fa-lg"
+    },
+    "templates": {
+      "node": "<i class=\"fa fa-archive tree-node\"></i>",
+      "leaf": "<i class=\"fa fa-wrench tree-leaf\"></i>"
+    },
+    "isCollapsedOnInit": true
+  },
+  "children": [{
+    "value": "Channels",
+    "id": "./lib/saga_tools/json/modelInfo/ta_channels.json",
+    "children": [{
+      "id": "0",
+      "value": "Channel Network"
+    }, {
+      "id": "1",
+      "value": "Watershed Basins"
+    }, {
+      "id": "2",
+      "value": "Watershed Basins (Extended)"
+    }, {
+      "id": "3",
+      "value": "Vertical Distance to Channel Network"
+    }, {
+      "id": "4",
+      "value": "Overland Flow Distance to Channel Network"
+    }, {
+      "id": "5",
+      "value": "Channel Network and Drainage Basins"
+    }, {
+      "id": "6",
+      "value": "Strahler Order"
+    }, {
+      "id": "7",
+      "value": "Valley Depth"
+    }]
+  }, {
+    "value": "Compound Analyses",
+    "id": "./lib/saga_tools/json/modelInfo/ta_compound.json",
+    "children": [{
+      "id": "0",
+      "value": "Basic Terrain Analysis"
+    }]
+  }, {
+    "value": "Hydrology",
+    "id": "./lib/saga_tools/json/modelInfo/ta_hydrology.json",
+    "children": [{
+      "id": "0",
+      "value": "Flow Accumulation (Top-Down)"
+    }, {
+      "id": "1",
+      "value": "Flow Accumulation (Recursive)"
+    }, {
+      "id": "2",
+      "value": "Flow Accumulation (Flow Tracing)"
+    }, {
+      "id": "3",
+      "value": "Upslope Area"
+    }, {
+      "id": "4",
+      "value": "Upslope Area"
+    }, {
+      "id": "5",
+      "value": "Downslope Area"
+    }, {
+      "id": "6",
+      "value": "Flow Path Length"
+    }, {
+      "id": "7",
+      "value": "Slope Length"
+    }, {
+      "id": "8",
+      "value": "Isochrones Constant Speed"
+    }, {
+      "id": "9",
+      "value": "Isochrones Variable Speed"
+    }, {
+      "id": "10",
+      "value": "Cell Balance"
+    }, {
+      "id": "11",
+      "value": "Flow Sinuosity"
+    }, {
+      "id": "12",
+      "value": "Flow Depth"
+    }, {
+      "id": "13",
+      "value": "Edge Contamination"
+    }, {
+      "id": "15",
+      "value": "SAGA Wetness Index"
+    }, {
+      "id": "16",
+      "value": "Lake Flood"
+    }, {
+      "id": "17",
+      "value": "Lake Flood"
+    }, {
+      "id": "18",
+      "value": "Flow Accumulation (Mass-Flux Method)"
+    }, {
+      "id": "19",
+      "value": "Flow Width and Specific Catchment Area"
+    }, {
+      "id": "20",
+      "value": "Topographic Wetness Index (TWI)"
+    }, {
+      "id": "21",
+      "value": "Stream Power Index"
+    }, {
+      "id": "22",
+      "value": "LS Factor"
+    }, {
+      "id": "23",
+      "value": "Melton Ruggedness Number"
+    }, {
+      "id": "24",
+      "value": "TCI Low"
+    }, {
+      "id": "25",
+      "value": "LS-Factor, Field Based"
+    }, {
+      "id": "26",
+      "value": "Slope Limited Flow Accumulation"
+    }, {
+      "id": "27",
+      "value": "Maximum Flow Path Length"
+    }]
+  }, {
+    "value": "Lighting,Visibility",
+    "id": "./lib/saga_tools/json/modelInfo/ta_lighting.json",
+    "children": [{
+      "id": "0",
+      "value": "Analytical Hillshading"
+    }, {
+      "id": "1",
+      "value": "Visibility (single point)"
+    }, {
+      "id": "2",
+      "value": "Potential Incoming Solar Radiation"
+    }, {
+      "id": "3",
+      "value": "Sky View Factor"
+    }, {
+      "id": "4",
+      "value": "Topographic Correction"
+    }, {
+      "id": "5",
+      "value": "Topographic Openness"
+    }, {
+      "id": "6",
+      "value": "Visibility (points)"
+    }, {
+      "id": "7",
+      "value": "Potential Annual Insolation"
+    }]
+  }, {
+    "value": "Morphometry",
+    "id": "./lib/saga_tools/json/modelInfo/ta_morphometry.json",
+    "children": [{
+      "id": "0",
+      "value": "Slope, Aspect, Curvature"
+    }, {
+      "id": "1",
+      "value": "Convergence Index"
+    }, {
+      "id": "2",
+      "value": "Convergence Index (Search Radius)"
+    }, {
+      "id": "3",
+      "value": "Surface Specific Points"
+    }, {
+      "id": "4",
+      "value": "Curvature Classification"
+    }, {
+      "id": "5",
+      "value": "Hypsometry"
+    }, {
+      "id": "6",
+      "value": "Real Surface Area"
+    }, {
+      "id": "7",
+      "value": "Morphometric Protection Index"
+    }, {
+      "id": "8",
+      "value": "Multiresolution Index of Valley Bottom Flatness (MRVBF)"
+    }, {
+      "id": "9",
+      "value": "Downslope Distance Gradient"
+    }, {
+      "id": "10",
+      "value": "Mass Balance Index"
+    }, {
+      "id": "11",
+      "value": "Effective Air Flow Heights"
+    }, {
+      "id": "12",
+      "value": "Diurnal Anisotropic Heating"
+    }, {
+      "id": "13",
+      "value": "Land Surface Temperature"
+    }, {
+      "id": "14",
+      "value": "Relative Heights and Slope Positions"
+    }, {
+      "id": "15",
+      "value": "Wind Effect (Windward / Leeward Index)"
+    }, {
+      "id": "16",
+      "value": "Terrain Ruggedness Index (TRI)"
+    }, {
+      "id": "17",
+      "value": "Vector Ruggedness Measure (VRM)"
+    }, {
+      "id": "18",
+      "value": "Topographic Position Index (TPI)"
+    }, {
+      "id": "19",
+      "value": "TPI Based Landform Classification"
+    }, {
+      "id": "20",
+      "value": "Terrain Surface Texture"
+    }, {
+      "id": "21",
+      "value": "Terrain Surface Convexity"
+    }, {
+      "id": "22",
+      "value": "Terrain Surface Classification (Iwahashi and Pike)"
+    }, {
+      "id": "23",
+      "value": "Morphometric Features"
+    }, {
+      "id": "24",
+      "value": "Valley and Ridge Detection (Top Hat Approach)"
+    }, {
+      "id": "25",
+      "value": "Fuzzy Landform Element Classification"
+    }, {
+      "id": "26",
+      "value": "Upslope and Downslope Curvature"
+    }, {
+      "id": "27",
+      "value": "Wind Exposition Index"
+    }, {
+      "id": "28",
+      "value": "Multi-Scale Topographic Position Index (TPI)"
+    }]
+  }, {
+    "value": "Preprocessing",
+    "id": "./lib/saga_tools/json/modelInfo/ta_preprocessor.json",
+    "children": [{
+      "id": "0",
+      "value": "Flat Detection"
+    }, {
+      "id": "1",
+      "value": "Sink Drainage Route Detection"
+    }, {
+      "id": "2",
+      "value": "Sink Removal"
+    }, {
+      "id": "3",
+      "value": "Fill Sinks (Planchon/Darboux, 2001)"
+    }, {
+      "id": "4",
+      "value": "Fill Sinks (Wang & Liu)"
+    }, {
+      "id": "5",
+      "value": "Fill Sinks XXL (Wang & Liu)"
+    }, {
+      "id": "6",
+      "value": "Burn Stream Network into DEM"
+    }]
+  }, {
+    "value": "Profiles",
+    "id": "./lib/saga_tools/json/modelInfo/ta_profiles.json",
+    "children": [{
+      "id": "0",
+      "value": "Profile"
+    }, {
+      "id": "1",
+      "value": "Flow Path Profile"
+    }, {
+      "id": "2",
+      "value": "Swath Profile"
+    }, {
+      "id": "3",
+      "value": "Cross Profiles"
+    }, {
+      "id": "4",
+      "value": "Profiles from Lines"
+    }, {
+      "id": "5",
+      "value": "Profile from points"
+    }]
+  }, {
+    "value": "Slope Stability",
+    "id": "./lib/saga_tools/json/modelInfo/ta_slope_stability.json",
+    "children": [{
+      "id": "0",
+      "value": "SAFETYFACTOR"
+    }, {
+      "id": "1",
+      "value": "TOBIA"
+    }, {
+      "id": "2",
+      "value": "SHALSTAB"
+    }, {
+      "id": "3",
+      "value": "WETNESS"
+    }, {
+      "id": "4",
+      "value": "WEDGEFAIL"
+    }, {
+      "id": "5",
+      "value": "ANGMAP"
+    }]
+  }]
+}]}

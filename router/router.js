@@ -9,6 +9,11 @@ const transition=require('../service/transition.js');
 const processing=require('../service/processing.js')
 
 const geoProbems=require('../service/geoProblems.js')
+
+
+const indexService=require('../service/index.js');
+
+
 //接口不可用
 //第一种接口上传数据到服务器
 exports.storageData=storageData.storage;
@@ -88,6 +93,18 @@ exports.bindProcessing=processing.bindProcessing
 exports.executePrcs=processing.executePrcs
 
 
+
+
 //注册到参与式平台
 exports.newDataIndexGSP=geoProbems.newDataIndexGSP
+
+
+
+//saga Capabilities
+exports.sagaCapabilities=processing.sagaCapabilities
+
+
+exports.indexGet=indexService.indexServiceGet;
+exports.indexPost=indexService.indexServicePost;
+
  
