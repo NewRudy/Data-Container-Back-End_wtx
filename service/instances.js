@@ -17,9 +17,14 @@ var Instances=instances.instances;
 
 //获取列表
 exports.instances=function(req,res,next){
+
+    if(!req.session.user){
+        res.send({code:-2,message:'relogin'})
+        return;
+    }
     //依据会话判断用户
     let userToken=req.session.user.token
-    
+     
     Instances.findOne({uid:req.query.uid,userToken:userToken,type:req.query.type},(err,doc)=>{
         if(err){
             res.send({code:-1,message:'instances error'})
@@ -62,6 +67,7 @@ exports.instances=function(req,res,next){
                                             return
                                         }
                                         console.log('update folder subinstance id')
+                                        
                                         res.send({code:0,data:initInstances});
                                         return;
                                     });
@@ -85,10 +91,14 @@ exports.instances=function(req,res,next){
             
         }else{
             console.log('find instances')
-            res.send({code:0,data:doc})
+             
+            res.send({code:0,data:doc._doc})
             return
         }
-    })
+    });
+
+
+
 }
 //新文件夹
 exports.newInstance=function(req,res,next){

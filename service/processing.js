@@ -244,93 +244,99 @@ exports.executePrcs=function(req,res,next){
                 const ls = cp.spawn(cfg.pythonExePath, par);//python安装路径，python脚本路径，shp路径，照片结果路径
                 ls.on('error',(err)=>{
                     console.log(`错误 ${err}`);
+                    res.send({code:-1,message:'error'});
+                    return;
                 })
                 ls.on('close', (code) => {
                     console.log(`子进程退出，退出码 ${code}`);
                   });
                 ls.stdout.on('data', (data) => {
                     console.log(`stdout: ${data}`);
-                    let python_print=`${data}`.trim()
-                    if(python_print==='ok'){
-
-
-                        fs.readdir(output,(err,f_item)=>{
-
-                            let upObj={
-                                'name':req.query.name,
-                                'userId':req.query.token,
-                                'origination':'distributedContainer',
-                                'serverNode':'china',
-                                'ogmsdata':[]        
-                            }
-                            f_item.forEach(v=>{
-                                upObj['ogmsdata'].push(fs.createReadStream(output+'/'+v))
-                            })
-                            let dataType=undefined
-                            f_item.forEach(v=>{
-                                if(v.split(".")[1]==="shp"){
-                                    dataType='shp'
-                                }else if(v.split(".")[1]==="tif"||v.split(".")[1]==="tiff"){
-                                    dataType='tiff'
-                                }
-
-                            })
-                            //拼接配置文件
-                            let udxcfg=cfg.configUdxCfg[0]+'\n'+cfg.configUdxCfg[1]+'\n'
-                            for(let i=0;i<f_item.length;i++){
-                                udxcfg+=cfg.configUdxCfg[2]+'\n'
-                            }
-                            udxcfg+=cfg.configUdxCfg[3]+'\n'
-                            udxcfg+=cfg.configUdxCfg[4]+'\n'
-                            if(dataType==="shp"){
-                                udxcfg+=templateId.shp[0]
-                            }else if(dataType=="tiff"){
-                                udxcfg+=templateId.tiff[0]
-                            }else{
-                                udxcfg+=templateId.shp[0]
-                            }
-                            udxcfg+=cfg.configUdxCfg[5]+'\n'
-                            udxcfg+=cfg.configUdxCfg[6]+'\n'
-
-
-
-                            fs.writeFileSync(output+'/config.udxcfg',udxcfg)
-
-                            upObj['ogmsdata'].push(fs.createReadStream(output+'/config.udxcfg')) 
-
-                            
-                            let options = {
-                                method : 'POST',
-                                url : transitUrl+'/data',
-                                headers : { 'Content-Type' : 'multipart/form-data' },
-                                formData : upObj
-                            };
-                            //调用数据容器上传接口
-                            let promise= new Promise((resolve, reject) => {
-                                let readStream = Request(options, (error, response, body) => {
-                                    if (!error) {
                                         
-                                        resolve({response, body})
-                                    } else {
-                                        reject(error);
-                                    }
-                                });
-                            });
-                            //返回数据下载id
-                            promise.then(function(v){
-                                //删除配置文件
-                                fs.unlinkSync(output+'/config.udxcfg',udxcfg)
+                })
+                ls.on('exit', (code) => {
+                    console.log(`子进程使用代码 ${code} 退出`);
+                    fs.readdir(output,(err,f_item)=>{
 
-                                console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
-                                let r=JSON.parse(v.body)
-                                res.send({code:0,uid:r.data.source_store_id})
-                            })
-                            
-
+                        let upObj={
+                            'name':req.query.name,
+                            'userId':req.query.token,
+                            'origination':'distributedContainer',
+                            'serverNode':'china',
+                            'ogmsdata':[]        
+                        }
+                        f_item.forEach(v=>{
+                            upObj['ogmsdata'].push(fs.createReadStream(output+'/'+v))
+                        })
+                        let dataType=undefined
+                        f_item.forEach(v=>{
+                            if(v.split(".")[1]==="shp"){
+                                dataType='shp'
+                            }else if(v.split(".")[1]==="tif"||v.split(".")[1]==="tiff"){
+                                dataType='tiff'
+                            }
 
                         })
-                    }
-                })
+                        //拼接配置文件
+                        let udxcfg=cfg.configUdxCfg[0]+'\n'+cfg.configUdxCfg[1]+'\n'
+                        for(let i=0;i<f_item.length;i++){
+                            udxcfg+=cfg.configUdxCfg[2]+'\n'
+                        }
+                        udxcfg+=cfg.configUdxCfg[3]+'\n'
+                        udxcfg+=cfg.configUdxCfg[4]+'\n'
+                        if(dataType==="shp"){
+                            udxcfg+=templateId.shp[0]
+                        }else if(dataType=="tiff"){
+                            udxcfg+=templateId.tiff[0]
+                        }else{
+                            udxcfg+=templateId.shp[0]
+                        }
+                        udxcfg+=cfg.configUdxCfg[5]+'\n'
+                        udxcfg+=cfg.configUdxCfg[6]+'\n'
+
+
+
+                        fs.writeFileSync(output+'/config.udxcfg',udxcfg)
+
+                        upObj['ogmsdata'].push(fs.createReadStream(output+'/config.udxcfg')) 
+
+                        
+                        let options = {
+                            method : 'POST',
+                            url : transitUrl+'/data',
+                            headers : { 'Content-Type' : 'multipart/form-data' },
+                            formData : upObj
+                        };
+                        //调用数据容器上传接口
+                        let promise= new Promise((resolve, reject) => {
+                            let readStream = Request(options, (error, response, body) => {
+                                if (!error) {
+                                    
+                                    resolve({response, body})
+                                } else {
+                                    reject(error);
+                                }
+                            });
+                        });
+                        //返回数据下载id
+                        promise.then(function(v){
+                            //删除配置文件
+                            fs.unlinkSync(output+'/config.udxcfg',udxcfg)
+
+                            console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
+                            let r=JSON.parse(v.body)
+                            res.send({code:0,uid:r.data.source_store_id})
+                        },(rej_err)=>{
+                            console.log(rej_err)
+                        })
+                        
+
+
+                    })
+                 
+
+                });
+                
             
             })
         })
