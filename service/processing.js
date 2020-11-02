@@ -241,23 +241,37 @@ exports.executePrcs=function(req,res,next){
                         par.push(v)
                     })
                 }
+                let pcs_stout=undefined
                 const ls = cp.spawn(cfg.pythonExePath, par);//python安装路径，python脚本路径，shp路径，照片结果路径
                 ls.on('error',(err)=>{
                     console.log(`错误 ${err}`);
-                    res.send({code:-1,message:'error'});
+                    res.send({code:-2,message:err});
                     return;
                 })
-                ls.on('close', (code) => {
-                    console.log(`子进程退出，退出码 ${code}`);
+                ls.on('close', (code) => {//exit之后
+                    console.log(`子进程close，退出码 ${code}`);
+                    
+
                   });
                 ls.stdout.on('data', (data) => {
                     console.log(`stdout: ${data}`);
+                    pcs_stout=data
                                         
                 })
+                
                 ls.on('exit', (code) => {
                     console.log(`子进程使用代码 ${code} 退出`);
                     fs.readdir(output,(err,f_item)=>{
 
+                        if(f_item.length==0){
+                            let msg={code:-2,message:'processing methods error'}
+                            if( pcs_stout!=undefined){
+                                msg.message=pcs_stout.toString('utf-8')
+                            }
+                            res.send(msg);
+                            return
+                        }
+                       
                         let upObj={
                             'name':req.query.name,
                             'userId':req.query.token,
@@ -322,10 +336,17 @@ exports.executePrcs=function(req,res,next){
                         promise.then(function(v){
                             //删除配置文件
                             fs.unlinkSync(output+'/config.udxcfg',udxcfg)
-
-                            console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
                             let r=JSON.parse(v.body)
-                            res.send({code:0,uid:r.data.source_store_id})
+                            if(r.code==-1){
+                                res.send({code:-2,message:v.msg});
+                                return
+                            }else{
+                                console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
+                               
+                                res.send({code:0,uid:r.data.source_store_id,stout:pcs_stout.toString('utf-8')})
+                                return
+                            }
+                          
                         },(rej_err)=>{
                             console.log(rej_err)
                         })
