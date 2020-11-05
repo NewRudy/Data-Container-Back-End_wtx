@@ -6,6 +6,7 @@ const session=require('express-session')
 const MongoStore = require('connect-mongo')(session)
 let server = require('http').createServer(app);
 let io = require('socket.io')(server);
+const fs=require('fs')
 
 const os = require('os');
 var bodyParser = require('body-parser');
@@ -189,6 +190,19 @@ app.use(function (err, req, res, next) {
 app.listen(config.port,()=>{
   console.log(config.port,process.pid)
   console.log("server online")
+  fs.readdir(__dirname,(err,folders)=>{
+    if(folders.indexOf('dataStorage')<0){
+      fs.mkdirSync(__dirname+'/dataStorage')
+    }
+    if(folders.indexOf('upload_processing')<0){
+      fs.mkdirSync(__dirname+'/upload_processing')
+    }
+    if(folders.indexOf('processing_result')<0){
+      fs.mkdirSync(__dirname+'/processing_result')
+    }
+  })
+
+
 });
 
 

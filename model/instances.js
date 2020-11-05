@@ -13,7 +13,9 @@ var dataSChema= new mongoose.mongoose.Schema({
             
 },{
     versionKey: false,
-    collection: "instances"
+    collection: "instances",
+    autoCreate: true
+
 });
 
 //创建model
