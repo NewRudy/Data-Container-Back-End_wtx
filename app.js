@@ -127,6 +127,7 @@ app.get('/insitudownload',router.inSituDownload)
 app.put('/authority',router.authority)
 
 
+
 //上传数据到中转服务器
 app.get('/transition',router.transition)
 
@@ -141,6 +142,13 @@ app.get('/executeprcs',router.executePrcs)
 
 //添加dataitem路径
 // app.get('/puturl',router.putUrl)
+
+//选择数据
+app.get('/chsdtne',router.chsdtne)
+//获取处理方法元数据
+app.get('/lcalpcsmeta',router.chsdtne)
+
+
 
 
 //注册到参与式平台GSP

@@ -303,8 +303,10 @@ exports.delInst=function(req,res,next){
                                 if(delFilePath.type==='file'){
                                      utils.delDir(delFilePath.meta.currentPath)
                                      fs.unlinkSync(__filename+'/../../dataStorage/'+theId+'.zip')
+                                     
                                 }
-                               
+                                
+                                
                                 console.log('DEL File',theId)
                                 res.send({code:0,data:{
                                     id:theId

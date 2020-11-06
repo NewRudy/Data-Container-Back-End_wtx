@@ -15,6 +15,7 @@ var parser = new xml2js.Parser();
 const cfg=require('../config/config.js')
 const templateId=require('../lib/data/templateIdOfVisualSolution');
 
+
 const transitUrl=cfg.transitUrl
 const bindPcsUrl=cfg.bindPcsUrl
 
@@ -56,6 +57,7 @@ exports.newProcessing=function(req,res,next){
                 type:fields.type,
                 description:fields.description,
                 authority:fields.authority,
+                paramsCount:fields.paramsCount,
                 meta:fields.meta,
                 fileList:fields.fileList.split(','),
                 storagePath: form.uploadDir,
@@ -139,6 +141,8 @@ exports.delProcessing=function(req,res,next){
 };
 exports.bindProcessing=function(req,res,next){
     instances.findOne({'list.id':req.query.id},(err,doc)=>{
+
+        doc
         let item
         for(let p of doc.list){
          if(p.id===req.query.id){
@@ -180,6 +184,9 @@ exports.bindProcessing=function(req,res,next){
                         return
                       }else if(re.code===-2){
                         res.send({code:-2,data:re.data})
+                        return
+                      }else if(re.code===-1){
+                        res.send({code:-1,data:re.message})
                         return
                       }
                     }else {
@@ -364,9 +371,67 @@ exports.executePrcs=function(req,res,next){
     })
 }
 
+exports.chsdtne=function(req,res,next){
+
+
+    let ids=req.query.dtNae.split(',')
+    let ps=[]
+    for(let id of ids){
+        let promse=instances.findOne({'list.id':id}).exec()
+        ps.push(promse)
+        
+    }
+    let re={}
+    const p=Promise.all(ps);//全部茶道结果后返回
+    p.then(docs=>{
+             
+            for(let ths_id of ids){
+                for(let doc_item of docs){
+                     
+                        for(let d of doc_item.list){
+                            if(d.id==ths_id){
+                                re[d.id]=d.name
+                            }
+                        }
+                    
+                }
+            }
+         
+        
+
+      res.send({code:0,message:re})
+      return
+
+    }).catch(function(reason){
+         console.log("err",reason)
+        res.send({code:-1,message:reason.message})
+        return
+      });
+   
+
+
+}
+
+exports.lcalpcsmeta=function(req,res,next){
+    let pcsId=req.query.pcsId
+
+    instances.findOne({type:'Processing','list.id':pcsId},(err,doc)=>{
+
+        
+        doc.list
+
+    })
+}
+
+
+
+
+
+
+
+
 
 // saga service
-
 exports.sagaCapabilities=function(req,res){
 
     
@@ -511,3 +576,4 @@ exports.executeSaga=function(req,res,next){
         if(err){res.end(err)}
     }
 }
+
