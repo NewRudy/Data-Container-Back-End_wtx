@@ -148,6 +148,9 @@ app.get('/chsdtne',router.chsdtne)
 //获取处理方法元数据
 app.get('/lcalpcsmeta',router.chsdtne)
 
+// 上传处理脚本
+app.get('/uploadpcs',router.uploadPcsMethod)
+
 
 
 
@@ -198,6 +201,7 @@ app.use(function (err, req, res, next) {
 app.listen(config.port,()=>{
   console.log(config.port,process.pid)
   console.log("server online")
+  // 初始化项目时初始化文件夹
   fs.readdir(__dirname,(err,folders)=>{
     if(folders.indexOf('dataStorage')<0){
       fs.mkdirSync(__dirname+'/dataStorage')
@@ -207,6 +211,9 @@ app.listen(config.port,()=>{
     }
     if(folders.indexOf('processing_result')<0){
       fs.mkdirSync(__dirname+'/processing_result')
+    }
+    if(folders.indexOf('service_migration_tep')<0){
+      fs.mkdirSync(__dirname+'/service_migration_tep')
     }
   })
 

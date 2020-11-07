@@ -95,6 +95,8 @@ exports.executePrcs=processing.executePrcs
 exports.chsdtne=processing.chsdtne;
 exports.lcalpcsmeta=processing.lcalpcsmeta
 
+exports.uploadPcsMethod=processing.uploadPcsMethod
+
 
 //注册到参与式平台
 exports.newDataIndexGSP=geoProbems.newDataIndexGSP
