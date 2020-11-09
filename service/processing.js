@@ -438,7 +438,7 @@ exports.uploadPcsMethod=function(req,res,next){
             }
         }
 
-        
+         
 
         let upObj={
             'name':serviceItem.name,
@@ -482,7 +482,7 @@ exports.uploadPcsMethod=function(req,res,next){
                     return
                 }else{
                     console.log('service migration id return')
-                   
+                    fs.unlinkSync(__dirname+'/../service_migration_tep/'+serviceItem.id+'.zip')
                     res.send({code:0,uid:r.data.source_store_id})
                     return
                 }
