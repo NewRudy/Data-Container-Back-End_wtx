@@ -170,6 +170,15 @@ app.get('/ogms',router.indexGet)
 app.post('/ogms',router.indexPost)
 
 
+
+
+
+//sdk api
+
+app.get('/availablePcs',router.availableServices)
+
+
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {
 

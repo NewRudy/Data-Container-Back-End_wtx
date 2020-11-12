@@ -102,10 +102,15 @@ exports.uploadPcsMethod=processing.uploadPcsMethod
 exports.newDataIndexGSP=geoProbems.newDataIndexGSP
 
 
+// sdk api
+exports.availableServices=processing.availableServices
+
+
+
+
 
 //saga Capabilities
 exports.sagaCapabilities=processing.sagaCapabilities
-
 
 exports.indexGet=indexService.indexServiceGet;
 exports.indexPost=indexService.indexServicePost;

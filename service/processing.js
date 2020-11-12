@@ -505,6 +505,38 @@ exports.uploadPcsMethod=function(req,res,next){
 
 
 
+exports.availableServices=function(req,res,next){
+
+
+
+    instances.find({type:req.query.type},(err,docs)=>{
+        
+        if(err){
+            res.send({code:-1,data:err})
+            return
+        }
+        
+        if(docs.length==0){
+            res.send({code:0,data:''})
+            return
+        }
+        let redata=[]
+        for(let doc of docs){
+            doc.list.forEach(v=>{
+                let re={}
+                re['name']=v.name;
+                re['id']=v.id 
+                re['dataSet']=v.relatedData
+                re['desc']=v.description
+                re['date']=v.date
+                redata.push(re)
+            })
+        }
+        res.send({code:0,data:redata})
+        return
+    })
+}
+
 
 
 
