@@ -529,9 +529,16 @@ exports.availableServices=function(req,res,next){
                 re['dataSet']=v.relatedData
                 re['desc']=v.description
                 re['date']=v.date
+                let xmlFile=v.fileList[0].split('.')[1]=='xml'?v.fileList[0]:v.fileList[1]
+              
+                let xml=fs.readFileSync(v.storagePath+'/'+xmlFile);
+                re['xml']=xml;
                 redata.push(re)
+
             })
         }
+        
+
         res.send({code:0,data:redata})
         return
     })
@@ -543,15 +550,12 @@ exports.exeWithOtherData=function(req,res,next){
 
     let downLoadUrl=transitUrl+'/data?uid='+dataIdinCont
 
-    let options = {
-        method : 'GET',
-        url : downLoadUrl,
-    };
+    
 
-    let saveDist=__dirname+'/../temp/'+dataIdinCont+'.zip'
+    let saveDist=__dirname+'/../temp/'+dataIdinCont
     //调用数据容器上传接口
     let promise= new Promise((resolve, reject) => {
-         // TODO: 处理下载流数据到本地
+         //  处理下载流数据到本地
          let stream = fs.createWriteStream(saveDist);
          request(downLoadUrl).pipe(stream).on("close", function (err) {
           if(err){
@@ -564,7 +568,9 @@ exports.exeWithOtherData=function(req,res,next){
     });
     //返回数据下载id
     promise.then(function(dist){
-
+        
+        console.log(dist)
+        //TODO:添加参数，判断是否时zip数据，还是单文件数据 
         compressing.zip.uncompress(saveDist, __dirname+'/../temp/'+dataIdinCont)
         .then(()=>{
             // 处理下载后解压的数据
@@ -589,7 +595,10 @@ exports.exeWithOtherData=function(req,res,next){
                 input=forward.replace(/%5C/g,'/')
 
                 let output=__dirname+'/../temp/out_'+dataIdinCont
-                
+                if(fs.existsSync(output)){
+                    // 如果存在就删除，不过一般不会
+                    utils.delDir(output)
+                }
                 let mkdirPromise=fsPromises.mkdir(output)
                 output=path.normalize(output)
                 forward=output.replace(/\\/g,'%5C')
@@ -745,6 +754,9 @@ exports.exeWithOtherData=function(req,res,next){
 
             
 
+        })
+        .catch(err=>{
+            console.log(err)
         })
 
         
