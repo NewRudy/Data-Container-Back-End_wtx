@@ -69,3 +69,7 @@ https://documenter.getpostman.com/view/9819382/SzYbwc3b?version=latest
 ## 样例
 
 参考项目中测试可视化数据的配置文件书写
+
+# 注意
+
+启动服务时配置python环境

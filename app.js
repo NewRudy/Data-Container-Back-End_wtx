@@ -174,10 +174,10 @@ app.post('/ogms',router.indexPost)
 
 
 //sdk api
-
+// 当前节点可用处理服务
 app.get('/availablePcs',router.availableServices)
-
-
+// 基于已有数据，调用本地处理
+app.get('/exewithotherdata',router.exeWithOtherData)
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {

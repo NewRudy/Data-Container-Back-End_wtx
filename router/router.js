@@ -105,7 +105,7 @@ exports.newDataIndexGSP=geoProbems.newDataIndexGSP
 // sdk api
 exports.availableServices=processing.availableServices
 
-
+exports.exeWithOtherData=processing.exeWithOtherData
 
 
 
