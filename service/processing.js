@@ -16,7 +16,7 @@ const cfg=require('../config/config.js')
 const templateId=require('../lib/data/templateIdOfVisualSolution');
 
 const compressing = require('compressing');
-const FileType = require('file-type');
+
 
 const transitUrl=cfg.transitUrl
 const bindPcsUrl=cfg.bindPcsUrl
@@ -560,32 +560,38 @@ exports.exeWithOtherData=function(req,res,next){
     //调用数据容器上传接口
     let promise= new Promise((resolve, reject) => {
          //  处理下载流数据到本地
-         let stream = fs.createWriteStream(saveDist);
-         request(downLoadUrl).pipe(stream).on("close", function (err) {
+         
+          
 
-            if(err){
-                reject(err)
-            }else{
+            
                 request(dataInfo,(err,res,body)=>{
                     if(res.statusCode==200){
                         
                         let reJson=JSON.parse(res.body)
                         let suffix=reJson.message.singleFileName.split('.')[1]
-                        fs.renameSync(saveDist, saveDist+'.'+suffix)
-                        let obj={
-                            type:suffix,
-                            dist:saveDist+'.'+suffix,
-                            fileName:reJson.message.singleFileName
-                        }
-                        resolve(obj)
+                        let stream = fs.createWriteStream(saveDist+'.'+suffix);
+                        request(downLoadUrl).pipe(stream).on("close", function (err2) {
+
+                            // fs.renameSync(saveDist, saveDist+'.'+suffix)
+                            if(err2){
+                                reject(err2)
+                            }
+                            let obj={
+                                type:suffix,
+                                dist:saveDist+'.'+suffix,
+                                fileName:reJson.message.singleFileName
+                            }
+                            resolve(obj)
+                        })
                      
                     }
 
                 })
-            }
+           
             
-         })
-    });
+         
+         
+    })
     //返回数据下载id
     promise.then(function(fileInfo){
 
@@ -817,7 +823,7 @@ exports.exeWithOtherData=function(req,res,next){
     
                             let par= [ py_script_path,input,output]
                             //将参数数组填入
-                            if(req.query.params!=''){
+                            if(req.query.params&&req.query.params!=''){
                                 let r=req.query.params.split(',')
                                 r.forEach(v=>{
                                     par.push(v)
