@@ -49,6 +49,9 @@ exports.ogmsDataUp=storageData.ogmsDataUp;
 //数据上传
 exports.ogmsDataDown=storageData.ogmsDataDown;
 
+// 数据类型
+exports.iszip=storageData.iszip;
+
 //删除数据
 exports.delete=storageData.del;
 

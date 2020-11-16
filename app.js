@@ -68,6 +68,9 @@ app.post('/data',router.ogmsDataUp)
 //数据下载
 app.get('/data',router.ogmsDataDown)
 
+// 数据类型
+app.get('/iszip',router.iszip)
+
 //删除数据
 app.delete('/del',router.delete);
 

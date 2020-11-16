@@ -16,6 +16,7 @@ const cfg=require('../config/config.js')
 const templateId=require('../lib/data/templateIdOfVisualSolution');
 
 const compressing = require('compressing');
+const FileType = require('file-type');
 
 const transitUrl=cfg.transitUrl
 const bindPcsUrl=cfg.bindPcsUrl
@@ -505,11 +506,11 @@ exports.uploadPcsMethod=function(req,res,next){
 
 
 
-exports.availableServices=function(req,res,next){
+exports.availableServices= function(req,res,next){
 
 
 
-    instances.find({type:req.query.type},(err,docs)=>{
+    instances.find({type:req.query.type},async function(err,docs){
         
         if(err){
             res.send({code:-1,data:err})
@@ -530,25 +531,28 @@ exports.availableServices=function(req,res,next){
                 re['desc']=v.description
                 re['date']=v.date
                 let xmlFile=v.fileList[0].split('.')[1]=='xml'?v.fileList[0]:v.fileList[1]
-              
+                
                 let xml=fs.readFileSync(v.storagePath+'/'+xmlFile);
                 re['xml']=xml;
                 redata.push(re)
 
             })
         }
-        
-
         res.send({code:0,data:redata})
         return
     })
 }
+
+ 
+ 
 
 exports.exeWithOtherData=function(req,res,next){
 
     let dataIdinCont=req.query.contDtId
 
     let downLoadUrl=transitUrl+'/data?uid='+dataIdinCont
+
+    let dataInfo=transitUrl+'/info?uid='+dataIdinCont
 
     
 
@@ -558,207 +562,434 @@ exports.exeWithOtherData=function(req,res,next){
          //  处理下载流数据到本地
          let stream = fs.createWriteStream(saveDist);
          request(downLoadUrl).pipe(stream).on("close", function (err) {
-          if(err){
-              reject(err)
-          }else{
-            resolve(saveDist)
-          }
-             
+
+            if(err){
+                reject(err)
+            }else{
+                request(dataInfo,(err,res,body)=>{
+                    if(res.statusCode==200){
+                        
+                        let reJson=JSON.parse(res.body)
+                        let suffix=reJson.message.singleFileName.split('.')[1]
+                        fs.renameSync(saveDist, saveDist+'.'+suffix)
+                        let obj={
+                            type:suffix,
+                            dist:saveDist+'.'+suffix
+                        }
+                        resolve(obj)
+                     
+                    }
+
+                })
+            }
+            
          })
     });
     //返回数据下载id
-    promise.then(function(dist){
+    promise.then(function(fileInfo){
+
+
         
-        console.log(dist)
-        //TODO:添加参数，判断是否时zip数据，还是单文件数据 
-        compressing.zip.uncompress(saveDist, __dirname+'/../temp/'+dataIdinCont)
-        .then(()=>{
-            // 处理下载后解压的数据
+        console.log(fileInfo.dist)
+
+        //判断是否是zip数据，还是单文件数据，因为外部数据源有者两种情况 
+        if(fileInfo.type=='zip'){
+            // 处理下载后的zip数据
+        
+            compressing.zip.uncompress(fileInfo.dist, __dirname+'/../temp/'+dataIdinCont)
+            .then(()=>{
+                
 
 
-            instances.findOne({type:'Processing','list.id':req.query.pcsId},(err,doc)=>{
-                let py_script_path=undefined
-                let py_script_dir=undefined
-                let py_script=undefined
+                instances.findOne({type:'Processing','list.id':req.query.pcsId},(err,doc)=>{
+                    let py_script_path=undefined
+                    let py_script_dir=undefined
+                    let py_script=undefined
 
-                for(let it of doc.list){
-                    if(it.id==req.query.pcsId){
-                        py_script_dir=it.storagePath
-                        py_script= it.fileList[0].split('.')[1]=='py'?it.fileList[0]:it.fileList[1]
-                        break
+                    for(let it of doc.list){
+                        if(it.id==req.query.pcsId){
+                            py_script_dir=it.storagePath
+                            py_script= it.fileList[0].split('.')[1]=='py'?it.fileList[0]:it.fileList[1]
+                            break
+                        }
                     }
-                }
-                py_script_path=py_script_dir+'/'+py_script
+                    py_script_path=py_script_dir+'/'+py_script
 
-                let input=path.normalize(__dirname+'/../temp/'+dataIdinCont)
-                let forward=input.replace(/\\/g,'%5C')
-                input=forward.replace(/%5C/g,'/')
+                    let input=path.normalize(__dirname+'/../temp/'+dataIdinCont)
+                    let forward=input.replace(/\\/g,'%5C')
+                    input=forward.replace(/%5C/g,'/')
 
-                let output=__dirname+'/../temp/out_'+dataIdinCont
-                if(fs.existsSync(output)){
-                    // 如果存在就删除，不过一般不会
-                    utils.delDir(output)
-                }
-                let mkdirPromise=fsPromises.mkdir(output)
-                output=path.normalize(output)
-                forward=output.replace(/\\/g,'%5C')
-                output=forward.replace(/%5C/g,'/')
-                mkdirPromise.then((v)=>{
-
-                    let par= [ py_script_path,input,output]
-                    //将参数数组填入
-                    if(req.query.params!=''){
-                        let r=req.query.params.split(',')
-                        r.forEach(v=>{
-                            par.push(v)
-                        })
+                    let output=__dirname+'/../temp/out_'+dataIdinCont
+                    if(fs.existsSync(output)){
+                        // 如果存在就删除，不过一般不会
+                        utils.delDir(output)
                     }
-                    let pcs_stout=undefined
-                    const ls = cp.spawn(cfg.pythonExePath, par);//python安装路径，python脚本路径，shp路径，照片结果路径
-                    
-                    ls.on('exit', (code) => {
-                        console.log(`子进程使用代码 ${code} 退出`);
-                        fs.readdir(output,(err,f_item)=>{
-    
-                            if(f_item.length==0){
-                                let msg={code:-2,message:'processing methods error'}
-                                if( pcs_stout!=undefined){
-                                    msg.message=pcs_stout.toString('utf-8')
-                                }
-                                res.send(msg);
-                                return
-                            }
-                           
-                            let upObj={
-                                'name':dataIdinCont,
-                                'userId':req.query.token,
-                                'origination':'distributedContainer',
-                                'serverNode':'china',
-                                'ogmsdata':[]        
-                            }
-                            f_item.forEach(v=>{
-                                upObj['ogmsdata'].push(fs.createReadStream(output+'/'+v))
-                            })
-                            let dataType=undefined
-                            f_item.forEach(v=>{
-                                if(v.split(".")[1]==="shp"){
-                                    dataType='shp'
-                                }else if(v.split(".")[1]==="tif"||v.split(".")[1]==="tiff"){
-                                    dataType='tiff'
-                                }
-    
-                            })
-                            //拼接配置文件
-                            let udxcfg=cfg.configUdxCfg[0]+'\n'+cfg.configUdxCfg[1]+'\n'
-                            for(let i=0;i<f_item.length;i++){
-                                udxcfg+=cfg.configUdxCfg[2]+'\n'
-                            }
-                            udxcfg+=cfg.configUdxCfg[3]+'\n'
-                            udxcfg+=cfg.configUdxCfg[4]+'\n'
-                            if(dataType==="shp"){
-                                udxcfg+=templateId.shp[0]
-                            }else if(dataType=="tiff"){
-                                udxcfg+=templateId.tiff[0]
-                            }else{
-                                udxcfg+=templateId.shp[0]
-                            }
-                            udxcfg+=cfg.configUdxCfg[5]+'\n'
-                            udxcfg+=cfg.configUdxCfg[6]+'\n'
-    
-    
-    
-                            fs.writeFileSync(output+'/config.udxcfg',udxcfg)
-    
-                            upObj['ogmsdata'].push(fs.createReadStream(output+'/config.udxcfg')) 
-    
-                            
-                            let options = {
-                                method : 'POST',
-                                url : transitUrl+'/data',
-                                headers : { 'Content-Type' : 'multipart/form-data' },
-                                formData : upObj
-                            };
-                            //调用数据容器上传接口
-                            let promise= new Promise((resolve, reject) => {
-                                let readStream = Request(options, (error, response, body) => {
-                                    if (!error) {
-                                        
-                                        resolve({response, body})
-                                    } else {
-                                        reject(error);
-                                    }
-                                });
-                            });
-                            //返回数据下载id
-                            promise.then(function(v){
-                                //删除配置文件
-                                fs.unlinkSync(output+'/config.udxcfg',udxcfg)
-                                
-                                // 删除处理数据
-                                utils.delDir(output)//数据处理输出文件夹
-                                fs.unlinkSync(saveDist)//下载的外部数据压缩包
-                                utils.delDir(input)//解压后的外部数据文件夹
+                    let mkdirPromise=fsPromises.mkdir(output)
+                    output=path.normalize(output)
+                    forward=output.replace(/\\/g,'%5C')
+                    output=forward.replace(/%5C/g,'/')
+                    mkdirPromise.then((v)=>{
 
-
-
-                                let r=JSON.parse(v.body)
-                                if(r.code==-1){
-                                    res.send({code:-2,message:v.msg});
-                                    return
-                                }else{
-                                    console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
-                                   
-                                    res.send({code:0,uid:r.data.source_store_id,stout:pcs_stout.toString('utf-8')})
-                                    return
-                                }
-                              
-                            },(rej_err)=>{
-                                console.log(rej_err)
+                        let par= [ py_script_path,input,output]
+                        //将参数数组填入
+                        if(req.query.params!=''){
+                            let r=req.query.params.split(',')
+                            r.forEach(v=>{
+                                par.push(v)
                             })
-                            
-    
-    
-                        })
-                     
-    
-                    });
-                    
-                    
-                    
-                    ls.on('error',(err)=>{
-                        console.log(`错误 ${err}`);
-                        res.send({code:-2,message:(err).toString()});
-                        return;
-                    })
-                    ls.on('close', (code) => {//exit之后
-                        console.log(`子进程close，退出码 ${code}`);
+                        }
+                        let pcs_stout=undefined
+                        const ls = cp.spawn(cfg.pythonExePath, par);//python安装路径，python脚本路径，shp路径，照片结果路径
                         
-                      });
-                      ls.stdout.on('data', (data) => {
-                        console.log(`stdout: ${data}`);
-                        pcs_stout=data
+                        ls.on('exit', (code) => {
+                            console.log(`子进程使用代码 ${code} 退出`);
+                            fs.readdir(output,(err,f_item)=>{
+        
+                                if(f_item.length==0){
+                                    let msg={code:-2,message:'processing methods error'}
+                                    if( pcs_stout!=undefined){
+                                        msg.message=pcs_stout.toString('utf-8')
+                                    }
+                                    res.send(msg);
+                                    return
+                                }
+                            
+                                let upObj={
+                                    'name':dataIdinCont,
+                                    'userId':req.query.token,
+                                    'origination':'distributedContainer',
+                                    'serverNode':'china',
+                                    'ogmsdata':[]        
+                                }
+                                f_item.forEach(v=>{
+                                    upObj['ogmsdata'].push(fs.createReadStream(output+'/'+v))
+                                })
+                                let dataType=undefined
+                                f_item.forEach(v=>{
+                                    if(v.split(".")[1]==="shp"){
+                                        dataType='shp'
+                                    }else if(v.split(".")[1]==="tif"||v.split(".")[1]==="tiff"){
+                                        dataType='tiff'
+                                    }
+        
+                                })
+                                //拼接配置文件
+                                let udxcfg=cfg.configUdxCfg[0]+'\n'+cfg.configUdxCfg[1]+'\n'
+                                for(let i=0;i<f_item.length;i++){
+                                    udxcfg+=cfg.configUdxCfg[2]+'\n'
+                                }
+                                udxcfg+=cfg.configUdxCfg[3]+'\n'
+                                udxcfg+=cfg.configUdxCfg[4]+'\n'
+                                if(dataType==="shp"){
+                                    udxcfg+=templateId.shp[0]
+                                }else if(dataType=="tiff"){
+                                    udxcfg+=templateId.tiff[0]
+                                }else{
+                                    udxcfg+=templateId.shp[0]
+                                }
+                                udxcfg+=cfg.configUdxCfg[5]+'\n'
+                                udxcfg+=cfg.configUdxCfg[6]+'\n'
+        
+        
+        
+                                fs.writeFileSync(output+'/config.udxcfg',udxcfg)
+        
+                                upObj['ogmsdata'].push(fs.createReadStream(output+'/config.udxcfg')) 
+        
+                                
+                                let options = {
+                                    method : 'POST',
+                                    url : transitUrl+'/data',
+                                    headers : { 'Content-Type' : 'multipart/form-data' },
+                                    formData : upObj
+                                };
+                                //调用数据容器上传接口
+                                let promise= new Promise((resolve, reject) => {
+                                    let readStream = Request(options, (error, response, body) => {
+                                        if (!error) {
                                             
+                                            resolve({response, body})
+                                        } else {
+                                            reject(error);
+                                        }
+                                    });
+                                });
+                                //返回数据下载id
+                                promise.then(function(v){
+                                    //删除配置文件
+                                    fs.unlinkSync(output+'/config.udxcfg',udxcfg)
+                                    
+                                    // 删除处理数据
+                                    utils.delDir(output)//数据处理输出文件夹
+                                    fs.unlinkSync(fileInfo.dist)//下载的外部数据文件
+                                    utils.delDir(input)//解压后的外部数据文件夹
+
+
+
+                                    let r=JSON.parse(v.body)
+                                    if(r.code==-1){
+                                        res.send({code:-2,message:v.msg});
+                                        return
+                                    }else{
+                                        console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
+                                    
+                                        res.send({code:0,uid:r.data.source_store_id,stout:pcs_stout.toString('utf-8')})
+                                        return
+                                    }
+                                
+                                },(rej_err)=>{
+                                    console.log(rej_err)
+                                })
+                                
+        
+        
+                            })
+                        
+        
+                        });
+                        
+                        
+                        
+                        ls.on('error',(err)=>{
+                            console.log(`错误 ${err}`);
+                            res.send({code:-2,message:(err).toString()});
+                            return;
+                        })
+                        ls.on('close', (code) => {//exit之后
+                            console.log(`子进程close，退出码 ${code}`);
+                            
+                        });
+                        ls.stdout.on('data', (data) => {
+                            console.log(`stdout: ${data}`);
+                            pcs_stout=data
+                                                
+                        })
+
+
                     })
+        
 
 
                 })
+
+            })//end compressing
+            .catch(err=>{
+                console.log(err)
+            })
+        }else{
+            // 处理下载后的单文件
+            fs.mkdir(__dirname+'/../temp/'+dataIdinCont,(err)=>{
+                fs.copyFile(fileInfo.dist,__dirname+'/../temp/'+dataIdinCont+'/'+dataIdinCont+'.'+fileInfo.type , ()=>{
+
+                    
+
+                    instances.findOne({type:'Processing','list.id':req.query.pcsId},(err,doc)=>{
+                        
+                        // 从库里拿到py文件路径
+                        let py_script_path=undefined
+                        let py_script_dir=undefined
+                        let py_script=undefined
+    
+                        for(let it of doc.list){
+                            if(it.id==req.query.pcsId){
+                                py_script_dir=it.storagePath
+                                py_script= it.fileList[0].split('.')[1]=='py'?it.fileList[0]:it.fileList[1]
+                                break
+                            }
+                        }
+                        py_script_path=py_script_dir+'/'+py_script
+                        //输入输出路径指定
+                        let input=path.normalize(__dirname+'/../temp/'+dataIdinCont)
+                        let forward=input.replace(/\\/g,'%5C')
+                        input=forward.replace(/%5C/g,'/')
+    
+                        let output=__dirname+'/../temp/out_'+dataIdinCont
+                        if(fs.existsSync(output)){
+                            // 如果存在就删除，不过一般不会
+                            utils.delDir(output)
+                        }
+                        let mkdirPromise=fsPromises.mkdir(output)
+                        output=path.normalize(output)
+                        forward=output.replace(/\\/g,'%5C')
+                        output=forward.replace(/%5C/g,'/')
+                        mkdirPromise.then((v)=>{
+    
+                            let par= [ py_script_path,input,output]
+                            //将参数数组填入
+                            if(req.query.params!=''){
+                                let r=req.query.params.split(',')
+                                r.forEach(v=>{
+                                    par.push(v)
+                                })
+                            }
+                            let pcs_stout=undefined
+                            const ls = cp.spawn(cfg.pythonExePath, par);//python安装路径，python脚本路径，shp路径，照片结果路径
+                            
+                            ls.on('exit', (code) => {
+                                console.log(`子进程使用代码 ${code} 退出`);
+                                fs.readdir(output,(err,f_item)=>{
+            
+                                    if(f_item.length==0){
+                                        let msg={code:-2,message:'processing methods error'}
+                                        if( pcs_stout!=undefined){
+                                            msg.message=pcs_stout.toString('utf-8')
+                                        }
+                                        res.send(msg);
+                                        return
+                                    }
+                                
+                                    let upObj={
+                                        'name':dataIdinCont,
+                                        'userId':req.query.token,
+                                        'origination':'distributedContainer',
+                                        'serverNode':'china',
+                                        'ogmsdata':[]        
+                                    }
+                                    f_item.forEach(v=>{
+                                        upObj['ogmsdata'].push(fs.createReadStream(output+'/'+v))
+                                    })
+                                    let dataType=undefined
+                                    f_item.forEach(v=>{
+                                        if(v.split(".")[1]==="shp"){
+                                            dataType='shp'
+                                        }else if(v.split(".")[1]==="tif"||v.split(".")[1]==="tiff"){
+                                            dataType='tiff'
+                                        }
+            
+                                    })
+                                    //拼接配置文件
+                                    let udxcfg=cfg.configUdxCfg[0]+'\n'+cfg.configUdxCfg[1]+'\n'
+                                    for(let i=0;i<f_item.length;i++){
+                                        udxcfg+=cfg.configUdxCfg[2]+'\n'
+                                    }
+                                    udxcfg+=cfg.configUdxCfg[3]+'\n'
+                                    udxcfg+=cfg.configUdxCfg[4]+'\n'
+                                    if(dataType==="shp"){
+                                        udxcfg+=templateId.shp[0]
+                                    }else if(dataType=="tiff"){
+                                        udxcfg+=templateId.tiff[0]
+                                    }else{
+                                        udxcfg+=templateId.shp[0]
+                                    }
+                                    udxcfg+=cfg.configUdxCfg[5]+'\n'
+                                    udxcfg+=cfg.configUdxCfg[6]+'\n'
+            
+            
+            
+                                    fs.writeFileSync(output+'/config.udxcfg',udxcfg)
+            
+                                    upObj['ogmsdata'].push(fs.createReadStream(output+'/config.udxcfg')) 
+            
+                                    
+                                    let options = {
+                                        method : 'POST',
+                                        url : transitUrl+'/data',
+                                        headers : { 'Content-Type' : 'multipart/form-data' },
+                                        formData : upObj
+                                    };
+                                    //调用数据容器上传接口
+                                    let promise= new Promise((resolve, reject) => {
+                                        let readStream = Request(options, (error, response, body) => {
+                                            if (!error) {
+                                                
+                                                resolve({response, body})
+                                            } else {
+                                                reject(error);
+                                            }
+                                        });
+                                    });
+                                    //返回数据下载id
+                                    promise.then(function(v){
+                                        //删除配置文件
+                                        fs.unlinkSync(output+'/config.udxcfg',udxcfg)
+                                        
+                                        // 删除处理数据
+                                        utils.delDir(output)//数据处理输出文件夹
+                                        fs.unlinkSync(fileInfo.dist)//下载的外部数据文件
+                                        utils.delDir(input)//解压后的外部数据文件夹
+    
+    
+    
+                                        let r=JSON.parse(v.body)
+                                        if(r.code==-1){
+                                            res.send({code:-2,message:v.msg});
+                                            return
+                                        }else{
+                                            console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
+                                        
+                                            res.send({code:0,uid:r.data.source_store_id,stout:pcs_stout.toString('utf-8')})
+                                            return
+                                        }
+                                    
+                                    },(rej_err)=>{
+                                        console.log(rej_err)
+                                    })
+                                    
+            
+            
+                                })
+                            
+            
+                            });
+                            
+                            
+                            
+                            ls.on('error',(err)=>{
+                                console.log(`错误 ${err}`);
+                                res.send({code:-2,message:(err).toString()});
+                                return;
+                            })
+                            ls.on('close', (code) => {//exit之后
+                                console.log(`子进程close，退出码 ${code}`);
+                                
+                            });
+                            ls.stdout.on('data', (data) => {
+                                console.log(`stdout: ${data}`);
+                                pcs_stout=data
+                                                    
+                            })
+    
+    
+                        })
+            
+    
+    
+                    })
     
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                })
+
             })
 
-         
-              
-                               
-               
 
-            
-
-        })
-        .catch(err=>{
-            console.log(err)
-        })
-
+        }
         
     })
 

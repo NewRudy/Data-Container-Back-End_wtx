@@ -993,8 +993,33 @@ exports.ogmsDataDown=function(req,res,next){
 
 
 
+
+
+
+
+
+
+
 }
 
+
+exports.iszip=function(req,res,next){
+    DataSet.findOne({uid:req.query.uid},(err,doc)=>{
+
+        if(err){
+            res.send({code:-1,message:err})
+            return
+        }
+
+       let re=doc
+
+       res.end(re)
+       return
+
+
+
+    })
+}
 
 exports.snapShot=function(req,res,next){
   
