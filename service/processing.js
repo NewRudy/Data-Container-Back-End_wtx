@@ -574,7 +574,8 @@ exports.exeWithOtherData=function(req,res,next){
                         fs.renameSync(saveDist, saveDist+'.'+suffix)
                         let obj={
                             type:suffix,
-                            dist:saveDist+'.'+suffix
+                            dist:saveDist+'.'+suffix,
+                            fileName:reJson.message.singleFileName
                         }
                         resolve(obj)
                      
@@ -779,7 +780,7 @@ exports.exeWithOtherData=function(req,res,next){
         }else{
             // 处理下载后的单文件
             fs.mkdir(__dirname+'/../temp/'+dataIdinCont,(err)=>{
-                fs.copyFile(fileInfo.dist,__dirname+'/../temp/'+dataIdinCont+'/'+dataIdinCont+'.'+fileInfo.type , ()=>{
+                fs.copyFile(fileInfo.dist,__dirname+'/../temp/'+dataIdinCont+'/'+fileInfo.fileName , ()=>{
 
                     
 
@@ -916,7 +917,9 @@ exports.exeWithOtherData=function(req,res,next){
                                             return
                                         }else{
                                             console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
-                                        
+                                            if(pcs_stout==undefined){
+                                                pcs_stout="no print message"
+                                            }
                                             res.send({code:0,uid:r.data.source_store_id,stout:pcs_stout.toString('utf-8')})
                                             return
                                         }
