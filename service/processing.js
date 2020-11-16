@@ -11,10 +11,11 @@ const Request=require('request')
 
 const utils=require('../utils/utils.js')
 const xml2js =require('xml2js')
+const convert=require('xml-js')
 var parser = new xml2js.Parser();
 const cfg=require('../config/config.js')
 const templateId=require('../lib/data/templateIdOfVisualSolution');
-
+const XML = require('xml');
 const compressing = require('compressing');
 
 
@@ -71,32 +72,44 @@ exports.newProcessing=function(req,res,next){
                     return
                 }else{
 
-                    doc.list.unshift(newFile)       
-                    instances.update(query,doc,(update_err)=>{
-                        if(update_err){
-                            res.send({code:-1,message:'db update error!'})
-                            return
-                        }
 
-                        fs.readdir( form.uploadDir,(err,filesItem)=>{
-                            filesItem.forEach(v=>{
-                                newFile.fileList.forEach(v2=>{
-                                    if(v.split('.')[1]===v2.split('.')[1]){
-                                        fs.renameSync(form.uploadDir+'/'+v,form.uploadDir+'/'+v2)
-                                    }
-                                })
+                    let xmlFile=newFile.fileList[0].split('.')[1]=='xml'?newFile.fileList[0]:newFile.fileList[1]
+                    let xmlPath=form.uploadDir+'/'+xmlFile
+                    fs.readdir( form.uploadDir,(err,filesItem)=>{
+                        filesItem.forEach(v=>{
+                            newFile.fileList.forEach(v2=>{
+                                if(v.split('.')[1]===v2.split('.')[1]){
+                                    fs.renameSync(form.uploadDir+'/'+v,form.uploadDir+'/'+v2)
+                                }
+                            })
+                        });
+                        fs.readFile(xmlPath, function(err, data) {
+                            parser.parseString(data, function (err, result) {
+                                newFile['metaDescription']=JSON.stringify(result)
                                 
+                                
+                                doc.list.unshift(newFile)
+                                
+                                instances.updateOne(query,doc,(update_err)=>{
+                                    if(update_err){
+                                        res.send({code:-1,message:'db update error!'})
+                                        return
+                                    }
+                
+                                    res.send({code:0,message:'create ok'})
+                                        return
+                
+                                })
+
+
+
+
+
                             });
-                        })
-    
-                        res.send({code:0,message:'create ok'})
-                            return
-    
+                        });//end  readFile
                     })
                 }   
             })        
-    
-    
     
         })
 
@@ -521,6 +534,11 @@ exports.availableServices= function(req,res,next){
             res.send({code:0,data:''})
             return
         }
+         
+        let options = {compact: true, ignoreComment: true, spaces: 4};
+        let builder = new xml2js.Builder();
+         
+
         let redata=[]
         for(let doc of docs){
             doc.list.forEach(v=>{
@@ -531,9 +549,14 @@ exports.availableServices= function(req,res,next){
                 re['desc']=v.description
                 re['date']=v.date
                 let xmlFile=v.fileList[0].split('.')[1]=='xml'?v.fileList[0]:v.fileList[1]
-                
                 let xml=fs.readFileSync(v.storagePath+'/'+xmlFile);
-                re['xml']=xml;
+                // re['xml']=xml;
+                if(v['metaDescription']!=undefined){
+                    let json=JSON.parse(v['metaDescription'])
+                    // let result = convert.json2xml(json, options);
+                    let result=builder.buildObject(json);
+                    re['metaDescription']=result
+                }
                 redata.push(re)
 
             })
