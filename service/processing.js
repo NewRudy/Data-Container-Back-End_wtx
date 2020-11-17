@@ -637,7 +637,7 @@ exports.exeWithOtherData=function(req,res,next){
                 
 
 
-                instances.findOne({type:'Processing','list.id':req.query.pcsId},(err,doc)=>{
+                instances.findOne({'list.id':req.query.pcsId},(err,doc)=>{
                     let py_script_path=undefined
                     let py_script_dir=undefined
                     let py_script=undefined
@@ -819,7 +819,7 @@ exports.exeWithOtherData=function(req,res,next){
 
                     
 
-                    instances.findOne({type:'Processing','list.id':req.query.pcsId},(err,doc)=>{
+                    instances.findOne({'list.id':req.query.pcsId},(err,doc)=>{
                         
                         // 从库里拿到py文件路径
                         let py_script_path=undefined
