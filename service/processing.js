@@ -85,7 +85,7 @@ exports.newProcessing=function(req,res,next){
                         });
                         fs.readFile(xmlPath, function(err, data) {
                             parser.parseString(data, function (err, result) {
-                                newFile['metaDescription']=JSON.stringify(result)
+                                newFile['metaDetail']=JSON.stringify(result)
                                 
                                 
                                 doc.list.unshift(newFile)
@@ -535,8 +535,7 @@ exports.availableServices= function(req,res,next){
             return
         }
          
-        let options = {compact: true, ignoreComment: true, spaces: 4};
-        let builder = new xml2js.Builder();
+       
          
 
         let redata=[]
@@ -548,14 +547,21 @@ exports.availableServices= function(req,res,next){
                 re['dataSet']=v.relatedData
                 re['desc']=v.description
                 re['date']=v.date
-                let xmlFile=v.fileList[0].split('.')[1]=='xml'?v.fileList[0]:v.fileList[1]
-                let xml=fs.readFileSync(v.storagePath+'/'+xmlFile);
+                if(v.meta!=undefined){
+                    re['meta']={
+                        'keywords':v.meta['keywords'],
+                        'email':v.meta['email'],
+                        'format':v.meta['format']
+
+                    }
+                }
+                // let xmlFile=v.fileList[0].split('.')[1]=='xml'?v.fileList[0]:v.fileList[1]
+                // let xml=fs.readFileSync(v.storagePath+'/'+xmlFile);
                 // re['xml']=xml;
-                if(v['metaDescription']!=undefined){
-                    let json=JSON.parse(v['metaDescription'])
-                    // let result = convert.json2xml(json, options);
-                    let result=builder.buildObject(json);
-                    re['metaDescription']=result
+                if(v['metaDetail']!=undefined){
+                    let json=JSON.parse(v['metaDetail'])
+                  
+                    re['metaDetail']=json
                 }
                 redata.push(re)
 
