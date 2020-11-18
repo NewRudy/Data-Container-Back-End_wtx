@@ -236,6 +236,6 @@ app.listen(config.port,()=>{
 
 
 
-// process.on('uncaughtException', function (err) {
-//   console.log('Caught Exception:' + err);//直接捕获method()未定义函数，Node进程未被退出。
-// });
+process.on('uncaughtException', function (err) {
+  console.log('Caught Exception:' + err);//直接捕获method()未定义函数，Node进程未被退出。
+});

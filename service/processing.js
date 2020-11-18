@@ -283,6 +283,11 @@ exports.executePrcs=function(req,res,next){
                 
                 ls.on('exit', (code) => {
                     console.log(`子进程使用代码 ${code} 退出`);
+                    if(code!=0){
+                        let msg={code:-2,message:'processing methods error'}
+                        res.send(msg);
+                        return
+                    }
                     fs.readdir(output,(err,f_item)=>{
 
                         if(f_item.length==0){
@@ -551,7 +556,8 @@ exports.availableServices= function(req,res,next){
                     re['meta']={
                         'keywords':v.meta['keywords'],
                         'email':v.meta['email'],
-                        'format':v.meta['format']
+                        'format':v.meta['format'],
+                        'description':v.meta['descriptions']
 
                     }
                 }
@@ -589,14 +595,16 @@ exports.exeWithOtherData=function(req,res,next){
     //调用数据容器上传接口
     let promise= new Promise((resolve, reject) => {
          //  处理下载流数据到本地
-         
-          
 
-            
-                request(dataInfo,(err,res,body)=>{
-                    if(res.statusCode==200){
+                request(dataInfo,(err,reqRes,body)=>{
+                    if(err){
+                        let msg={code:-2,message:"your data obtain err"}
+                        res.send(msg);
+                        return
+                    }
+                    if(reqRes.statusCode==200){
                         
-                        let reJson=JSON.parse(res.body)
+                        let reJson=JSON.parse(reqRes.body)
                         let suffix=reJson.message.singleFileName.split('.')[1]
                         let stream = fs.createWriteStream(saveDist+'.'+suffix);
                         request(downLoadUrl).pipe(stream).on("close", function (err2) {
@@ -679,6 +687,11 @@ exports.exeWithOtherData=function(req,res,next){
                         
                         ls.on('exit', (code) => {
                             console.log(`子进程使用代码 ${code} 退出`);
+                            if(code!=0){
+                                let msg={code:-2,message:'processing methods error'}
+                                res.send(msg);
+                                return
+                            }
                             fs.readdir(output,(err,f_item)=>{
         
                                 if(f_item.length==0){
@@ -863,6 +876,11 @@ exports.exeWithOtherData=function(req,res,next){
                             
                             ls.on('exit', (code) => {
                                 console.log(`子进程使用代码 ${code} 退出`);
+                                if(code!=0){
+                                    let msg={code:-2,message:'processing methods error'}
+                                    res.send(msg);
+                                    return
+                                }
                                 fs.readdir(output,(err,f_item)=>{
             
                                     if(f_item.length==0){
@@ -1029,6 +1047,10 @@ exports.exeWithOtherData=function(req,res,next){
 
         }
         
+    },(getDataFromDataContainerError)=>{//reject 从数据容器获取数据失败
+        let msg={code:-2,message:getDataFromDataContainerError}
+        res.send(msg);
+        return
     })
 
 

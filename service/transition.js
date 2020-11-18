@@ -8,6 +8,7 @@ const Request=require('request')
 const Jsdom=require('jsdom')
 const { default: Axios } = require('axios')
 const { instances } = require('../model/instances')
+ 
 const {JSDOM} =Jsdom
 const dom = new JSDOM(`<!DOCTYPE html><input type="file" id="file" multiple>`)
 
@@ -18,8 +19,6 @@ const transitUrl=cfg.transitUrl
 
 exports.transition=function(req,res,next){
    
-
-
 
     instances.findOne({'list.id':req.query.id},(err,doc)=>{
         if(err||!doc){
@@ -35,21 +34,35 @@ exports.transition=function(req,res,next){
                     return
 
                 }else{
+                    let options
+                    try{
+                        let fileZip=fs.createReadStream(data_path+req.query.id+'.zip')
                     let upObj={
                         'name':req.query.name,
                         'userId':req.query.token,
                         'origination':'distributedContainer',
                         'serverNode':'china',
-                        'ogmsdata':[fs.createReadStream(config_path),fs.createReadStream(data_path+req.query.id+'.zip')]        
+                        'ogmsdata':[fs.createReadStream(config_path),fileZip]        
                     }
                     
-                
-                    let options = {
+                    fileZip.on('error',()=>{
+                        let msg={code:-2,id:req.query.id,stoutErr:'file invalid',reqUsr:req.query.reqUsrOid}
+                        res.send(msg)
+                        return
+                    })
+                     options = {
                         method : 'POST',
                         url : transitUrl+'/data',
                         headers : { 'Content-Type' : 'multipart/form-data' },
                         formData : upObj
                     };
+
+                    }catch(err){
+                        let msg={code:-2,id:req.query.id,stoutErr:'file invalid'}
+                        res.send(msg)
+                        return
+                    }
+
                     //调用数据容器上传接口
                     let promise= new Promise((resolve, reject) => {
                         let readStream = Request(options, (error, response, body) => {
