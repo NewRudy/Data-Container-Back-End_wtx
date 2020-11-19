@@ -155,6 +155,9 @@ app.get('/lcalpcsmeta',router.chsdtne)
 app.get('/uploadpcs',router.uploadPcsMethod)
 
 
+app.get('/visualresult',router.visualResult)
+
+
 
 
 //注册到参与式平台GSP

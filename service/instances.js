@@ -380,7 +380,7 @@ function myFindOne(list,el){
 exports.authority=function(req,res,next){
     var form=new formidable.IncomingForm()
     form.parse(req,function(err,fields,file){
-            Instances.findOne({uid:fields.uid},(err,doc)=>{
+            Instances.findOne({'list.id':fields.id},(err,doc)=>{
             if(err||!doc){
                 res.send({code:-1,message:'error'})
                 return
@@ -392,9 +392,9 @@ exports.authority=function(req,res,next){
                 
                 let ind=doc.list.indexOf(item)
 
-                doc.list[ind].authority=fields.authority
+                doc.list[ind].authority=Boolean(fields.authority)
 
-                Instances.updateOne({uid:fields.uid},doc,(err2)=>{
+                Instances.updateOne({'list.id':fields.id},doc,(err2)=>{
                     if(err2){
                         res.send({code:-1,message:'error'})
                         return
@@ -408,8 +408,7 @@ exports.authority=function(req,res,next){
         })
     })
 
-    res.send({code:-1,message:'error'})
-    return
+    
     
 
 

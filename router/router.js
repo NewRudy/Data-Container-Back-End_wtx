@@ -100,6 +100,8 @@ exports.lcalpcsmeta=processing.lcalpcsmeta
 
 exports.uploadPcsMethod=processing.uploadPcsMethod
 
+// 可视化结果本地展示
+exports.visualResult=processing.visualResult
 
 //注册到参与式平台
 exports.newDataIndexGSP=geoProbems.newDataIndexGSP

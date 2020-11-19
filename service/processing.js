@@ -59,7 +59,7 @@ exports.newProcessing=function(req,res,next){
                 date:fields.date,
                 type:fields.type,
                 description:fields.description,
-                authority:fields.authority,
+                authority:Boolean(fields.authority),
                 paramsCount:fields.paramsCount,
                 meta:fields.meta,
                 fileList:fields.fileList.split(','),
@@ -257,8 +257,8 @@ exports.executePrcs=function(req,res,next){
             mkdirPromise.then((v)=>{
                 let par= [ py_script_path,input,output]
                 //将参数数组填入
-                if(req.query.param!=''){
-                    let r=req.query.param.split(',')
+                if(req.query.params!=''){
+                    let r=req.query.params.split(',')
                     r.forEach(v=>{
                         par.push(v)
                     })
@@ -1055,6 +1055,33 @@ exports.exeWithOtherData=function(req,res,next){
 
 
 }
+
+
+
+// 可视化结果
+
+exports.visualResult=function(req,res){
+
+    let id=req.query.id
+
+    
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
