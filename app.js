@@ -102,7 +102,9 @@ app.use(session({
 app.get('/test',router.test)
 
 
-
+// 系统状态
+app.get('/systemStatus', router.systemStatus)
+app.get('/systemInfo', router.systemInfo)
 
 //用户登录
 app.post('/login',router.login)

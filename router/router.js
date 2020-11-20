@@ -12,7 +12,7 @@ const geoProbems=require('../service/geoProblems.js')
 
 
 const indexService=require('../service/index.js');
-
+const systemRouter = require('../service/systemStateRouter.js')
 
 //接口不可用
 //第一种接口上传数据到服务器
@@ -111,6 +111,11 @@ exports.newDataIndexGSP=geoProbems.newDataIndexGSP
 exports.availableServices=processing.availableServices
 
 exports.exeWithOtherData=processing.exeWithOtherData
+
+
+
+exports.systemStatus = systemRouter.systemStatus;
+exports.systemInfo = systemRouter.systemInfo;
 
 
 
