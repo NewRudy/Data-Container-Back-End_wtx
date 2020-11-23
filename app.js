@@ -237,6 +237,9 @@ app.listen(config.port,()=>{
     if(folders.indexOf('service_migration_tep')<0){
       fs.mkdirSync(__dirname+'/service_migration_tep')
     }
+    if(folders.indexOf('urlFile')<0){
+      fs.mkdirSync(__dirname+'/urlFile')
+    }
   })
 
 
