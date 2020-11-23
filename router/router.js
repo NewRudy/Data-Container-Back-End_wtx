@@ -125,4 +125,4 @@ exports.sagaCapabilities=processing.sagaCapabilities
 exports.indexGet=indexService.indexServiceGet;
 exports.indexPost=indexService.indexServicePost;
 
- 
+ exports.invokeProUrl = processing.invokeProUrl;
