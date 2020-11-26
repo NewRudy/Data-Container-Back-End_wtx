@@ -22,7 +22,7 @@ const bindPcsUrl=cfg.bindPcsUrl
 const processing_result=__dirname+'/../processing_result';
 const tree=__dirname+'/../saga_tools/tree.json';
 const tools_tree=__dirname+'/../saga_tools/tools_tree.json';
-const nodeStreamZip = require('node-stream-zip');
+ 
 
 exports.newProcessing=function(req,res,next){
     let script_uid=uuid.v4()
