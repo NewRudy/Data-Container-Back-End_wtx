@@ -112,7 +112,7 @@ exports.availableServices=processing.availableServices
 
 exports.exeWithOtherData=processing.exeWithOtherData
 
-
+exports.capability=instances.capability
 
 exports.systemStatus = systemRouter.systemStatus;
 exports.systemInfo = systemRouter.systemInfo;

@@ -99,7 +99,7 @@ app.use(session({
 
 
 //test测试接口
-app.get('/test',router.test)
+app.post('/test',router.test)
 
 
 // 系统状态
@@ -142,13 +142,6 @@ app.post('/newprocess',router.newProcessing)
 //关联处理方法
 app.get('/bindprocessing',router.bindProcessing)
 
-//执行处理方法
-app.get('/executeprcs',router.executePrcs)
-
-/**
- * my
- */
-app.post('/invokeProUrl', router.invokeProUrl);
 
 //添加dataitem路径
 // app.get('/puturl',router.putUrl)
@@ -191,6 +184,19 @@ app.post('/ogms',router.indexPost)
 app.get('/availablePcs',router.availableServices)
 // 基于已有数据，调用本地处理
 app.get('/exewithotherdata',router.exeWithOtherData)
+
+//执行处理方法
+app.get('/executeprcs',router.executePrcs)
+
+/**
+ * my 执行处理方法，数据来自url参数
+ */
+ 
+app.post('/invokeProUrl', router.invokeProUrl);
+
+// 元数据描述
+app.get('/capability',router.capability)
+
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {

@@ -1218,6 +1218,7 @@ exports.executeSaga=function(req,res,next){
 exports.invokeProUrl = function(req,res,next){
     let uid = uuid.v4();
     console.log(req.body);
+     
     let dirPath = __dirname + '/../urlFile/'+ uid + '/';
     if(!fs.existsSync(dirPath)){
         fs.mkdirSync(dirPath);

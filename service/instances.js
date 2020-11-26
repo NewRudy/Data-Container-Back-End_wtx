@@ -413,3 +413,42 @@ exports.authority=function(req,res,next){
 
 
 }
+
+
+
+// 元数据
+exports.capability=function(req,res,next){
+
+
+    let id=req.query.id
+    let type=req.query.type
+    let obj={}
+
+    Instances.findOne({'list.id':id,type:type},(err,doc)=>{
+        if(err||!doc){
+            res.send({code:-1,message:'error'})
+            return
+        }
+
+        for(let el of doc.list){
+            if(el.id==id){
+                if(type=='Data'){
+                    obj['name']=el.name
+                    obj['date']=el.date
+                    obj['meta']=el.meta
+                }else{
+                    obj['name']=el.name
+                    obj['date']=el.date
+                    obj['description']=el.description
+                    obj['paramsCount']=el.paramsCount!=undefined?el.paramsCount:undefined
+                    obj['metaDetail']=el.metaDetail!=undefined?el.metaDetail:undefined
+                }
+                break
+            }
+        }
+         
+        res.send({code:0,data:obj})
+        return
+
+    })
+}
