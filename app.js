@@ -7,7 +7,7 @@ const MongoStore = require('connect-mongo')(session)
 let server = require('http').createServer(app);
 let io = require('socket.io')(server);
 const fs=require('fs')
-
+const publicIp = require('public-ip') // 获取外网ip
 const os = require('os');
 var bodyParser = require('body-parser');
 var app = express()
@@ -201,22 +201,17 @@ app.get('/capability',router.capability)
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {
 
-  res.send({code:0,state:'online',ip:getIPAdress()})
+ 
+  publicIp.v4().then((ip) =>{
+     
+    res.send({code:0,state:'online',ip:ip})
+  } )
   console.log('state check')
+    
 })
 
-function getIPAdress() {
-    var interfaces = os.networkInterfaces();
-    for (var devName in interfaces) {
-        var iface = interfaces[devName];
-        for (var i = 0; i < iface.length; i++) {
-            var alias = iface[i];
-            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-                return alias.address;
-            }
-        }
-    }
-}
+// curl -L ip.tool.lu
+
 
 
 //错误处理，使用自定义的中间件
@@ -255,6 +250,6 @@ app.listen(config.port,()=>{
 
 
 
-process.on('uncaughtException', function (err) {
-  console.log('Caught Exception:' + err);//直接捕获method()未定义函数，Node进程未被退出。
-});
+// process.on('uncaughtException', function (err) {
+//   console.log('Caught Exception:' + err);//直接捕获method()未定义函数，Node进程未被退出。
+// });

@@ -441,7 +441,7 @@ exports.capability=function(req,res,next){
                     obj['date']=el.date
                     obj['description']=el.description
                     obj['paramsCount']=el.paramsCount!=undefined?el.paramsCount:undefined
-                    obj['metaDetail']=el.metaDetail!=undefined?el.metaDetail:undefined
+                    obj['metaDetail']=el.metaDetail!=undefined?JSON.parse(el.metaDetail):undefined
                 }
                 break
             }
