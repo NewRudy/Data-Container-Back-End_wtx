@@ -12,7 +12,7 @@ const geoProbems=require('../service/geoProblems.js')
 
 
 const indexService=require('../service/index.js');
-
+const systemRouter = require('../service/systemStateRouter.js')
 
 //接口不可用
 //第一种接口上传数据到服务器
@@ -48,6 +48,9 @@ exports.ogmsDataUp=storageData.ogmsDataUp;
 
 //数据上传
 exports.ogmsDataDown=storageData.ogmsDataDown;
+
+// 数据类型
+exports.iszip=storageData.iszip;
 
 //删除数据
 exports.delete=storageData.del;
@@ -97,17 +100,29 @@ exports.lcalpcsmeta=processing.lcalpcsmeta
 
 exports.uploadPcsMethod=processing.uploadPcsMethod
 
+// 可视化结果本地展示
+exports.visualResult=processing.visualResult
 
 //注册到参与式平台
 exports.newDataIndexGSP=geoProbems.newDataIndexGSP
+
+
+// sdk api
+exports.availableServices=processing.availableServices
+
+exports.exeWithOtherData=processing.exeWithOtherData
+
+exports.capability=instances.capability
+
+exports.systemStatus = systemRouter.systemStatus;
+exports.systemInfo = systemRouter.systemInfo;
 
 
 
 //saga Capabilities
 exports.sagaCapabilities=processing.sagaCapabilities
 
-
 exports.indexGet=indexService.indexServiceGet;
 exports.indexPost=indexService.indexServicePost;
 
- 
+ exports.invokeProUrl = processing.invokeProUrl;

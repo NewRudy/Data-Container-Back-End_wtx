@@ -7,7 +7,7 @@ const MongoStore = require('connect-mongo')(session)
 let server = require('http').createServer(app);
 let io = require('socket.io')(server);
 const fs=require('fs')
-
+const publicIp = require('public-ip') // 获取外网ip
 const os = require('os');
 var bodyParser = require('body-parser');
 var app = express()
@@ -17,7 +17,7 @@ var jsonParser = bodyParser.json();
 
 //创建application/x-www-form-urlencoded
 var urlencodedParser = bodyParser.urlencoded({extended: false});
-
+app.use(bodyParser.urlencoded({ extended: false }));
 
 
 //CORS跨域设置
@@ -68,6 +68,9 @@ app.post('/data',router.ogmsDataUp)
 //数据下载
 app.get('/data',router.ogmsDataDown)
 
+// 数据类型
+app.get('/iszip',router.iszip)
+
 //删除数据
 app.delete('/del',router.delete);
 
@@ -96,10 +99,12 @@ app.use(session({
 
 
 //test测试接口
-app.get('/test',router.test)
+app.post('/test',router.test)
 
 
-
+// 系统状态
+app.get('/systemStatus', router.systemStatus)
+app.get('/systemInfo', router.systemInfo)
 
 //用户登录
 app.post('/login',router.login)
@@ -137,8 +142,6 @@ app.post('/newprocess',router.newProcessing)
 //关联处理方法
 app.get('/bindprocessing',router.bindProcessing)
 
-//执行处理方法
-app.get('/executeprcs',router.executePrcs)
 
 //添加dataitem路径
 // app.get('/puturl',router.putUrl)
@@ -150,6 +153,9 @@ app.get('/lcalpcsmeta',router.chsdtne)
 
 // 上传处理脚本
 app.get('/uploadpcs',router.uploadPcsMethod)
+
+
+app.get('/visualresult',router.visualResult)
 
 
 
@@ -170,25 +176,42 @@ app.get('/ogms',router.indexGet)
 app.post('/ogms',router.indexPost)
 
 
+
+
+
+//sdk api
+// 当前节点可用处理服务
+app.get('/availablePcs',router.availableServices)
+// 基于已有数据，调用本地处理
+app.get('/exewithotherdata',router.exeWithOtherData)
+
+//执行处理方法
+app.get('/executeprcs',router.executePrcs)
+
+/**
+ * my 执行处理方法，数据来自url参数
+ */
+ 
+app.post('/invokeProUrl', router.invokeProUrl);
+
+// 元数据描述
+app.get('/capability',router.capability)
+
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {
 
-  res.send({code:0,state:'online',ip:getIPAdress()})
+ 
+  publicIp.v4().then((ip) =>{
+     
+    res.send({code:0,state:'online',ip:ip})
+  } )
   console.log('state check')
+    
 })
 
-function getIPAdress() {
-    var interfaces = os.networkInterfaces();
-    for (var devName in interfaces) {
-        var iface = interfaces[devName];
-        for (var i = 0; i < iface.length; i++) {
-            var alias = iface[i];
-            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-                return alias.address;
-            }
-        }
-    }
-}
+// curl -L ip.tool.lu
+
 
 
 //错误处理，使用自定义的中间件
@@ -214,6 +237,9 @@ app.listen(config.port,()=>{
     }
     if(folders.indexOf('service_migration_tep')<0){
       fs.mkdirSync(__dirname+'/service_migration_tep')
+    }
+    if(folders.indexOf('urlFile')<0){
+      fs.mkdirSync(__dirname+'/urlFile')
     }
   })
 
