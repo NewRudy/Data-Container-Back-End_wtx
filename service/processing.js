@@ -256,7 +256,7 @@ exports.executePrcs=function(req,res,next){
             mkdirPromise.then((v)=>{
                 let par= [ py_script_path,input,output]
                 //将参数数组填入
-                if(req.query.params!=''){
+                if(req.query.params!=undefined&&req.query.params!=''){
                     let r=req.query.params.split(',')
                     r.forEach(v=>{
                         par.push(v)
@@ -299,7 +299,7 @@ exports.executePrcs=function(req,res,next){
                         }
                        
                         let upObj={
-                            'name':req.query.name,
+                            'name':req.query.token,
                             'userId':req.query.token,
                             'origination':'distributedContainer',
                             'serverNode':'china',
@@ -670,7 +670,7 @@ exports.exeWithOtherData=function(req,res,next){
 
                         let par= [ py_script_path,input,output]
                         //将参数数组填入
-                        if(req.query.params!=''){
+                        if(req.query.params!=undefined&&req.query.params!=''){
                             let r=req.query.params.split(',')
                             r.forEach(v=>{
                                 par.push(v)
@@ -859,7 +859,7 @@ exports.exeWithOtherData=function(req,res,next){
     
                             let par= [ py_script_path,input,output]
                             //将参数数组填入
-                            if(req.query.params&&req.query.params!=''){
+                            if(req.query.params!=undefined&&req.query.params!=''){
                                 let r=req.query.params.split(',')
                                 r.forEach(v=>{
                                     par.push(v)
@@ -1296,7 +1296,7 @@ exports.invokeProUrl = function(req,res,next){
 
                                     let par= [ py_script_path,input,output]
                                     //将参数数组填入
-                                    if(req.body.params!=''){
+                                    if(req.body.params!=undefined&&req.body.params!=''){
                                         let r=req.body.params.split(',')
                                         r.forEach(v=>{
                                             par.push(v)
