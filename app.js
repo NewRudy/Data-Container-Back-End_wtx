@@ -159,6 +159,7 @@ app.get('/visualresult',router.visualResult)
 
 
 // 工作空间
+app.get('/initWorkSpace',router.initWorkSpace)
 app.post('/workspace',router.workspacePost)
 
 app.get('/workspace',router.workspaceGet)
