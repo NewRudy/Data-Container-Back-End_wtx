@@ -159,13 +159,13 @@ app.get('/visualresult',router.visualResult)
 
 
 // 工作空间
-app.post('/workspace',router.workspace)
+app.post('/workspace',router.workspacePost)
 
-app.get('/workspace',router.workspace)
+app.get('/workspace',router.workspaceGet)
 
-app.del('/workspace',router.workspace)
+app.del('/workspace',router.workspaceDel)
 
-app.put('/workspace',router.workspace)
+app.put('/workspace',router.workspacePut)
 
 
 //注册到参与式平台GSP
