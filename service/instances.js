@@ -75,55 +75,56 @@ exports.instances=function(req,res,next){
                 var subC=JSON.parse(req.query.subContConnect)//解析JSON字符串
                 initInstances.parentLevel=subC.uid//关联父级列表id
             }
-            Instances.create(initInstances,(err)=>{
-                if(err){
-                    res.send({code:-1,message:'instances error'})
-                    return
-                }
-                // 初始化工作空间
-                workSpace.findOne({'name':'initWorkspace'},(err,initWorkSpace)=>{
-                    //工作空间添加根目录描述 
-                    workSpace.updateOne({'name':'initWorkspace'},updateDoc,(err,rawData)=>{
 
-                                if(req.query.subContConnect){//在进入文件夹时，关联文件夹与新的instances
-                                    Instances.findOne({uid:subC.uid,type:req.query.type},(err,con_inst_doc)=>{
-                                        if(!con_inst_doc||err){
-                                            res.send({code:-1,message:'instances error'})
-                                            return
-                                        }else{
-                                            //Instance添加工作空间id描述
-                                            con_inst_doc['workSpace']=initWorkSpace.uid
+             // 初始化工作空间
+             workSpace.findOne({'name':'initWorkspace'},(err,initWorkSpace)=>{
+                    //Instance添加工作空间id描述
+                    initInstances['workSpace']=initWorkSpace.uid
+                    Instances.create(initInstances,(err)=>{
+                        if(err){
+                            res.send({code:-1,message:'instances error'})
+                            return
+                        }
 
-                                            for(let i=0;i<con_inst_doc.list.length;i++){
-                                                if(con_inst_doc.list[i].id===subC.id){
-                                                    con_inst_doc.list[i].subContentId=new_instance_uid;//关联文件指向子instance
-                                                    Instances.update({uid:subC.uid,type:req.query.type},con_inst_doc,(err)=>{
-                                                        if(err){
-                                                            res.send({code:-1,message:'instances error'})
-                                                            return
+                            //工作空间添加根目录描述 
+                            workSpace.updateOne({'name':'initWorkspace'},updateDoc,(err,rawData)=>{
+
+                                        if(req.query.subContConnect){//在进入文件夹时，关联文件夹与新的instances
+                                            Instances.findOne({uid:subC.uid,type:req.query.type},(err,con_inst_doc)=>{
+                                                if(!con_inst_doc||err){
+                                                    res.send({code:-1,message:'instances error'})
+                                                    return
+                                                }else{
+                                                  
+
+                                                    for(let i=0;i<con_inst_doc.list.length;i++){
+                                                        if(con_inst_doc.list[i].id===subC.id){
+                                                            con_inst_doc.list[i].subContentId=new_instance_uid;//关联文件指向子instance
+                                                            Instances.update({uid:subC.uid,type:req.query.type},con_inst_doc,(err)=>{
+                                                                if(err){
+                                                                    res.send({code:-1,message:'instances error'})
+                                                                    return
+                                                                }
+                                                                console.log('update folder subinstance id')
+                                                                
+
+                                                                res.send({code:0,data:initInstances});
+                                                                return;
+                                                            });
                                                         }
-                                                        console.log('update folder subinstance id')
-                                                        
-
-                                                        res.send({code:0,data:initInstances});
-                                                        return;
-                                                    });
+                                                    }
+                                                    
                                                 }
-                                            }
-                                            
+                                            })
+                                        }else{
+                                            console.log('create instances')
+                                            res.send({code:0,data:initInstances});
+                                            return
                                         }
-                                    })
-                                }else{
-                                    console.log('create instances')
-                                    res.send({code:0,data:initInstances});
-                                    return
-                                }
+                            })
+                                    
                     })
-                            
-                })
-
             })
-
             
         }else{
             console.log('find instances')
