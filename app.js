@@ -158,6 +158,14 @@ app.get('/uploadpcs',router.uploadPcsMethod)
 app.get('/visualresult',router.visualResult)
 
 
+// 工作空间
+app.post('/workspace',router.workspacePost)
+
+app.get('/workspace',router.workspaceGet)
+
+app.del('/workspace',router.workspaceDel)
+
+app.put('/workspace',router.workspacePut)
 
 
 //注册到参与式平台GSP

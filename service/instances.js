@@ -9,10 +9,14 @@ const utils=require('../utils/utils.js')
 const dataStoragePath=__dirname+'/../dataStorage' 
 const path=require('path')
 const instances=require('../model/instances.js');
+const workspace=require('../model/workSpace.js');
+
 const { Console } = require('console');
 const { query } = require('express');
 
 var Instances=instances.instances;
+
+var workSpace=workspace.workSpace;
 
 
 //获取列表
@@ -24,8 +28,15 @@ exports.instances=function(req,res,next){
     }
     //依据会话判断用户
     let userToken=req.session.user.token
-     
-    Instances.findOne({uid:req.query.uid,userToken:userToken,type:req.query.type},(err,doc)=>{
+     let query={
+        uid:req.query.uid,
+        userToken:userToken,
+        type:req.query.type
+     }
+     if(req.query.workSpace!=undefined){
+        query['workSpace']=req.query.workSpace
+     }
+    Instances.findOne(query,(err,doc)=>{
         if(err){
             res.send({code:-1,message:'instances error'})
             return
@@ -40,6 +51,23 @@ exports.instances=function(req,res,next){
                 parentLevel:req.query.parentLevel,
                 list:[]
             }
+            //初始化workspace
+            let updateDoc
+            if(req.query.type=='Data'){
+                updateDoc={
+                    "dataRoot":req.query.uid,
+                }
+            }else if(req.query.type='Processing'){
+                updateDoc={
+                    "pcsRoot":req.query.uid,
+                }
+            }else{
+                updateDoc={
+                    "visualRoot":req.query.uid,
+                }
+            }
+           
+
             //从第二层起，由文件夹新建instances，则生成id
             if(req.query.subContConnect){
                 var new_instance_uid=uuid.v4()
@@ -58,26 +86,33 @@ exports.instances=function(req,res,next){
                             res.send({code:-1,message:'instances error'})
                             return
                         }else{
-                            for(let i=0;i<con_inst_doc.list.length;i++){
-                                if(con_inst_doc.list[i].id===subC.id){
-                                    con_inst_doc.list[i].subContentId=new_instance_uid;//关联文件指向子instance
-                                    Instances.update({uid:subC.uid,type:req.query.type},con_inst_doc,(err)=>{
-                                        if(err){
-                                            res.send({code:-1,message:'instances error'})
-                                            return
+                            // 初始化工作空间
+                            workSpace.findOne({'name':'initWorkspace'},(err,initWorkSpace)=>{
+                                
+                                workSpace.updateOne({'name':'initWorkspace'},updateDoc,(err,rawData)=>{
+
+                                    con_inst_doc['workSpace']=initWorkSpace.uid
+
+                                    for(let i=0;i<con_inst_doc.list.length;i++){
+                                        if(con_inst_doc.list[i].id===subC.id){
+                                            con_inst_doc.list[i].subContentId=new_instance_uid;//关联文件指向子instance
+                                            Instances.update({uid:subC.uid,type:req.query.type},con_inst_doc,(err)=>{
+                                                if(err){
+                                                    res.send({code:-1,message:'instances error'})
+                                                    return
+                                                }
+                                                console.log('update folder subinstance id')
+                                                
+
+                                                res.send({code:0,data:initInstances});
+                                                return;
+                                            });
                                         }
-                                        console.log('update folder subinstance id')
-                                        
-                                        res.send({code:0,data:initInstances});
-                                        return;
-                                    });
-    
-                                }
-                            }
+                                    }
 
+                                })
+                            })
                         }
-                    
-
                     })
                 }else{
                     console.log('create instances')

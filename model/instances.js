@@ -5,7 +5,7 @@ var Mixed = mongoose.mongoose.Schema.Types.Mixed;
 //定义schema,相当于定义表结构
 var dataSChema= new mongoose.mongoose.Schema({
             uid:String,
-            
+            workSpace:String,
             type:String,
             userToken:String,
             list:Array,

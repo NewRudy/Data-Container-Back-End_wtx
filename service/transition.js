@@ -38,7 +38,7 @@ exports.transition=function(req,res,next){
                     try{
                         let fileZip=fs.createReadStream(data_path+req.query.id+'.zip')
                     let upObj={
-                        'name':req.query.name,
+                        'name':req.query.token,
                         'userId':req.query.token,
                         'origination':'distributedContainer',
                         'serverNode':'china',
