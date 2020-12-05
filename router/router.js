@@ -104,6 +104,7 @@ exports.lcalpcsmeta=processing.lcalpcsmeta
 exports.uploadPcsMethod=processing.uploadPcsMethod
 
 // 工作空间
+exports.initWorkSpace=workSpace.initWorkSpace
 exports.workspaceGet=workSpace.workspaceGet
 
 exports.workspacePost=workSpace.workspacePost

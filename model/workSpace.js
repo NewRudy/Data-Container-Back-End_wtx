@@ -27,6 +27,7 @@ var workSpace=DB.DB1.model('workSpace',dataSChema)
 workSpace.find({},(err,doc)=>{
     if(doc.length===0){
         workSpace.create({
+            "uid":uuid.v4(),
             "name" : "initWorkspace",
             "description":"initWorkspace",
             "dataRoot":"",
