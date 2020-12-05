@@ -9,10 +9,14 @@ const utils=require('../utils/utils.js')
 const dataStoragePath=__dirname+'/../dataStorage' 
 const path=require('path')
 const instances=require('../model/instances.js');
+const workspace=require('../model/workSpace.js');
+
 const { Console } = require('console');
 const { query } = require('express');
 
 var Instances=instances.instances;
+
+var workSpace=workspace.workSpace;
 
 
 //获取列表
@@ -40,6 +44,23 @@ exports.instances=function(req,res,next){
                 parentLevel:req.query.parentLevel,
                 list:[]
             }
+            //初始化workspace
+            let updateDoc
+            if(req.query.type=='Data'){
+                updateDoc={
+                    "dataRoot":req.query.uid,
+                }
+            }else if(req.query.type='Processing'){
+                updateDoc={
+                    "pcsRoot":req.query.uid,
+                }
+            }else{
+                updateDoc={
+                    "visualRoot":req.query.uid,
+                }
+            }
+           
+
             //从第二层起，由文件夹新建instances，则生成id
             if(req.query.subContConnect){
                 var new_instance_uid=uuid.v4()
@@ -67,9 +88,12 @@ exports.instances=function(req,res,next){
                                             return
                                         }
                                         console.log('update folder subinstance id')
-                                        
-                                        res.send({code:0,data:initInstances});
-                                        return;
+                                        // 初始化工作空间
+                                        workSpace.updateOne({'name':'initWorkspace'},updateDoc,()=>{
+                                            res.send({code:0,data:initInstances});
+                                            return;
+                                        })
+                                      
                                     });
     
                                 }

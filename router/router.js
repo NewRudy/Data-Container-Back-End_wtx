@@ -7,6 +7,9 @@ const instances=require('../service/instances.js');
 const transition=require('../service/transition.js');
 
 const processing=require('../service/processing.js')
+const workSpace=require('../service/workSpace.js')
+
+
 
 const geoProbems=require('../service/geoProblems.js')
 
@@ -99,6 +102,15 @@ exports.chsdtne=processing.chsdtne;
 exports.lcalpcsmeta=processing.lcalpcsmeta
 
 exports.uploadPcsMethod=processing.uploadPcsMethod
+
+// 工作空间
+exports.workspaceGet=workSpace.workspaceGet
+
+exports.workspacePost=workSpace.workspacePost
+
+exports.workspaceDel=workSpace.workspaceDel
+
+exports.workspacePut=workSpace.workspacePut
 
 // 可视化结果本地展示
 exports.visualResult=processing.visualResult
