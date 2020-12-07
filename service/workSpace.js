@@ -1,5 +1,6 @@
 
 const { workSpace } = require('../model/workSpace.js')
+const {instances} = require('../model/instances.js')
 
 
 exports.initWorkSpace=function(req,res,next){
@@ -50,6 +51,15 @@ exports.workspacePost=function(req,res,next){
 }
 
 exports.workspaceDel=function(req,res,next){
+    //删除该workspace下的其他instance节点
+    let uid = req.query.uid;
+    instances.remove({workSpace:req.query.uid},{parentLevel:'-1'},(err,doc)=>{
+        if(err||!doc){
+            res.send({code:-1,data:'err'});
+            return;
+        }
+    })
+
     workSpace.deleteOne({uid:req.query.uid},(err,doc)=>{
         if(err||!doc){
             res.send({code:-1,data:'err'})
