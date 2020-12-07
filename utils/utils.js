@@ -94,6 +94,24 @@ function getIPAdress() {
 }
 // 复制目录
 // exists( './login', './haha', copy );
+var formatDate=function(d){
+    let curr_date = d.getDate();
+    let curr_month = d.getMonth() + 1; 
+    let curr_year = d.getFullYear();
+    let curr_minute=d.getMinutes();
+    let curr_hours=d.getHours();
+
+    String(curr_month).length < 2 ? (curr_month = "0" + curr_month): curr_month;
+    String(curr_date).length < 2 ? (curr_date = "0" + curr_date): curr_date;
+    String(curr_minute).length < 2 ? (curr_minute = "0" + curr_minute): curr_minute;
+    String(curr_hours).length < 2 ? (curr_hours = "0" + curr_hours): curr_hours;
+
+
+    var time = curr_year + "-" + curr_month +"-"+ curr_date+' '+curr_hours+':' +curr_minute;
+    return time;
+}
+
+exports.formatDate=formatDate
 exports.copy = copy;
 exports.delDir = delDir;
 exports.exists = exists;

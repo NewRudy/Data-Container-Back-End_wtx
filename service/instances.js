@@ -80,6 +80,8 @@ exports.instances=function(req,res,next){
              workSpace.findOne({'name':'initWorkspace'},(err,initWorkSpace)=>{
                     //Instance添加工作空间id描述
                     initInstances['workSpace']=initWorkSpace.uid
+                    initInstances['date']=utils.formatDate(new Date())
+
                     Instances.create(initInstances,(err)=>{
                         if(err){
                             res.send({code:-1,message:'instances error'})
