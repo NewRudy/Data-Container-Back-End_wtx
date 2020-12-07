@@ -53,20 +53,7 @@ exports.instances=function(req,res,next){
             }
             //初始化workspace
             let updateDoc
-            if(req.query.type=='Data'){
-                updateDoc={
-                    "dataRoot":req.query.uid,
-                }
-            }else if(req.query.type='Processing'){
-                updateDoc={
-                    "pcsRoot":req.query.uid,
-                }
-            }else{
-                updateDoc={
-                    "visualRoot":req.query.uid,
-                }
-            }
-           
+            
 
             //从第二层起，由文件夹新建instances，则生成id
             if(req.query.subContConnect){
@@ -80,8 +67,26 @@ exports.instances=function(req,res,next){
              workSpace.findOne({'name':'initWorkspace'},(err,initWorkSpace)=>{
                     //Instance添加工作空间id描述
                     initInstances['workSpace']=initWorkSpace.uid
-                    initInstances['date']=utils.formatDate(new Date())
 
+                    if(req.query.type=='Data'){
+                       
+                        initWorkSpace['dataRoot']=req.query.uid
+
+                    }else if(req.query.type=='Processing'){
+                       
+                        initWorkSpace['pcsRoot']=req.query.uid
+
+                    }else if(req.query.type=='Visualization'){
+                       
+                        initWorkSpace['visualRoot']=req.query.uid
+
+                    }
+                   
+                    
+                    for(let k in updateDoc){
+                        initWorkSpace[k]=updateDoc[k]
+                    }
+                    
                     Instances.create(initInstances,(err)=>{
                         if(err){
                             res.send({code:-1,message:'instances error'})
@@ -89,7 +94,7 @@ exports.instances=function(req,res,next){
                         }
 
                             //工作空间添加根目录描述 
-                            workSpace.updateOne({'name':'initWorkspace'},updateDoc,(err,rawData)=>{
+                            workSpace.updateOne({'name':'initWorkspace'},initWorkSpace,(err,rawData)=>{
 
                                         if(req.query.subContConnect){//在进入文件夹时，关联文件夹与新的instances
                                             Instances.findOne({uid:subC.uid,type:req.query.type},(err,con_inst_doc)=>{

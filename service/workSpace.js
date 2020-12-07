@@ -10,7 +10,7 @@ exports.initWorkSpace=function(req,res,next){
             return
         }
 
-        res.send({code:0,data:doc})
+        res.send({code:0,data:doc[0]})
         return
     })
 
