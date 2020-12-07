@@ -83,9 +83,7 @@ exports.instances=function(req,res,next){
                     }
                    
                     
-                    for(let k in updateDoc){
-                        initWorkSpace[k]=updateDoc[k]
-                    }
+                    
                     
                     Instances.create(initInstances,(err)=>{
                         if(err){
@@ -166,8 +164,7 @@ exports.newInstance=function(req,res,next){
                     return 
                 }
 
-                res.send({code:0,data:fields.data})
-                return
+                
             })
         })
          
