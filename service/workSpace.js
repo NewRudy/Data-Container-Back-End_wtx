@@ -29,16 +29,24 @@ exports.workspaceGet=function(req,res,next){
 }
 
 exports.workspacePost=function(req,res,next){
-    
-    workSpace.create(req.body,(err,doc)=>{
-        if(err||!doc){
-            res.send({code:-1,data:'err'})
+    workSpace.findOne({name:req.body.name},(err,doc)=>{
+        if(doc!=null){
+            res.send({code:-2})
             return
-        }
+        }else{
+            workSpace.create(req.body,(err,doc)=>{
+                if(err||!doc){
+                    res.send({code:-1,data:'err'})
+                    return
+                }
+        
+                res.send({code:0,data:'ok'})
+                return
+            })
 
-        res.send({code:0,data:'ok'})
-        return
+        }
     })
+    
 }
 
 exports.workspaceDel=function(req,res,next){
