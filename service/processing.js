@@ -445,10 +445,17 @@ exports.lcalpcsmeta=function(req,res,next){
 exports.uploadPcsMethod=function(req,res,next){
 
 
-    let pcsId=req.query.pcsId
+    let pcsId=req.query.id
+    let type=req.query.type
 
-    instances.findOne({type:'Processing','list.id':pcsId},(err,doc)=>{
-        let serviceItem
+
+    instances.findOne({type:type,'list.id':pcsId},(err,doc)=>{
+
+        if(err||!doc){
+            res.send({code:-1})
+            return
+        }
+        let serviceItem=undefined
         for(let pcs of doc.list){
             if(pcs.id==pcsId){
                 serviceItem=pcs
@@ -456,7 +463,10 @@ exports.uploadPcsMethod=function(req,res,next){
             }
         }
 
-         
+         if(serviceItem==undefined){
+             res.send({code:-1})
+             return
+         }
 
         let upObj={
             'name':serviceItem.name,
@@ -465,14 +475,62 @@ exports.uploadPcsMethod=function(req,res,next){
             'serverNode':'china',
             'ogmsdata':[]        
         }
-        
-        compressing.zip.compressDir(serviceItem.storagePath, __dirname+'/../service_migration_tep/'+serviceItem.id+'.zip')
-        .then(() => {
-            console.log('zip processing method success');
+        //服务迁移分为数据和非数据两种
+        if(type!='Data'){
+            compressing.zip.compressDir(serviceItem.storagePath, __dirname+'/../service_migration_tep/'+serviceItem.id+'.zip')
+            .then(() => {
+                console.log('zip processing method success');
 
-            upObj['ogmsdata'].push(fs.createReadStream(__dirname+'/../service_migration_tep/'+serviceItem.id+'.zip'))
-            upObj['ogmsdata'].push(fs.createReadStream(__dirname+'/../config/config.udxcfg/'))
+                upObj['ogmsdata'].push(fs.createReadStream(__dirname+'/../service_migration_tep/'+serviceItem.id+'.zip'))
+                upObj['ogmsdata'].push(fs.createReadStream(__dirname+'/../config/config.udxcfg/'))
 
+
+                let options = {
+                    method : 'POST',
+                    url : transitUrl+'/data',
+                    headers : { 'Content-Type' : 'multipart/form-data' },
+                    formData : upObj
+                };
+                //调用数据容器上传接口
+                let promise= new Promise((resolve, reject) => {
+                    let readStream = Request(options, (error, response, body) => {
+                        if (!error) {
+                            
+                            resolve({response, body})
+                        } else {
+                            reject(error);
+                        }
+                    });
+                });
+                //返回数据下载id
+                promise.then(function(v){
+                    let r=JSON.parse(v.body)
+
+                    if(r.code==-1){
+                        res.send({code:-2,message:v.msg});
+                        return
+                    }else{
+                        console.log('service migration id return')
+                        fs.unlinkSync(__dirname+'/../service_migration_tep/'+serviceItem.id+'.zip')
+                        res.send({code:0,uid:r.data.source_store_id})
+                        return
+                    }
+
+                }).
+                catch(err => {
+                    console.error(err);
+                }); 
+
+
+
+            })
+            .catch(err2 => {
+                console.error(err2);
+            }); 
+        }else{
+            upObj['ogmsdata'].push(fs.createReadStream(__dirname+'/../dataStorage/'+serviceItem.id+'.zip'))
+             
+            upObj['ogmsdata'].push(fs.createReadStream(__dirname+'/../config/config.udxcfg'))
 
             let options = {
                 method : 'POST',
@@ -499,8 +557,8 @@ exports.uploadPcsMethod=function(req,res,next){
                     res.send({code:-2,message:v.msg});
                     return
                 }else{
-                    console.log('service migration id return')
-                    fs.unlinkSync(__dirname+'/../service_migration_tep/'+serviceItem.id+'.zip')
+                    console.log('service migration ')
+                   
                     res.send({code:0,uid:r.data.source_store_id})
                     return
                 }
@@ -511,12 +569,7 @@ exports.uploadPcsMethod=function(req,res,next){
             }); 
 
 
-
-        })
-        .catch(err2 => {
-            console.error(err2);
-        }); 
-
+        }
 
     })
 }
