@@ -501,7 +501,7 @@ exports.download=function(req,res,next){
 
 //数据上传
 exports.ogmsDataUp=async function(req,res,next){
-    var form =new formidable.IncomingForm();
+    var form =new formidable.IncomingForm({maxFileSize:6*1024 * 1024 * 1024});
     let uid=uuid.v4()
     let dirPath=__dirname+'/../upload_ogms/'+uid
 
