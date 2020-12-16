@@ -299,7 +299,7 @@ exports.executePrcs=function(req,res,next){
                         }
                         let bk_html=undefined
                         for(let f of f_item){
-                            if(f.split('.')[1]=='html'&&data_doc.type=='Visualization'){
+                            if(f.split('.')[1]=='html'&&doc.type=='Visualization'){
                                 bk_html=true;
                                 break
                             }
