@@ -11,7 +11,7 @@ module.exports={
     //绑定处理方法路径，明远机器测试路径
     bindPcsUrl:'http://223.2.47.247:8084/dataItem/bindDataItem',
     //python安装路径
-    pythonExePath:'D:\\python\\python.exe',
+    pythonExePath:'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python36\\python.exe',
 
     //配置文件内容
     configUdxCfg:['<UDXZip>','<Name>', ' <add value="data" />','</Name>','<DataTemplate type="id">','</DataTemplate>','</UDXZip>'],
