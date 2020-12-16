@@ -197,6 +197,7 @@ app.get('/exewithotherdata',router.exeWithOtherData)
 //执行处理方法
 app.get('/executeprcs',router.executePrcs)
 
+app.get('/visualResultHtml',router.visualResultHtml)
 /**
  * my 执行处理方法，数据来自url参数
  */
