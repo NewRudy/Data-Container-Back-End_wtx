@@ -99,7 +99,7 @@ app.use(session({
 
 
 //test测试接口
-app.post('/test',router.test)
+app.get('/test',router.test)
 
 
 // 系统状态
@@ -197,6 +197,7 @@ app.get('/exewithotherdata',router.exeWithOtherData)
 //执行处理方法
 app.get('/executeprcs',router.executePrcs)
 
+app.get('/visualResultHtml',router.visualResultHtml)
 /**
  * my 执行处理方法，数据来自url参数
  */

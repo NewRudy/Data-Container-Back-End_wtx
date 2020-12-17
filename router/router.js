@@ -60,6 +60,8 @@ exports.delete=storageData.del;
 
 //可视化
 exports.dataVisual=storageData.dataVisual;
+exports.visualResultHtml=processing.visualResultHtml;
+
 
 //强制可视化生成
 exports.dataVisualNoCache=storageData.dataVisualNoCache;

@@ -950,24 +950,23 @@ exports.ogmsDataDown=function(req,res,next){
     fs.readdir(dirPath,(err,files)=>{
         if(files.length===1){
              
-            let suffix=doc['singleFileName'].split('.')
-           res.attachment(doc['name']+'.'+suffix[1]) //告诉浏览器这是一个需要下载的文件,解决中文乱码问题
-           res.setHeader('fileName',escape(doc['name']+'.'+suffix[1])) 
-           res.writeHead(200, {
-                'Content-Type': 'application/octet-stream;fileName='+escape(doc['name']+'.'+suffix[1]),//告诉浏览器这是一个二进制文件
-              
-            });//设置响应头
-
-            var readStream = fs.createReadStream(dirPath+'/'+files[0]);//得到文件输入流
-        
-            readStream.on('data', (chunk) => {
-                res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
-            });
-            readStream.on('end', () => {
-                res.end();
-
-                return;
-            })
+            res.attachment(doc['singleFileName']) //告诉浏览器这是一个需要下载的文件,解决中文乱码问题
+            res.setHeader('fileName',escape(doc['singleFileName'])) 
+            res.writeHead(200, {
+                 'Content-Type': 'application/octet-stream;fileName='+escape(doc['singleFileName']),//告诉浏览器这是一个二进制文件
+               
+             });//设置响应头
+ 
+             var readStream = fs.createReadStream(dirPath+'/'+files[0]);//得到文件输入流
+         
+             readStream.on('data', (chunk) => {
+                 res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+             });
+             readStream.on('end', () => {
+                 res.end();
+ 
+                 return;
+             })
 
         }else{
             res.setHeader('fileName',escape(doc['name']+'.zip')) 
@@ -1389,16 +1388,9 @@ exports.dataVisualNoCache=function(req,res,next){
 
 exports.test=function test(req,res,next){
     req.body
-    // let url='D:\\Projects\\transitDataServer\\upload_processing\\0a0716eb-bd41-4d90-a6e4-d539d8b1d944\\upload_b623d1e5631b730acc22ec1a1d59f6ce.xml'
-    // var parser = new xml2js.Parser();
-    // fs.readFile(url, function(err, data) {
-    //     parser.parseString(data, function (err, result) {
-    //         console.dir(result);
-    //         console.log('Done');
-    //         res.send({code:result})
-    //         return
-    //     });
-    // });
+    res.set('Content-Type','application/json')
+    res.json({'IP':req.ip}).end()
+   
 }
 
 function f(url){

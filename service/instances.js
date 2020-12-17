@@ -373,50 +373,48 @@ exports.delInst=function(req,res,next){
 //uid id 
 exports.inSituDownload=function(req,res,next){
     
-    Instances.findOne({uid:req.query.uid},(err,doc)=>{
+    Instances.findOne({'list.id':req.query.id},(err,doc)=>{
 
         if(err||!doc){
             res.send({code:-1,message:'error'})
             return
         }
-        let item=myFindOne(doc.list,req.query.id)//从数组中查到对应项
-        if(item!=null){
-            if(!item.authority){//数据权限,没有权限则不能直接下载
-                res.setHeader('fileName',"#") 
-                res.send({code:-1,message:'private'})
-                return
-            }else{
+        for(let item of doc.list){
+            if(item.id==req.query.id){
+                if(!item.authority){//数据权限,没有权限则不能直接下载
+                    res.setHeader('fileName',"#") 
+                    res.send({code:-1,message:'private'})
+                    return
+                }else{
+    
+                    let path=__dirname+'/../dataStorage/'+ item.id+'.zip'
+                    res.setHeader('fileName',escape(item.name+'.zip')) 
+                    res.attachment(item.name+'.zip') //告诉浏览器这是一个需要下载的文件，解决中文乱码问题
+                    res.writeHead(200, {
+                        'Content-Type': 'application/octet-stream;fileName='+escape(item.name+'.zip'),//告诉浏览器这是一个二进制文件
+                        
+                    });//设置响应头
+                    var readStream = fs.createReadStream(path);//得到文件输入流
+                
+                    readStream.on('data', (chunk) => {
+                        res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
+                    });
+                    readStream.on('end', () => {
+                        res.end();
+                        return;
+                    })
+                }
 
-                let path=__dirname+'/../dataStorage/'+ item.id+'.zip'
-                res.setHeader('fileName',escape(item.name+'.zip')) 
-                res.attachment(item.name+'.zip') //告诉浏览器这是一个需要下载的文件，解决中文乱码问题
-                res.writeHead(200, {
-                    'Content-Type': 'application/octet-stream;fileName='+escape(item.name+'.zip'),//告诉浏览器这是一个二进制文件
-                    
-                });//设置响应头
-                var readStream = fs.createReadStream(path);//得到文件输入流
-            
-                readStream.on('data', (chunk) => {
-                    res.write(chunk, 'binary');//文档内容以二进制的格式写到response的输出流
-                });
-                readStream.on('end', () => {
-                    res.end();
-                    return;
-                })
             }
+
         }
+
+        
 
     })
 }
 
-function myFindOne(list,el){
-    for(let i=0;i<list.length;i++){
-        if(list[i].id===el){
-            return list[i]
-        }
-    }
-    return null
-}
+ 
 //权限控制
 exports.authority=function(req,res,next){
     var form=new formidable.IncomingForm()

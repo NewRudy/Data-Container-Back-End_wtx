@@ -297,6 +297,13 @@ exports.executePrcs=function(req,res,next){
                             res.send(msg);
                             return
                         }
+                        let bk_html=undefined
+                        for(let f of f_item){
+                            if(f.split('.')[1]=='html'&&doc.type=='Visualization'){
+                                bk_html=true;
+                                break
+                            }
+                        }
                        
                         let upObj={
                             'name':req.query.token,
@@ -368,8 +375,11 @@ exports.executePrcs=function(req,res,next){
                                 return
                             }else{
                                 console.log('insitu content data ',req.query.dataId,'process method',req.query.pcsId)
-                               
-                                res.send({code:0,uid:r.data.source_store_id,stout:pcs_stout.toString('utf-8')})
+                               let rs={code:0,uid:r.data.source_store_id,stout:pcs_stout!=undefined?pcs_stout.toString('utf-8'):undefined}
+                               if(bk_html){
+                                    rs['html']=true
+                               }
+                                res.send(rs)
                                 return
                             }
                           
@@ -1672,4 +1682,21 @@ exports.invokeProUrl = function(req,res,next){
         console.log("主步骤");
         //python调用处理方法
     // })
+}
+
+
+exports.visualResultHtml=function(req,res,next){
+    let htmlPath=req.query.path
+
+    fs.readFile(htmlPath,(err,data)=>{
+        if(err||!data){
+            res.send({code:-1})
+            return
+        }
+        res.setHeader('Content-Type', 'text/html')
+        res.end(data)
+        
+    })
+
+    //todo: 后台页面给前台 text/html
 }
