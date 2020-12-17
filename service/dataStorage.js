@@ -1388,16 +1388,9 @@ exports.dataVisualNoCache=function(req,res,next){
 
 exports.test=function test(req,res,next){
     req.body
-    // let url='D:\\Projects\\transitDataServer\\upload_processing\\0a0716eb-bd41-4d90-a6e4-d539d8b1d944\\upload_b623d1e5631b730acc22ec1a1d59f6ce.xml'
-    // var parser = new xml2js.Parser();
-    // fs.readFile(url, function(err, data) {
-    //     parser.parseString(data, function (err, result) {
-    //         console.dir(result);
-    //         console.log('Done');
-    //         res.send({code:result})
-    //         return
-    //     });
-    // });
+    res.set('Content-Type','application/json')
+    res.json({'IP':req.ip}).end()
+   
 }
 
 function f(url){

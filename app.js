@@ -99,7 +99,7 @@ app.use(session({
 
 
 //test测试接口
-app.post('/test',router.test)
+app.get('/test',router.test)
 
 
 // 系统状态
