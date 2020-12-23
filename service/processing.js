@@ -62,6 +62,10 @@ exports.newProcessing=function(req,res,next){
                 storagePath: form.uploadDir,
                 relatedData:fields.relatedData.split(','),
             }
+            if(fields.processingPath!=undefined){
+                form.uploadDir = fields.processingPath;
+                newFile.storagePath = fields.processingPath;
+            }
             instances.findOne(query,(find_err,doc)=>{
                 if(find_err){
                     res.send({code:-1,message:'db find error!'})

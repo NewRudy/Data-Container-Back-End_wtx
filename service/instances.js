@@ -187,7 +187,6 @@ exports.newFile=function(req,res,next){
             uid:fields.uid,
             type:fields.instype,
             userToken:fields.userToken,
-           
         }
         let newFile={
             id:fields.id,
@@ -197,6 +196,11 @@ exports.newFile=function(req,res,next){
             type:fields.type,
             authority:fields.authority,
             meta:fields.meta
+        }
+        		
+        //将string 的meta转为json
+        if(typeof(newFile.meta) === 'string'){
+            newFile.meta = JSON.parse(newFile.meta);
         }
        
         newFile.meta.currentPath=path.normalize(dataStoragePath+'/'+newFile.id) //存到当前系统下的路径
