@@ -13,7 +13,7 @@ const utils=require('../utils/utils.js')
 const xml2js =require('xml2js')
 const convert=require('xml-js')
 var parser = new xml2js.Parser();
-const builder=new xml2js.Builder();
+
 const cfg=require('../config/config.js')
 const templateId=require('../lib/data/templateIdOfVisualSolution');
 const XML = require('xml');
@@ -24,14 +24,14 @@ const processing_result=__dirname+'/../processing_result';
 const tree=__dirname+'/../saga_tools/tree.json';
 const tools_tree=__dirname+'/../saga_tools/tools_tree.json';
 
-// const async = require('async')
-// const axios = require('axios')
+const async = require('async')
+const axios = require('axios')
 
-// const FileAPI = require('file-api')
-//   , File = FileAPI.File
+const FileAPI = require('file-api')
+  , File = FileAPI.File
 
-// const Blob = require('blob');
-// const readBlob = require('read-blob');
+const Blob = require('blob');
+const readBlob = require('read-blob');
 
 
 exports.newProcessing=function(req,res,next){
@@ -714,12 +714,12 @@ exports.availableServices= function(req,res,next){
                 // let xmlFile=v.fileList[0].split('.')[1]=='xml'?v.fileList[0]:v.fileList[1]
                 // let xml=fs.readFileSync(v.storagePath+'/'+xmlFile);
                 // re['xml']=xml;
-                if(v['metaDetail']!=undefined){
+                // if(v['metaDetail']!=undefined){
 
-                    // let json=JSON.parse(v['metaDetail'])
+                //     let json=JSON.parse(v['metaDetail'])
                   
-                    re['metaDetail']=builder.buildObject(v['metaDetail'])
-                }
+                //     re['metaDetail']=json
+                // }
                 redata.push(re)
 
             })
