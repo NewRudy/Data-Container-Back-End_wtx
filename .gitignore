@@ -1,5 +1,6 @@
 node_modules
 .vscode
+config/config.js
 upload/
 upload_mdlschema/
 upload_random/
@@ -12,5 +13,4 @@ dataStorage/
 processing_result/
 upload_processing/
 package-lock.json/
-config/config.js
 urlFile/

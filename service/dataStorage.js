@@ -34,6 +34,9 @@ var parser = new xml2js.Parser();
 
 const delDir=require('../utils/utils')
 
+const async = require('async')
+const FormData=require('form-data') 
+const axios = require('axios')
 
  
 
@@ -1387,24 +1390,66 @@ exports.dataVisualNoCache=function(req,res,next){
 }
 
 exports.test=function test(req,res,next){
-    req.body
-    res.set('Content-Type','application/json')
-    res.json({'IP':req.ip}).end()
-   
-}
 
-function f(url){
-    let p=new Promise((res,rej)=>{
-        fs.readFile(url,(err,data)=>{
-           if(err){
-               rej(new Error("error"))
-           }else{
-               res(data)   
-           }
-            
-        })
-    })
-    return p
+        let p=__dirname+'/../dataStorage/41166bf4-d04e-4560-ada8-983288dd5c59.zip'
+
+        largrFile
+
+        let name = 'test',        //文件名
+        size = largrFile.length,        //总大小
+        succeed = 0;  //当前上传数
+        let shardSize = 2 *1024*1024,    //以2MB为一个分片
+        shardCount = Math.ceil(size / shardSize);  //总片数
+
+        /*生成上传分片文件顺充，通过async.eachLimit()进行同步上传
+            attr里面是[0,1,2,3...,最后一位]    
+        */
+        let attr=[];
+        for(let i=0;i<shardCount;++i){
+            attr.push(i);
+        }
+        async.eachLimit(attr,1,async function(item,callback){
+            let i=item;
+            let start = i * shardSize,//当前分片开始下标
+            end = Math.min(size, start + shardSize);//结束下标
+
+            //构造一个表单，FormData是HTML5新增的
+            let form = new FormData();
+            form.append("data", largrFile.slice(start,end));  //slice方法用于切出文件的一部分
+            form.append("name", name);//文件名字
+            form.append("total", shardCount);  //总片数
+            form.append("index", i + 1);   //当前片数'
+
+        
+            await axios.post('http://localhost:8898/upload',form,{
+                timeout: 120*1000
+            })
+            .then(axiosRes=>{
+                ++succeed;
+                    
+                    /*返回code为0是成功上传，1是请继续上传*/
+                    if(axiosRes.data.code==0){
+                        console.log(axiosRes.data.mssg);
+                            
+                    }else if(axiosRes.data.code==1){
+
+                        console.log(axiosRes.data.msg);
+                    }
+                    //生成当前进度百分比
+                    _this.percentage=Math.round(succeed/shardCount*100);
+                    /*如果是线上，去掉定时，直接callback()，
+                    这样写是为方便，本地测试看到进度条变化
+                    因为本地做上传测试是秒传，没有时间等待*/
+                    // setTimeout(callback,50);
+                    callback()
+            })
+
+        },function(err){
+            console.log(err);
+        });  
+        
+
+   
 }
 
 //添加描述信息
