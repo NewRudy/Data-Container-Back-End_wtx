@@ -1,6 +1,6 @@
 node_modules
 .vscode
-config/config.js
+
 upload/
 upload_mdlschema/
 upload_random/
