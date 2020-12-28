@@ -556,7 +556,7 @@ exports.uploadPcsMethod=function(req,res,next){
 
             // 数据迁移 300MB作为阈值，小于阈值直接上传，大于阈值切片上传
             // 300MB = 314572800 Byte
-            // TODO: 大文件的转发 
+            // TODO: 大文件的转发 考虑怎么做
             
 
             let migFile = fs.statSync(__dirname+'/../dataStorage/'+serviceItem.id+'.zip');
