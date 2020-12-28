@@ -635,7 +635,7 @@ exports.uploadPcsMethod = function (req, res, next) {
             obj["start"] = start;
             obj["end"] = end;
             // http://111.229.14.128:8899/largeBKend
-            // http://localhost:8898/upload
+            // http://localhost:8898/upload 测试
             await axios
               .post("http://111.229.14.128:8899/largeBKend", obj, {
                 timeout: 1000*60*60,
