@@ -656,16 +656,18 @@ exports.uploadPcsMethod = function (req, res, next) {
                       targetToken: req.query.targetToken
                    }
                    ws.on('open',()=>{
-                    ws.send('{ "msg":"regist","token":"largeFile" }')
+                    
                     ws.send(
                       JSON.stringify(msg)
                     )
+                    ws.close()
                      
                    })
                    
                    ws.on('message',(data)=>{
                     if(data=='node offline'){
                       console.log('node offline')
+                      ws.close()
                     }else{
                      console.log(data)
 
