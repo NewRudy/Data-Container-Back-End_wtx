@@ -50,6 +50,8 @@ exports.transition=function(req,res,next){
                         res.send(msg)
                         return
                     })
+
+                    // TODO: 大文件数据上传
                      options = {
                         method : 'POST',
                         url : transitUrl+'/data',

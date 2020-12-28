@@ -241,10 +241,15 @@ exports.newFile=function(req,res,next){
                                 });
                                 archive.on('end',(err)=>{
                                     console.log(newFile.name," zip original zip data without config data success")
+                                    res.send({code:0,message:'ok'})
+                                    return
+
                                 })
                                 // good practice to catch this error explicitly 
                                 archive.on('error', function(err) {
-                                    throw err;
+                                    // throw err;
+                                    res.send({code:-1,message:err})
+                                    return
                                 });
                                 // pipe archive data to the file 
                                 archive.pipe(output);
@@ -253,8 +258,7 @@ exports.newFile=function(req,res,next){
                                 // finalize the archive (ie we are done appending files but streams have to finish yet) 
                                 archive.finalize();
                                 
-                                res.send({code:0,message:'ok'})
-                                return
+                                
         
                             }
         
