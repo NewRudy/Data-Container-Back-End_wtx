@@ -9,6 +9,8 @@ let io = require('socket.io')(server);
 const fs=require('fs')
 const publicIp = require('public-ip') // 获取外网ip
 const os = require('os');
+ 
+
 var bodyParser = require('body-parser');
 var app = express()
 

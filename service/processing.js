@@ -27,7 +27,8 @@ const tools_tree = __dirname + "/../saga_tools/tools_tree.json";
 const async = require("async");
 const axios = require("axios");
  
-
+const WebSocket = require('ws'); 
+// const { try } = require("bluebird");
  
 
 exports.newProcessing = function (req, res, next) {
@@ -612,7 +613,9 @@ exports.uploadPcsMethod = function (req, res, next) {
         for (let i = 0; i < shardCount; ++i) {
           attr.push(i);
         }
-        let responseUpload=undefined
+        let responseUpload=undefined;
+        let rp=res;
+        try{
         async.eachLimit(
           attr,
           1,
@@ -632,9 +635,10 @@ exports.uploadPcsMethod = function (req, res, next) {
             obj["start"] = start;
             obj["end"] = end;
             // http://111.229.14.128:8899/largeBKend
+            // http://localhost:8898/upload
             await axios
               .post("http://111.229.14.128:8899/largeBKend", obj, {
-                timeout: 60 * 120 * 1000,
+                timeout: 1000*60*60,
               })
               .then((axiosRes) => {
                 ++succeed;
@@ -642,13 +646,39 @@ exports.uploadPcsMethod = function (req, res, next) {
                 /*返回code为0是成功上传，1是请继续上传*/
                 if (axiosRes.data.code == 0) {
                     console.log(axiosRes.data.data);
-                    responseUpload={
-                      code: 0,
-                      uid: axiosRes.data.data.source_store_id,
+                    console.log('大文件切上传完成，拿回数据索引，准备转发')
+                    let ws=new WebSocket('ws://111.229.14.128:1708');
+                    let msg={
+                      msg:'Migration',
+                      bk:true,
+                      serviceDownloadId: axiosRes.data.data.source_store_id,
+                      fromToken: req.query.fromToken,
+                      targetToken: req.query.targetToken
+                   }
+                   ws.on('open',()=>{
+                    ws.send('{ "msg":"regist","token":"largeFile" }')
+                    ws.send(
+                      JSON.stringify(msg)
+                    )
+                     
+                   })
+                   
+                   ws.on('message',(data)=>{
+                    if(data=='node offline'){
+                      console.log('node offline')
+                    }else{
+                     console.log(data)
+
                     }
+                  })
+                 
 
                 } else if (axiosRes.data.code == 1) {
                   console.log(axiosRes.data.msg);
+                  
+                  let data=JSON.stringify({'code':1});
+                  rp.end(data);//返回数据
+                  
                 }
                 //生成当前进度百分比
                 // _this.percentage=Math.round(succeed/shardCount*100);
@@ -663,23 +693,21 @@ exports.uploadPcsMethod = function (req, res, next) {
               });
           },
           function (err) {
-            console.log('大文件切上传完成，拿回数据索引，准备转发')
+         
             if(err){
               console.log(err)
-              res.send({code:-1})
+              rp.send({code:-1})
               return
             }
-            if(responseUpload!=undefined){
-              res.send(responseUpload)
-              return
-            }else{
-              res.send({code:-1})
-              return
-            }
+      
             
+
 
           }
         );
+        }catch(err){
+          console.log(err)
+        }
       }
     }
   });
