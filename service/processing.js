@@ -28,6 +28,7 @@ const async = require("async");
 const axios = require("axios");
  
 const WebSocket = require('ws'); 
+const getSize = require('get-folder-size');
 // const { try } = require("bluebird");
  
 
@@ -352,57 +353,79 @@ exports.executePrcs = function (req, res, next) {
 
             // TODO: 处理结果较大时切片上传
 
-            let options = {
-              method: "POST",
-              url: transitUrl + "/data",
-              headers: { "Content-Type": "multipart/form-data" },
-              formData: upObj,
-            };
-            //调用数据容器上传接口
-            let promise = new Promise((resolve, reject) => {
-              let readStream = Request(options, (error, response, body) => {
-                if (!error) {
-                  resolve({ response, body });
-                } else {
-                  reject(error);
-                }
-              });
-            });
-            //返回数据下载id
-            promise.then(
-              function (v) {
-                //删除配置文件
-                fs.unlinkSync(output + "/config.udxcfg", udxcfg);
-                let r = JSON.parse(v.body);
-                if (r.code == -1) {
-                  res.send({ code: -2, message: v.msg });
-                  return;
-                } else {
-                  console.log(
-                    "insitu content data ",
-                    req.query.dataId,
-                    "process method",
-                    req.query.pcsId
-                  );
-                  let rs = {
-                    code: 0,
-                    uid: r.data.source_store_id,
-                    stout:
-                      pcs_stout != undefined
-                        ? pcs_stout.toString("utf-8")
-                        : undefined,
-                  };
-                  if (bk_html) {
-                    rs["html"] = true;
+            getSize(output, (err, size) => {
+              if (err) { throw err; }
+              // 处理结果上传到数据容器，分300MB的阈值
+              if(size<314572800){
+                let options = {
+                  method: "POST",
+                  url: transitUrl + "/data",
+                  headers: { "Content-Type": "multipart/form-data" },
+                  formData: upObj,
+                };
+                //调用数据容器上传接口
+                let promise = new Promise((resolve, reject) => {
+                  let readStream = Request(options, (error, response, body) => {
+                    if (!error) {
+                      resolve({ response, body });
+                    } else {
+                      reject(error);
+                    }
+                  });
+                });
+                //返回数据下载id
+                promise.then(
+                  function (v) {
+                    //删除配置文件
+                    fs.unlinkSync(output + "/config.udxcfg", udxcfg);
+                    let r = JSON.parse(v.body);
+                    if (r.code == -1) {
+                      res.send({ code: -2, message: v.msg });
+                      return;
+                    } else {
+                      console.log(
+                        "insitu content data ",
+                        req.query.dataId,
+                        "process method",
+                        req.query.pcsId
+                      );
+                      let rs = {
+                        code: 0,
+                        uid: r.data.source_store_id,
+                        stout:
+                          pcs_stout != undefined
+                            ? pcs_stout.toString("utf-8")
+                            : undefined,
+                      };
+                      if (bk_html) {
+                        rs["html"] = true;
+                      }
+                      res.send(rs);
+                      return;
+                    }
+                  },
+                  (rej_err) => {
+                    console.log(rej_err);
                   }
-                  res.send(rs);
-                  return;
-                }
-              },
-              (rej_err) => {
-                console.log(rej_err);
+                );
+              }else{
+
+
+
               }
-            );
+           
+
+
+
+            })
+
+            
+
+
+
+
+
+
           });
         });
       });
@@ -594,7 +617,6 @@ exports.uploadPcsMethod = function (req, res, next) {
             console.error(err);
           });
       } else {
-        // TODO: 大文件切片 测试
 
         let distFile = fs.readFileSync(
           __dirname + "/../dataStorage/" + serviceItem.id + ".zip"
@@ -613,7 +635,7 @@ exports.uploadPcsMethod = function (req, res, next) {
         for (let i = 0; i < shardCount; ++i) {
           attr.push(i);
         }
-        let responseUpload=undefined;
+        
         let rp=res;
         try{
         async.eachLimit(
@@ -642,7 +664,6 @@ exports.uploadPcsMethod = function (req, res, next) {
               })
               .then((axiosRes) => {
                 ++succeed;
-
                 /*返回code为0是成功上传，1是请继续上传*/
                 if (axiosRes.data.code == 0) {
                     console.log(axiosRes.data.data);
@@ -656,14 +677,11 @@ exports.uploadPcsMethod = function (req, res, next) {
                       targetToken: req.query.targetToken
                    }
                    ws.on('open',()=>{
-                    
                     ws.send(
                       JSON.stringify(msg)
                     )
                     ws.close()
-                     
                    })
-                   
                    ws.on('message',(data)=>{
                     if(data=='node offline'){
                       console.log('node offline')
@@ -673,7 +691,6 @@ exports.uploadPcsMethod = function (req, res, next) {
 
                     }
                   })
-                 
 
                 } else if (axiosRes.data.code == 1) {
                   console.log(axiosRes.data.msg);
@@ -695,16 +712,11 @@ exports.uploadPcsMethod = function (req, res, next) {
               });
           },
           function (err) {
-         
             if(err){
               console.log(err)
               rp.send({code:-1})
               return
             }
-      
-            
-
-
           }
         );
         }catch(err){

@@ -24,6 +24,7 @@
     "file-type": "^16.0.1",
     "form-data": "^3.0.0",
     "formidable": "^1.2.1",
+    "get-folder-size": "^2.0.1",
     "jsdom": "^16.2.2",
     "mongoose": "^5.8.1",
     "node-stream-zip": "^1.12.0",
