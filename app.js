@@ -205,6 +205,7 @@ app.get('/visualResultHtml',router.visualResultHtml)
  */
  
 app.post('/invokeProUrl', router.invokeProUrl);
+app.post('/invokeProUrls', router.invokeProUrls);
 
 // 元数据描述
 app.get('/capability',router.capability)
