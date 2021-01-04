@@ -9,12 +9,15 @@ const utils=require('../utils/utils.js')
 const dataStoragePath=__dirname+'/../dataStorage' 
 const path=require('path')
 const instances=require('../model/instances.js');
+const user=require('../model/user');
 const workspace=require('../model/workSpace.js');
 
 const { Console } = require('console');
 const { query } = require('express');
 
 var Instances=instances.instances;
+
+var User=user.User;
 
 var workSpace=workspace.workSpace;
 
@@ -483,19 +486,29 @@ exports.capability=function(req,res,next){
                     obj['name']=el.name
                     obj['date']=el.date
                     obj['meta']=el.meta
+                    
                 }else{
                     obj['name']=el.name
                     obj['date']=el.date
                     obj['description']=el.description
                     obj['paramsCount']=el.paramsCount!=undefined?el.paramsCount:undefined
                     obj['metaDetail']=el.metaDetail!=undefined?JSON.parse(el.metaDetail):undefined
+                    
                 }
                 break
             }
         }
-         
-        res.send({code:0,data:obj})
-        return
+
+        User.findOne({'name':'admin'},(err,doc)=>{
+            if(err){
+                res.send({code:-1,data:err})
+                return
+            }
+            obj['authorship']=utils.Decrypt(doc['relatedUser']['email']) 
+            res.send({code:0,data:obj})
+            return
+        })
+       
 
     })
 }
