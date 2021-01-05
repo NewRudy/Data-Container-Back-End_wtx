@@ -104,7 +104,7 @@ exports.transition=function(req,res,next){
 // 多文件返回urls
 exports.multiFiles=function(req,res,next){
     let pcsId=req.query.id;
-    instances.findOne({'list.id':pcsId,type:'Processing'},(err,doc)=>{
+    instances.findOne({'list.id':pcsId},(err,doc)=>{
         if(err||!doc){
             res.send({code:-1,message:'db find err'})
             return
@@ -173,10 +173,10 @@ async function uploadFiles(filePath,files){
 
     for(let file of files){
         let tp=filePath+'/'+file;
-        let name=file.split('.').join('_');
+        let name=file.split('.')[0]
         let {data}=await uploadMultifiles(tp,name);
-        let idx=data.file_name.lastIndexOf('_');
-        data.file_name=data.file_name.substring(0,idx)+'.'+data.file_name.substring(idx+1)
+        
+        data.file_name=file
         arr.push(data)
     }
     return arr
