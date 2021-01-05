@@ -91,6 +91,9 @@ exports.authority=instances.authority
 //transit
 exports.transition=transition.transition
 
+// multifiles
+exports.multiFiles=transition.multiFiles
+
 //new processing method
 exports.newProcessing=processing.newProcessing
 //删除处理方法

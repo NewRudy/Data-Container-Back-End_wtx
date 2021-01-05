@@ -211,6 +211,9 @@ app.post('/invokeProUrls', router.invokeProUrls);
 app.get('/capability',router.capability)
 
 
+// 获取多文件
+app.get('/multiFiles',router.multiFiles)
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/state', function (req, res) {
 

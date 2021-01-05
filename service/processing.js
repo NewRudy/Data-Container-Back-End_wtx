@@ -95,7 +95,61 @@ exports.newProcessing = function (req, res, next) {
             });
             fs.readFile(xmlPath, function (err, data) {
               parser.parseString(data, function (err, result) {
+
+                let formatJson={}
+                formatJson['Description']=result['Method']['Description']
+
+                if(result['Method']['Dependency']&&result['Method']['Dependency'].length>0){
+            
+                    let Dependency=[]
+                    for( let it in result['Method']['Dependency'][0]['Item']){
+                  
+                        Dependency.push(result['Method']['Dependency'][0][['Item']][it]['$'])
+                    }
+                    formatJson['Dependency']=Dependency
+                }
+              
+                if(result['Method']['Input']&&result['Method']['Input'].length>0){
+                    let Input=[]
+                    for( let it in result['Method']['Input'][0]['Item']){
+                        
+                        let append=[]
+                        if(result['Method']['Input'][0]['Item'][it]['Append']&&result['Method']['Input'][0]['Item'][it]['Append'].length>0){
+                          for(let ap in result['Method']['Input'][0]['Item'][it]['Append']){
+                              append.push(result['Method']['Input'][0]['Item'][it]['Append'][ap]['$'])
+                          }
+                        }
+                        let m=result['Method']['Input'][0]['Item'][it]['$']
+                        if(append.length>0){m['Append']=append}
+
+                        Input.push(m)
+
+
+                    }
+                    formatJson['Input']=Input
+
+                }
+
+                if(result['Method']['Output']&&result['Method']['Output'].length>0){
+                    let Output=[]
+                    for( let it in result['Method']['Output'][0]['Item']){
+                          
+
+                        Output.push(result['Method']['Output'][0]['Item'][it]['$'])
+                    }
+                    formatJson['Output']=Output
+                }   
+
+                if(result['Method']['Parameter']&&result['Method']['Parameter'].length>0){
+                        let Parameter=[]
+                        for( let it in result['Method']['Parameter'][0]['Item']){
+                            Parameter.push(result['Method']['Parameter'][0]['Item'][it]['$'])
+                        }
+                        formatJson['Parameter']=Parameter
+                }
+               
                 newFile["metaDetail"] = JSON.stringify(result);
+                newFile["metaDetailJSON"]=formatJson;
 
                 doc.list.unshift(newFile);
 
@@ -1815,7 +1869,13 @@ exports.invokeProUrls = function(req,res,next){
   var fileType;
   var fileName;
   // form.parse(req, (err, fields, files) =>{
-      let urls = req.body.urls.split(',');//此时为一个数组
+    let urls
+  if(req.body.urls.indexOf(',')>0){
+    urls = req.body.urls.split(',');//此时为一个数组
+  }else{
+    urls = req.body.urls
+  }
+       
 
   let demo = invokeNow(urls,fileName);
   async function invokeNow(urls,fileName){
@@ -2027,8 +2087,6 @@ exports.invokeProUrls = function(req,res,next){
       }
        
 }
-
-
 
 exports.visualResultHtml = function (req, res, next) {
   let htmlPath = req.query.path;
