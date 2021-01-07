@@ -1869,11 +1869,11 @@ exports.invokeProUrls = function(req,res,next){
   var fileType;
   var fileName;
   // form.parse(req, (err, fields, files) =>{
-    let urls
+    let urls = [];
   if(req.body.urls.indexOf(',')>0){
     urls = req.body.urls.split(',');//此时为一个数组
   }else{
-    urls = req.body.urls
+    urls.push(req.body.urls)
   }
        
 
