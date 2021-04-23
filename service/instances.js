@@ -207,71 +207,116 @@ exports.newFile=function(req,res,next){
         }
        
         newFile.meta.currentPath=path.normalize(dataStoragePath+'/'+newFile.id) //存到当前系统下的路径
-        console.log('path',newFile.meta.currentPath)
-        Instances.findOne(query,(find_err,doc)=>{
-            if(find_err){
-                res.send({code:-1,message:'new file error!'})
-                return
-            }else{
-                doc.list.unshift(newFile)
-                Instances.update(query,doc,(update_err)=>{
-                    if(update_err){
-                        res.send({code:-1,message:'new file error!'})
+
+        function operation() {
+            return new Promise(function(resolve, reject) {
+                fs.readdir(newFile.meta.dataPath,(err,filesItem)=>{
+                    if(err){
+                        res.send({code:-1,message:'file path is not exist!'})
                         return
-                    }else{
-                        fs.readdir(newFile.meta.dataPath,(err,filesItem)=>{
-                            if(filesItem.length===0){
-                                res.send({code:-1,message:'new file error!'})
-                                return
-                            }else {
-
-
-                                //单文件直接拷贝到指定目录下
-                                console.log("s")
-                                exists(newFile.meta.dataPath,newFile.meta.currentPath,copy)
-
-                                var output = fs.createWriteStream(__dirname+'/../dataStorage/'+newFile.id+'.zip');
-
-                                var archive = archiver('zip', {
-                                    store: false // Sets the compression method to STORE. 
-                                });
-                                        
-                                // listen for all archive data to be written 
-                                output.on('close', function() {
-                                    console.log(archive.pointer() + ' total bytes');
-                                    console.log('archiver has been finalized and the output file descriptor has closed.');
-                                
-                                });
-                                archive.on('end',(err)=>{
-                                    console.log(newFile.name," zip original zip data without config data success")
-                                    res.send({code:0,message:'ok'})
-                                    return
-
-                                })
-                                // good practice to catch this error explicitly 
-                                archive.on('error', function(err) {
-                                    // throw err;
-                                    res.send({code:-1,message:err})
-                                    return
-                                });
-                                // pipe archive data to the file 
-                                archive.pipe(output);
-                                // append files from a directory 
-                                archive.directory(newFile.meta.dataPath,'/'); 
-                                // finalize the archive (ie we are done appending files but streams have to finish yet) 
-                                archive.finalize();
-                                
-                                
-        
-                            }
-        
-        
-        
-                        })
                     }
+                    let pathArr=[]
+                    filesItem.forEach(v=>{
+                        let obj={}
+                        obj['name']=v
+                        obj['path']=newFile.meta.currentPath+'/'+v
+        
+                        pathArr.push(obj) 
+                    })
+                    newFile['currentPathFiles']=pathArr;
+                    resolve(filesItem);
+                    
                 })
-            }
+            })
+        }
+        operation().then((data)=>{
+            console.log(data);
+            Instances.findOne(query,(find_err,doc)=>{
+                if(find_err){
+                    res.send({code:-1,message:'new file error!'})
+                    return
+                }else{
+                    doc.list.unshift(newFile)
+                    Instances.update(query,doc,(update_err)=>{
+                        if(update_err){
+                            res.send({code:-1,message:'new file error!'})
+                            return
+                        }else{
+                            fs.readdir(newFile.meta.dataPath,(err,filesItem)=>{
+                                if(filesItem == null || filesItem.length===0){
+                                    res.send({code:-1,message:'new file error!'})
+                                    return
+                                }else {   
+    
+                                    //单文件直接拷贝到指定目录下
+                                    console.log("s")
+                                    exists(newFile.meta.dataPath,newFile.meta.currentPath,copy)
+    
+                                    var output = fs.createWriteStream(__dirname+'/../dataStorage/'+newFile.id+'.zip');
+    
+                                    var archive = archiver('zip', {
+                                        store: false // Sets the compression method to STORE. 
+                                    });
+                                            
+                                    // listen for all archive data to be written 
+                                    output.on('close', function() {
+                                        console.log(archive.pointer() + ' total bytes');
+                                        console.log('archiver has been finalized and the output file descriptor has closed.');
+                                    
+                                    });
+                                    archive.on('end',(err)=>{
+                                        console.log(newFile.name," zip original zip data without config data success")
+                                        res.send({code:0,message:'ok'})
+                                        return
+    
+                                    })
+                                    // good practice to catch this error explicitly 
+                                    archive.on('error', function(err) {
+                                        // throw err;
+                                        res.send({code:-1,message:err})
+                                        return
+                                    });
+                                    // pipe archive data to the file 
+                                    archive.pipe(output);
+                                    // append files from a directory 
+                                    archive.directory(newFile.meta.dataPath,'/'); 
+                                    // finalize the archive (ie we are done appending files but streams have to finish yet) 
+                                    archive.finalize();
+                                    
+                                    
+            
+                                }
+            
+            
+            
+                            })
+                        }
+                    })
+                }
+            })
         })
+
+        
+        // fs.readdir(newFile.meta.dataPath,(err,filesItem)=>{
+        //     if(err){
+        //         res.send({code:-1,message:'new file error!'})
+        //         return
+        //     }
+        //     let pathArr=[]
+        //     filesItem.forEach(v=>{
+        //         let obj={}
+        //         obj['name']=v
+        //         obj['path']=newFile.meta.currentPath+'/'+v
+
+        //         pathArr.push(obj) 
+        //     })
+        //     newFile['currentPathFiles']=pathArr;
+            
+        // })
+
+
+
+
     })
   
     
@@ -491,6 +536,7 @@ exports.capability=function(req,res,next){
                     obj['name']=el.name
                     obj['date']=el.date
                     obj['description']=el.description
+                    obj['dataTemplateOid']=el.dataTemplateOid!=undefined?el.dataTemplateOid:null
                     obj['paramsCount']=el.paramsCount!=undefined?el.paramsCount:undefined
                     obj['metaDetail']=el.metaDetail!=undefined?JSON.parse(el.metaDetail):undefined
                     
@@ -511,4 +557,28 @@ exports.capability=function(req,res,next){
        
 
     })
+}
+
+//获取处理方法输入数据项
+
+exports.pcsInputFiles=function(req,res,next){
+
+    let dataId=req.query.dataId
+
+    Instances.findOne({list:{$elemMatch:{id:dataId}}},{list:{$elemMatch:{id:dataId}}},(err,pcsDoc)=>{
+        if(err){
+            res.send({
+                code:-1,
+                message:err
+            })
+            return
+        }
+        res.send({
+            code:0,
+            data:pcsDoc.list[0].currentPathFiles
+        })
+        return
+
+    })
+
 }

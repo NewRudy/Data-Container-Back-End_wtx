@@ -9,6 +9,7 @@ var dataSChema= new mongoose.mongoose.Schema({
              uid:String,
             name:String,
              pwd:String,
+       pythonEnv:String,
      relatedUser:Mixed
 },{
     versionKey: false,

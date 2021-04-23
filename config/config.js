@@ -6,13 +6,13 @@ module.exports={
     db:'mongodb://localhost:27017/insituShare',
     //门户库路径
     portalUserDb:'mongodb://172.21.213.33:27017/Portal',
+    // portalUserDb:'mongodb://111.229.14.128:27019/Portal',
     //数据上传接口路径
     transitUrl:'http://111.229.14.128:8899',
     //绑定处理方法路径，明远机器测试路径
     bindPcsUrl:'http://223.2.47.247:8084/dataItem/bindDataItem',
     //python安装路径
-    pythonExePath:'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python36\\python.exe',
-
+    // pythonExePath:'C:\\Users\\HP\\AppData\\Local\\Programs\\Python\\Python36\\python.exe',
     //配置文件内容
     configUdxCfg:['<UDXZip>','<Name>', ' <add value="data" />','</Name>','<DataTemplate type="id">','</DataTemplate>','</UDXZip>'],
 

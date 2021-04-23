@@ -118,6 +118,12 @@ app.post('/reg',router.reg)
 
 //获取instances
 app.get('/instances',router.instances)
+
+// 获取处理方法数据
+app.get('/pcsInputs',router.pcsInputFiles)
+
+
+
 //新文件夹项
 app.put('/newInst',router.newInstance)
 //新文件项
@@ -130,6 +136,10 @@ app.delete('/delpro',router.delProcessing)
 
 //下载
 app.get('/insitudownload',router.inSituDownload)
+
+
+// 打开本地文件资源管理器
+app.get('/openExplorer',router.openExplorer)
 //权限设置
 app.put('/authority',router.authority)
 
@@ -206,6 +216,14 @@ app.get('/visualResultHtml',router.visualResultHtml)
  
 app.post('/invokeProUrl', router.invokeProUrl);
 app.post('/invokeProUrls', router.invokeProUrls);
+app.post('/invokeExternalUrlsDataPcs', router.invokeExternalUrlsDataPcs);
+
+app.post('/invokeExternalUrlsDataPcsWithKeys',jsonParser,router.invokeExternalUrlsDataPcsWithKeys);
+
+//执行方法即 Method类型
+app.post('/invokeLocalMethod',jsonParser,router.invokeLocalMethod)
+
+
 
 // 元数据描述
 app.get('/capability',router.capability)
@@ -227,6 +245,11 @@ app.get('/state', function (req, res) {
 })
 
 // curl -L ip.tool.lu
+//获取用户信息
+app.get('/getUserInfo', router.getUserInfo)
+
+//换绑python环境
+app.post('/changePythonEnv', router.changePythonEnv);
 
 
 

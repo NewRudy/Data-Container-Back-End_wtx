@@ -214,19 +214,6 @@ function uploadMultifiles(path,name){
         });
 
         return promise
-        // //返回数据下载id
-        // promise.then(function(v){
-        //     console.log('insitudataid',req.query.id)
-        //     let r=JSON.parse(v.body)
-        //     res.send({uid:r.data.source_store_id})
-        //     return
-        // },(err)=>{
-        //     res.send({code:-2,id:req.query.id,stoutErr:'file invalid'})
-        //     return
-        // })
-        // .catch(err=>{
-        //     res.send({code:-1,id:req.query.id,stoutErr:'file invalid'})
-        //     return
-        // })
+      
 
 }
