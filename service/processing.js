@@ -353,6 +353,7 @@ exports.executePrcs = function (req, res, next) {
               });
             }
             let pcs_stout = undefined;
+
             const ls = cp.spawn(pythonExePath, par); //python安装路径，python脚本路径，shp路径，照片结果路径
             ls.on("error", (err) => {
               console.log(`错误 ${err}`);
