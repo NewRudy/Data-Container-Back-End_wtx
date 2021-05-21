@@ -353,7 +353,7 @@ exports.executePrcs = function (req, res, next) {
               });
             }
             let pcs_stout = undefined;
-
+            //par[0] = "E:/dataServer/Data-Container-Back-End/upload_processing/096f39d2-f471-48b3-a2ec-ec2703668c72/json2xml.py"
             const ls = cp.spawn(pythonExePath, par); //python安装路径，python脚本路径，shp路径，照片结果路径
             ls.on("error", (err) => {
               console.log(`错误 ${err}`);

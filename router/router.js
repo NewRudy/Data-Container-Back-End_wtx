@@ -23,6 +23,9 @@ const systemRouter = require('../service/systemStateRouter.js')
 
 const depend = require('../service/depend.js')
 
+// simple
+const simpleInstance = require('../service/simple/simpleInstance.js')
+
 //接口不可用 
 //第一种接口上传数据到服务器
 exports.storageData=storageData.storage;
@@ -168,3 +171,6 @@ exports.indexPost=indexService.indexServicePost;
 exports.getUserInfo = user.getUserInfo;
 
 exports.changePythonEnv = depend.changePythonEnv;
+
+// simple model
+exports.simpleNewFolder = simpleInstance.simpleNewFolder

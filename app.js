@@ -182,7 +182,7 @@ app.put('/workspace',router.workspacePut)
 
 
 //注册到参与式平台GSP
-app.post('/newDataIndexGSP',router.newDataIndexGSP)
+app.put('/newDataIndexGSP',router.newDataIndexGSP)
 
 
 
@@ -251,6 +251,9 @@ app.get('/getUserInfo', router.getUserInfo)
 //换绑python环境
 app.post('/changePythonEnv', router.changePythonEnv);
 
+
+// simple model
+app.put('/simple/newFolder', router.simpleNewFolder);
 
 
 //错误处理，使用自定义的中间件
