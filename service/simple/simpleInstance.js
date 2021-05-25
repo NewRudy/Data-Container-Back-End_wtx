@@ -7,7 +7,7 @@ const path = require('path')
 const archiver = require('archiver')
 const dataStoragePath = __dirname + '/../../dataStorage'
 const utils=require('../../utils/utils.js')
-
+const Bagpipe = require('bagpipe');
 
 const Instances = require('../../model/instances.js').instances;
 const instances = require('../instances')
@@ -36,12 +36,14 @@ exports.simpleNewFolder = function (req, res, next) {
             type: fields.type,
             date: fields.date,
             authority: fields.authority,
-            folder: fields.folder,
-            xmlFolder: fields.xmlFolder,
+            path: fields.path,
             isMerge: fields.isMerge
         }
+        if(fields.xmlFolder) {
+            newFolder['xmlPath'] = fields.xmlPath
+        }
 
-        if (!fs.existsSync(newFolder.folder)) {
+        if (!fs.existsSync(newFolder.path)) {
             console.log('数据文件夹路径不对')
             res.send({
                 code: -1,
@@ -49,7 +51,7 @@ exports.simpleNewFolder = function (req, res, next) {
             })
             return
         }
-        if (newFolder.xmlFolder != '' && !fs.existsSync(newFolder.xmlFolder)) {
+        if (newFolder.xmlPath && newFolder.xmlPath != '' && !fs.existsSync(newFolder.xmlPath)) {
             console.log('元数据文件夹路径不对')
             res.send({
                 code: -1,
@@ -61,29 +63,34 @@ exports.simpleNewFolder = function (req, res, next) {
         newFolder.meta.currentPath = path.normalize(dataStoragePath + '/' + newFolder.id)
         let readMeArr = ['readme.md', '简介.txt']
         for(let i = 0; i< readMeArr.length; ++i) {       // 有一个就好
-            let readme = path.normalize(newFolder.folder + '/' + readMeArr[i])
+            let readme = path.normalize(newFolder.path + '/' + readMeArr[i])
             if(fs.existsSync(readme)) {
                 newFolder.readme = readme
             }
         }
 
         if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
-            getFilesPath(newFolder.folder, res).then((pathArr) => {
-                newFolder['currentPathFiles'] = pathArr;
-                updateFilesInstance(query, [newFolder], res)
+            updateInstance(query, [newFolder]).then(() => {
+                copyInstance(newFolder.path, newFolder.meta.currentPath)
+                addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
                 res.send({code: 0})
             })
         } else {
-            updateFolderInstance(query, newFolder, res)
-            res.send({code: 0, message: 'success'})
+            getFilesPath(newFolder, res).then((pathArr) => {
+                addInstances(query, pathArr)
+            }).catch(err => {
+                console.log(err)
+                throw err;
+            })
+            res.send({code: 0})
         }
     })
 }
 
-function getFilesPath(folderPath, res) {
+function getFilesPath(folder, res) {        // 得到文件夹数组和文件数组
     return new Promise(function (resolve, reject) {
         console.log('get file path')
-        fs.readdir(folderPath, (err, files) => {
+        fs.readdir(folder.path, (err, files) => {
             if (err) {
                 res.send({
                     code: -1,
@@ -92,261 +99,189 @@ function getFilesPath(folderPath, res) {
                 return
             }
             let pathArr = []
-            files.forEach(v => {
-                let obj = {}
-                obj['name'] = v
-                obj['path'] = path.normalize(folderPath + '/' + v)
+            files.forEach(file => {
+                let tempV4 = uuid.v4()
+                let obj = {
+                    id: tempV4,
+                    oid: folder.oid,
+                    name: file,
+                    date: utils.formatDate(new Date()),
+                    authority: folder.authority,
+                    path: path.normalize(folder.path + '/' + file),
+                    meta: {}
+                }
+                obj.meta.currentPath = path.normalize(dataStoragePath + '/' + tempV4)
+                let st = fs.statSync(obj.path)
+                if(st.isFile()){
+                    obj.type = 'file'
+                } else {
+                    obj.type = 'folder'
+                    obj.subContentId = tempV4
+                }
                 pathArr.push(obj)
-            })
+            }) 
             resolve(pathArr);
         })
     })
 }
 
-// 添加一个文件夹实例, 文件下的所有文件添加为这个文件夹目录下的实例
-function updateFolderInstance(query, folder, res) {
-    console.log('update a folder instance')
-    Instances.findOne(query, (find_err, doc) => {
-    let newInstanceUid = uuid.v4()
-    folder.subContentId = newInstanceUid
-    doc.list.unshift(folder)
-    let result = Instances.update(query,doc,(err)=>{
-        if(err){
-            res.send({code:-1,message:'error'})
-            return;
-        }else{
-            console.log('添加完文件夹')
-            return 
-        } 
-    })
-    
-    let newInstance = {
-        uid: newInstanceUid,
-        userToken: query.userToken,
-        type: query.type,
-        parentLevel: parseInt(result._update.parentLevel) + 1 + '',
-        list: []
-    }
-    let _query = {}
-    _query.type = query.type
-    _query.userToken = query.userToken
-    _query.uid = newInstanceUid
-
-    Instances.create(newInstance, (err) => {
-        if(err) {
-            res.send({code: -1})
-            return
-        }
-    })
-
-    getFilesPath(folder.folder, res).then((pathArr) => {
-        let fileArr = []
-        for(let i = 0; i < pathArr.length; ++i) {
-            let file = pathArr[i]
-            // stat(pathArr[i].path, function(err, st) {
-            //     if(err) {
-            //         throw err
-            //     }
-            //     let temp = {}
-            //     temp.id = uuid.v4()
-            //     temp.oid = folder.oid
-            //     temp.name = file.name
-            //     temp.date = utils.formatDate(new Date())
-            //     temp.authority = folder.authority
-            //     temp.folder = file.path
-            //     temp.isMerge = false 
-            //     temp.meta = {}
-            //     temp.meta.currentPath = path.normalize(dataStoragePath + '/' + temp.id)
-            //     if(st.isFile()) {
-            //         temp.type = 'file'
-            //         fileArr.push(temp)
-            //     } 
-            //     else if (st.isDirectory()) {
-            //         temp.subContentId = ''
-            //         temp.type = 'folder'
-            //         updateFolderInstance(_query, temp, res)
-            //     }
-            // })
-            // 这里需要采用同步的写法
-            let st = fs.statSync(file.path)
-            let temp = {}
-            temp.id = uuid.v4()
-            temp.oid = folder.oid
-            temp.name = file.name
-            temp.date = utils.formatDate(new Date())
-            temp.authority = folder.authority
-            temp.folder = file.path
-            temp.isMerge = false 
-            temp.meta = {}
-            temp.meta.currentPath = path.normalize(dataStoragePath + '/' + temp.id)
-            if(st.isFile()) {
-                temp.type = 'file'
-            } 
-            else if (st.isDirectory()) {
-                temp.type = 'folder'
-                updateFolderInstance(_query, temp, res)
+function createInstance(newInstance) {
+    return new Promise((resolve, reject) => {
+        Instances.create(newInstance, (err) => {
+            if(err) {
+                throw err
             }
-            fileArr.push(temp)
-        }
-        if(fileArr.length != 0) {
-            updateFilesInstance(_query, fileArr, res)
-        }
-    })
+        })
+        resolve()
     })
 }
 
-// 添加一个或多个文件实例
-function updateFilesInstance(query, files, res) {
-    console.log('update a file instance')
-    Instances.findOne(query, (find_err, doc) => {
-        if (find_err) {
-            res.send({
-                code: -1,
-                message: 'new file error!'
-            })
-            return
-        }
-        for(let i = 0; i < files.length; ++i) {
-            doc.list.unshift(files[i])
-        }
-        Instances.update(query, doc, (update_err) => {
-            if (update_err) {
-                res.send({
-                    code: -1,
-                    message: 'new file error!'
-                })
+function updateInstance(query, pathArr) {
+    return new Promise((resolve, reject) => {
+        Instances.findOne(query, (find_err, doc)=> {
+            if(find_err) {
+                console.log('instance 还未创建')
                 return
             }
-            // 复制文件
-            // fs.access(file.currentPath, fs.constants.F_OK | fs.constants.W_OK, (err, file) => {
-            //     if (err) {
-            //       console.error(
-            //         `${file} ${err.code === 'ENOENT' ? '不存在' : '只可读'}`);
-            //       fs.mkdirSync(file.currentPath)
-            //     }
-            //     if (file.type === 'merge') {
-            //         copyDirectory(file.folder, file.currentPath)
-            //     } else {
-            //         fs.copyFile(file.srcPath, file.currentpath)
-            //     }
-            //   });
-            for(let i = 0; i < files.length; ++i) {
-                if(files[i].type === 'folder' && !files[i].isMerge) continue
-                fs.mkdirSync(files[i].meta.currentPath)      
-                stat(files[i].folder, (err, st) => {
-                    if(err) {
-                        throw err
-                    }
-                    if(st.isFile()) {
-                        readable = fs.createReadStream(files[i].folder);
-                        writable = fs.createWriteStream(files[i].meta.currentPath + '/' + files[i].name);
-                        // 通过管道来传输流
-                        readable.pipe(writable);
-                    } else if (st.isDirectory()) {
-                        copyDirectory(files[i].folder, files[i].meta.currentPath)
-                    }
-                    addZipFile(files[i].id, files[i].folder, res)
-                })
-            }
+            doc.list = doc.list.concat(pathArr)
+            let result = Instances.update(query, doc, (err) => {
+                if(err){
+                    throw err
+                    return;
+                }else{
+                    console.log('update instances')
+                    return 
+                } 
+            })
+            resolve(result._update.parentLevel)
         })
     })
 }
 
 
-
-function addZipFile(id, folderPath, res) {
-    console.log('add zip file')
-    var output = fs.createWriteStream(__dirname + '/../../dataStorage/' + id + '.zip');
-
-    var archive = archiver('zip', {
-        store: false // Sets the compression method to STORE. 
-    });
-
-    // listen for all archive data to be written 
-    output.on('close', function () {
-
-    });
-    archive.on('end', (err) => {
-        console.log(newFile.name, " zip original zip data without config data success")
-        // res.send({code: 0})
-        return
-    })
-    // good practice to catch this error explicitly 
-    archive.on('error', function (err) {
-        // throw err;
-        res.send({
-            code: -1,
-            message: err
+// 添加合并的实例
+function addInstances(query, pathArr) {
+    updateInstance(query, pathArr).then((result) => {
+        pathArr.forEach(path => {
+            if(path.type === 'file'){
+                copyInstance(path.path, path.meta.currentPath, path.name)
+                addZipFile(path.path, path.meta.currentPath + '.zip')
+                return
+            }
+            let newInstance = {
+                uid: path.id,
+                userToken: query.userToken,
+                type: query.type,
+                parentLevel: parseInt(result) + 1 + '',
+                list: []
+            }
+            let _query = {
+                type: query.type,
+                userToken: query.userToken,
+                uid: path.id
+            }
+            createInstance(newInstance).then(() => {
+                getFilesPath(path).then((_pathArr) => {
+                    addInstances(_query, _pathArr)
+                })
+            })
         })
-        return
-    });
-    // pipe archive data to the file 
-    // archive.pipe(output);
-    // // append files or directory 
-    stat(folderPath, (err, st) => {
-        archive.pipe(output);
+
+    })
+}
+
+function copyInstance(srcPath, destPath, name) {
+    fs.mkdir(destPath, (err) => {
         if(err) {
             throw err
+            return
         }
-        if(st.isFile()) {
-            archive.file(folderPath)
-        } else if (st.isDirectory()) {
-            archive.directory(folderPath, '/')
-        }
-        archive.finalize();
-    })
-    // archive.directory(folderPath, '/');
-    // // finalize the archive (ie we are done appending files but streams have to finish yet) 
-    // archive.finalize();
+        stat(srcPath, (err, st) => {
+            if(err) {
+                throw err
+            }
+            if(st.isFile()) {
+                readable = fs.createReadStream(srcPath);
+                writable = fs.createWriteStream(destPath + '/' + name);
+                // 通过管道来传输流
+                readable.pipe(writable);
+            } else if (st.isDirectory()) {
+                copyDirectory(srcPath, destPath)
+            }
+        })
+    })   
 }
 
-function copyDirectory(src, dest) {
+function copyDirectory(srcPath, destPath) {
     // 读取目录中的所有文件/目录
-    fs.readdir(src, function (err, paths) {
+    fs.readdir(srcPath, function (err, paths) {
         if (err) {
             throw err;
         }
 
-        paths.forEach(function (path) {
-            var _src = src + '/' + path,
-                _dst = dest + '/' + path,
+        let bagPipeCopyFile = new Bagpipe(500)
+        // 要用并发的写法
+        for(let i = 0; i < paths.length; ++i) {
+            let _srcPath = srcPath + '/' + paths[i],
+                _destPath = destPath + '/' + paths[i],
                 readable, writable;
-
-            stat(_src, function (err, st) {
-                if (err) {
-                    throw err;
+            bagPipeCopyFile.push(stat, _srcPath, (err, st) => {
+                if(err) {
+                    throw err
                 }
-
                 // 判断是否为文件
                 if (st.isFile()) {
                     // 创建读取流
-                    readable = fs.createReadStream(_src);
+                    readable = fs.createReadStream(_srcPath);
                     // 创建写入流
-                    writable = fs.createWriteStream(_dst);
+                    writable = fs.createWriteStream(_destPath);
                     // 通过管道来传输流
                     readable.pipe(writable);
                 }
                 // 如果是目录则递归调用自身
                 else if (st.isDirectory()) {
-                    exists(_src, _dst, copyDirectory);
+                    fs.exists( _destPath, (exists) => {
+                        if(exists) {
+                            copyDirectory(_srcPath, _destPath)
+                        } else {
+                            fs.mkdir(_destPath, () => {
+                                copyDirectory(_srcPath, _destPath)
+                            })
+                        }
+                    })
                 }
-            });
-        });
+            })
+        }
     });
 }
 
-// 在复制目录前需要判断该目录是否存在，不存在需要先创建目录
-var exists = function( src, dst, callback ){
-    fs.exists( dst, function( exists ){
-        // 已存在
-        if( exists ){
-            callback( src, dst );
-        }
-        // 不存在
-        else{
-            fs.mkdir( dst, function(){
-                callback( src, dst );
-            });
-        }
+function addZipFile(srcPath, destPath) {
+    console.log('add zip file')
+    var output = fs.createWriteStream(destPath);
+    
+    var archive = archiver('zip', {
+        store: false 
     });
-};
+    output.on('close', function () {
+
+    });
+    archive.on('end', (err) => {
+        return
+    })
+    archive.on('error', function (err) {
+        throw err
+        return
+    });
+    stat(srcPath, (err, st) => {
+        archive.pipe(output);
+        if(err) {
+            throw err
+        }
+        if(st.isFile()) {
+            archive.file(srcPath)
+        } else if (st.isDirectory()) {
+            archive.directory(srcPath, '/')
+        }
+        archive.finalize();
+    })
+}
