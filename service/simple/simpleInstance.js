@@ -7,11 +7,9 @@ const path = require('path')
 const archiver = require('archiver')
 const dataStoragePath = __dirname + '/../../dataStorage'
 const utils=require('../../utils/utils.js')
-const Bagpipe = require('bagpipe');
+const BagPipe = require('bagpipe');
 
 const Instances = require('../../model/instances.js').instances;
-const instances = require('../instances')
-let newFile = require('../instances').newFile;
 
 exports.simpleNewFolder = function (req, res, next) {
     let form = new formidable.IncomingForm()
@@ -162,11 +160,11 @@ function updateInstance(query, pathArr) {
 // 添加合并的实例
 function addInstances(query, pathArr) {
     updateInstance(query, pathArr).then((result) => {
-        pathArr.forEach(path => {
+        addFiles(pathArr)
+        for(let i = 0; i < pathArr.length; ++i) {
+            let path = pathArr[i]
             if(path.type === 'file'){
-                copyInstance(path.path, path.meta.currentPath, path.name)
-                addZipFile(path.path, path.meta.currentPath + '.zip')
-                return
+                continue
             }
             let newInstance = {
                 uid: path.id,
@@ -185,16 +183,43 @@ function addInstances(query, pathArr) {
                     addInstances(_query, _pathArr)
                 })
             })
-        })
-
+        }
     })
+}
+
+function addFiles(pathArr) {
+    let bagPipeCopyFile  = new BagPipe(10)
+    for(let i = 0; i < pathArr.length; ++i) {
+        let path = pathArr[i]
+        if(path.type === 'file'){
+            let srcPath = path.path,
+                destPath = path.meta.currentPath,
+                name = path.name
+            bagPipeCopyFile.push(fs.mkdir, destPath, (err) => {
+                if(err) throw err
+                stat(srcPath, (err, st) => {
+                if(err) {
+                    throw err
+                }
+                if(st.isFile()) {
+                    readable = fs.createReadStream(srcPath);
+                    writable = fs.createWriteStream(destPath + '/' + name);
+                    // 通过管道来传输流
+                    readable.pipe(writable);
+                } else if (st.isDirectory()) {
+                    copyDirectory(srcPath, destPath)
+                }
+                })
+                addZipFile(srcPath, destPath + '.zip')
+            })
+        }
+    }
 }
 
 function copyInstance(srcPath, destPath, name) {
     fs.mkdir(destPath, (err) => {
         if(err) {
             throw err
-            return
         }
         stat(srcPath, (err, st) => {
             if(err) {
@@ -219,7 +244,7 @@ function copyDirectory(srcPath, destPath) {
             throw err;
         }
 
-        let bagPipeCopyFile = new Bagpipe(500)
+        let bagPipeCopyFile = new BagPipe(50)
         // 要用并发的写法
         for(let i = 0; i < paths.length; ++i) {
             let _srcPath = srcPath + '/' + paths[i],
@@ -256,7 +281,6 @@ function copyDirectory(srcPath, destPath) {
 }
 
 function addZipFile(srcPath, destPath) {
-    console.log('add zip file')
     var output = fs.createWriteStream(destPath);
     
     var archive = archiver('zip', {
