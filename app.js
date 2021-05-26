@@ -254,8 +254,9 @@ app.post('/changePythonEnv', router.changePythonEnv);
 
 // simple model, 简洁版本的接口
 app.put('/simple/newFolder', router.simpleNewFolder);
-app.post('/simple/queryData', router.queryDataList)
-
+app.post('/simple/queryCollection', router.queryCollection)
+app.post('/simple/querySomeCollection', router.querySomeCollection)
+app.post('/simple/queryDataList', router.queryDataList)
 
 //错误处理，使用自定义的中间件
 app.use(function (err, req, res, next) {

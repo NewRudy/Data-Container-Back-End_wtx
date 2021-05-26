@@ -22,4 +22,5 @@ var dataSChema= new mongoose.mongoose.Schema({
 // var insituuser=mongoose.model('insituuser',dataSChema,'user')
 var instances=DB.DB1.model('instances',dataSChema)
 
-exports.instances=instances;
+exports.instances = instances;
+exports.dataSChema = dataSChema;

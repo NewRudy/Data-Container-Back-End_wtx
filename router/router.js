@@ -175,4 +175,7 @@ exports.changePythonEnv = depend.changePythonEnv;
 // simple model, 简洁版本
 exports.simpleNewFolder = simpleInstance.simpleNewFolder
 
+// 分页查询
 exports.queryDataList = simpleDataList.queryDataList
+exports.queryCollection = simpleDataList.queryCollection
+exports.querySomeCollection = simpleDataList.querySomeCollection

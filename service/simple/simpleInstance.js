@@ -39,7 +39,7 @@ exports.simpleNewFolder = function (req, res, next) {
             isMerge: fields.isMerge,
             keywords: fields.keywords
         }
-        if(fields.xmlPath) {
+        if(fields.xmlPath && fields.xmlPath != '') {
             newFolder['xmlPath'] = path.normalize(fields.xmlPath)
         }
 
@@ -51,14 +51,14 @@ exports.simpleNewFolder = function (req, res, next) {
             })
             return
         }
-        if (newFolder.xmlPath && newFolder.xmlPath != '' && !fs.existsSync(newFolder.xmlPath)) {
+        if (newFolder.xmlPath && !fs.existsSync(newFolder.xmlPath)) {
             console.log('元数据文件夹路径不对')
             res.send({
                 code: -1,
                 message: '元数据文件夹路径不对'
             })
             return
-        } else {
+        } else if(newFolder.xmlPath) {
             newFolder['xmlName'] = newFolder['xmlPath'].substr(newFolder['xmlPath'].lastIndexOf('\\') + 1)
         }
         newFolder.meta = {}     // 为了和老版适应，因为老版的 currentPath 是从 meta 里面取的
