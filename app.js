@@ -252,8 +252,9 @@ app.get('/getUserInfo', router.getUserInfo)
 app.post('/changePythonEnv', router.changePythonEnv);
 
 
-// simple model
+// simple model, 简洁版本的接口
 app.put('/simple/newFolder', router.simpleNewFolder);
+app.post('/simple/queryData', router.queryDataList)
 
 
 //错误处理，使用自定义的中间件

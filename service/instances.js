@@ -26,7 +26,7 @@ var User = user.User;
 var workSpace = workspace.workSpace;
 
 
-//获取列表
+//获取列表  在这个基础上添加了分页，并单独写了分页，远程的时候不可能目录还没建立
 exports.instances = function (req, res, next) {
 
     if (!req.session.user) {
@@ -41,8 +41,11 @@ exports.instances = function (req, res, next) {
     let query = {
         uid: req.query.uid,
         userToken: userToken,
-        type: req.query.type
+        type: req.query.type,
     }
+    let page = {}
+    page.currentPage = req.query.currentPage? req.query.currentPage : 1
+    page.pageSize = req.query.pageSize? req.query.pageSize : 10
     if (req.query.workSpace != undefined) {
         query['workSpace'] = req.query.workSpace
     }
@@ -171,10 +174,14 @@ exports.instances = function (req, res, next) {
 
         } else {
             console.log('find instances')
+            let total = doc.list.length
+
+            doc.list = doc.list.slice(page.pageSize * (page.currentPage - 1), page.pageSize * page.currentPage)
 
             res.send({
                 code: 0,
-                data: doc._doc
+                data: doc._doc,
+                total: total
             })
             return
         }

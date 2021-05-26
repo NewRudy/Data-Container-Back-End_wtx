@@ -23,8 +23,8 @@ const systemRouter = require('../service/systemStateRouter.js')
 
 const depend = require('../service/depend.js')
 
-// simple
 const simpleInstance = require('../service/simple/simpleInstance.js')
+const simpleDataList = require('../service/simple/simpleDataList.js')
 
 //接口不可用 
 //第一种接口上传数据到服务器
@@ -172,5 +172,7 @@ exports.getUserInfo = user.getUserInfo;
 
 exports.changePythonEnv = depend.changePythonEnv;
 
-// simple model
+// simple model, 简洁版本
 exports.simpleNewFolder = simpleInstance.simpleNewFolder
+
+exports.queryDataList = simpleDataList.queryDataList

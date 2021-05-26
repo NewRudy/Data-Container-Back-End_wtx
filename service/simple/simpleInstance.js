@@ -1,3 +1,4 @@
+// 数据实例的存储
 const fs = require('fs')
 const stat = fs.stat;
 const formidable = require('formidable');
