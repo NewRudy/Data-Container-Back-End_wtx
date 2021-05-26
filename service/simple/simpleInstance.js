@@ -35,11 +35,12 @@ exports.simpleNewFolder = function (req, res, next) {
             type: fields.type,
             date: fields.date,
             authority: fields.authority,
-            path: fields.path,
-            isMerge: fields.isMerge
+            path: path.normalize(fields.path),
+            isMerge: fields.isMerge,
+            keywords: fields.keywords
         }
-        if(fields.xmlFolder) {
-            newFolder['xmlPath'] = fields.xmlPath
+        if(fields.xmlPath) {
+            newFolder['xmlPath'] = path.normalize(fields.xmlPath)
         }
 
         if (!fs.existsSync(newFolder.path)) {
@@ -57,6 +58,8 @@ exports.simpleNewFolder = function (req, res, next) {
                 message: '元数据文件夹路径不对'
             })
             return
+        } else {
+            newFolder['xmlName'] = newFolder['xmlPath'].substr(newFolder['xmlPath'].lastIndexOf('\\') + 1)
         }
         newFolder.meta = {}     // 为了和老版适应，因为老版的 currentPath 是从 meta 里面取的
         newFolder.meta.currentPath = path.normalize(dataStoragePath + '/' + newFolder.id)
@@ -108,6 +111,9 @@ function getFilesPath(folder, res) {        // 得到文件夹数组和文件数
                     authority: folder.authority,
                     path: path.normalize(folder.path + '/' + file),
                     meta: {}
+                }
+                if(folder.xmlName) {
+                    obj[xmlName] = folder.xmlName
                 }
                 obj.meta.currentPath = path.normalize(dataStoragePath + '/' + tempV4)
                 let st = fs.statSync(obj.path)
