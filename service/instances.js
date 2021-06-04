@@ -18,6 +18,7 @@ const {
 const {
     query
 } = require('express');
+const { Resolver } = require('dns');
 
 var Instances = instances.instances;
 
@@ -25,8 +26,27 @@ var User = user.User;
 
 var workSpace = workspace.workSpace;
 
+function getWorkSpaceUid(req, query) {
+    return new Promise((resolve, reject) => {
+        if(req.query.workSpace) {
+            query.workSpace = req.query.workSpace
+        } else {
+            workSpace.findOne({'name': 'initWorkspace'}, (err, doc) => {
+                if(err) {
+                    res.send({
+                        code: -1,
+                        message: 'workspace err'
+                    })
+                }
+                query.workSpace = doc.uid
+                resolve()
+            })
+        }
+        resolve()
+    })
+}
 
-//获取列表  在这个基础上添加了分页，并单独写了分页，远程的时候不可能目录还没建立
+// 这个应该是空目录的情况下
 exports.instances = function (req, res, next) {
 
     if (!req.session.user) {
@@ -39,156 +59,149 @@ exports.instances = function (req, res, next) {
     //依据会话判断用户
     let userToken = req.session.user.token
     let query = {
-        uid: req.query.uid,
+        uid: req.query.uid || '0',
         userToken: userToken,
         type: req.query.type,
     }
-    let page = {}
-    page.currentPage = req.query.currentPage? req.query.currentPage : 1
-    page.pageSize = req.query.pageSize? req.query.pageSize : 10
-    if (req.query.workSpace != undefined) {
-        query['workSpace'] = req.query.workSpace
-    }
-    Instances.findOne(query, (err, doc) => {
-        if (err) {
-            res.send({
-                code: -1,
-                message: 'instances error'
-            })
-            return
-        }
-        //找不到列表时初始化列表
-        if (!doc) {
-            //若是第一层则直接用uid=0,parentLevel=-1
-            let initInstances = {
-                uid: req.query.uid,
-                userToken: userToken,
-                type: req.query.type,
-                parentLevel: req.query.parentLevel,
-                list: []
+    getWorkSpaceUid(req, query).then(() => {
+        let page = {}
+        page.currentPage = req.query.currentPage? req.query.currentPage : 1
+        page.pageSize = req.query.pageSize? req.query.pageSize : 10
+        Instances.findOne(query, (err, doc) => {
+            if (err) {
+                res.send({
+                    code: -1,
+                    message: 'instances error'
+                })
+                return
             }
-            //初始化workspace
-            let updateDoc
-
-
-            //从第二层起，由文件夹新建instances，则生成id
-            if (req.query.subContConnect) {
-                var new_instance_uid = uuid.v4()
-                initInstances.uid = new_instance_uid
-                var subC = JSON.parse(req.query.subContConnect) //解析JSON字符串
-                initInstances.parentLevel = subC.uid //关联父级列表id
-            }
-
-            // 初始化工作空间
-            workSpace.findOne({
-                'name': 'initWorkspace'
-            }, (err, initWorkSpace) => {
-                //Instance添加工作空间id描述
-                initInstances['workSpace'] = initWorkSpace.uid
-
-                if (req.query.type == 'Data') {
-
-                    initWorkSpace['dataRoot'] = req.query.uid
-
-                } else if (req.query.type == 'Processing') {
-
-                    initWorkSpace['pcsRoot'] = req.query.uid
-
-                } else if (req.query.type == 'Visualization') {
-
-                    initWorkSpace['visualRoot'] = req.query.uid
-
+            //找不到列表时初始化列表
+            if (!doc) {
+                //若是第一层则直接用uid=0,parentLevel=-1
+                let initInstances = {
+                    uid: req.query.uid,
+                    userToken: userToken,
+                    type: req.query.type,
+                    parentLevel: req.query.parentLevel,
+                    list: []
                 }
-
-
-
-
-                Instances.create(initInstances, (err) => {
-                    if (err) {
-                        res.send({
-                            code: -1,
-                            message: 'instances error'
-                        })
-                        return
+    
+                //从第二层起，由文件夹新建instances，则生成id
+                if (req.query.subContConnect) {
+                    var new_instance_uid = uuid.v4()
+                    initInstances.uid = new_instance_uid
+                    var subC = JSON.parse(req.query.subContConnect) //解析JSON字符串
+                    initInstances.parentLevel = subC.uid //关联父级列表id
+                }
+    
+                // 初始化工作空间
+                workSpace.findOne({
+                    'uid': query.workSpace
+                }, (err, initWorkSpace) => {
+                    //Instance添加工作空间id描述
+                    initInstances['workSpace'] = initWorkSpace.uid
+    
+                    if (req.query.type == 'Data') {
+    
+                        initWorkSpace['dataRoot'] = req.query.uid
+    
+                    } else if (req.query.type == 'Processing') {
+    
+                        initWorkSpace['pcsRoot'] = req.query.uid
+    
+                    } else if (req.query.type == 'Visualization') {
+    
+                        initWorkSpace['visualRoot'] = req.query.uid
+    
                     }
-
-                    //工作空间添加根目录描述 
-                    workSpace.updateOne({
-                        'name': 'initWorkspace'
-                    }, initWorkSpace, (err, rawData) => {
-
-                        if (req.query.subContConnect) { //在进入文件夹时，关联文件夹与新的instances
-                            Instances.findOne({
-                                uid: subC.uid,
-                                type: req.query.type
-                            }, (err, con_inst_doc) => {
-                                if (!con_inst_doc || err) {
-                                    res.send({
-                                        code: -1,
-                                        message: 'instances error'
-                                    })
-                                    return
-                                } else {
-
-
-                                    for (let i = 0; i < con_inst_doc.list.length; i++) {
-                                        if (con_inst_doc.list[i].id === subC.id) {
-                                            con_inst_doc.list[i].subContentId = new_instance_uid; //关联文件指向子instance
-                                            Instances.update({
-                                                uid: subC.uid,
-                                                type: req.query.type
-                                            }, con_inst_doc, (err) => {
-                                                if (err) {
-                                                    res.send({
-                                                        code: -1,
-                                                        message: 'instances error'
-                                                    })
-                                                    return
-                                                }
-                                                console.log('update folder subinstance id')
-
-
-                                                res.send({
-                                                    code: 0,
-                                                    data: initInstances
-                                                });
-                                                return;
-                                            });
-                                        }
-                                    }
-
-                                }
-                            })
-                        } else {
-                            console.log('create instances')
+    
+    
+    
+    
+                    Instances.create(initInstances, (err) => {
+                        if (err) {
                             res.send({
-                                code: 0,
-                                data: initInstances
-                            });
+                                code: -1,
+                                message: 'instances error'
+                            })
                             return
                         }
+    
+                        //工作空间添加根目录描述 
+                        workSpace.updateOne({
+                            'uid': query.workSpace
+                        }, initWorkSpace, (err, rawData) => {
+    
+                            if (req.query.subContConnect) { //在进入文件夹时，关联文件夹与新的instances
+                                Instances.findOne({
+                                    uid: subC.uid,
+                                    type: req.query.type
+                                }, (err, con_inst_doc) => {
+                                    if (!con_inst_doc || err) {
+                                        res.send({
+                                            code: -1,
+                                            message: 'instances error'
+                                        })
+                                        return
+                                    } else {
+    
+    
+                                        for (let i = 0; i < con_inst_doc.list.length; i++) {
+                                            if (con_inst_doc.list[i].id === subC.id) {
+                                                con_inst_doc.list[i].subContentId = new_instance_uid; //关联文件指向子instance
+                                                Instances.update({
+                                                    uid: subC.uid,
+                                                    type: req.query.type
+                                                }, con_inst_doc, (err) => {
+                                                    if (err) {
+                                                        res.send({
+                                                            code: -1,
+                                                            message: 'instances error'
+                                                        })
+                                                        return
+                                                    }
+                                                    console.log('update folder subinstance id')
+    
+    
+                                                    res.send({
+                                                        code: 0,
+                                                        data: initInstances
+                                                    });
+                                                    return;
+                                                });
+                                            }
+                                        }
+    
+                                    }
+                                })
+                            } else {
+                                console.log('create instances')
+                                res.send({
+                                    code: 0,
+                                    data: initInstances
+                                });
+                                return
+                            }
+                        })
                     })
-
+                    
                 })
-            })
-
-        } else {
-            console.log('find instances')
-            let total = doc.list.length
-
-            doc.list = doc.list.slice(page.pageSize * (page.currentPage - 1), page.pageSize * page.currentPage)
-
-            res.send({
-                code: 0,
-                data: doc._doc,
-                total: total
-            })
-            return
-        }
-    });
-
-
-
+    
+            } else {
+                console.log('find instances')
+                let total = doc.list.length
+    
+                doc.list = doc.list.slice(page.pageSize * (page.currentPage - 1), page.pageSize * page.currentPage)
+    
+                res.send({
+                    code: 0,
+                    data: doc._doc,
+                    total: total
+                })
+                return
+            }
+        });
+    })
 }
 //新文件夹
 exports.newInstance = function (req, res, next) {
@@ -196,30 +209,72 @@ exports.newInstance = function (req, res, next) {
     var form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, file) {
         let query = {
-            uid: fields.uid,
+            uid: fields.uid || '0',
             userToken: fields.userToken,
             type: fields.type,
 
         }
+        if(fields.workSpace) {
+            query.workSpace = fields.workSpace
+        }
         Instances.findOne(query, (err, doc) => {
-            doc.list.unshift(fields.data)
-            Instances.update(query, doc, (err) => {
-                if (err) {
-                    res.send({
-                        code: -1,
-                        message: 'error'
+            if(!doc && fields.workSpace) {      // 没有查到且有 workspace 的情况代表这里应该有表的
+                query.parentLevel = '-1'
+                Instances.create(query, (err, createDoc) => {
+                    createDoc.list.unshift(fields.data)
+                    Instances.update(query, createDoc, (err) => {
+                        if (err) {
+                            res.send({
+                                code: -1,
+                                message: 'error'
+                            })
+                            return;
+                        } else {
+                            res.send({
+                                code: 0,
+                                data: fields.data
+                            })
+                            return
+                        }
+        
+        
                     })
-                    return;
-                } else {
-                    res.send({
-                        code: 0,
-                        data: fields.data
+                })
+            } else {
+                let tempData = {}
+                let id = uuid.v4()
+                fields.data.subContentId = id
+                tempData.uid = id
+                tempData.list = []
+                tempData.userToken = fields.userToken 
+                tempData.type = fields.type 
+                tempData.parentLevel = parseInt(fields.parentLevel) + 1 + ''
+                tempData.workSpace = fields.workSpace
+                Instances.create(tempData, (createErr, createDoc) => {
+                    if(createErr) {
+                        res.end({code: -1})
+                        return
+                    }
+                    doc.list.unshift(fields.data)
+                    Instances.update(query, doc, (err) => {
+                        if (err) {
+                            res.send({
+                                code: -1,
+                                message: 'error'
+                            })
+                            return;
+                        } else {
+                            res.send({
+                                code: 0,
+                                data: fields.data
+                            })
+                            return
+                        }
+        
+        
                     })
-                    return
-                }
-
-
-            })
+                })
+            }
         })
 
 
@@ -244,6 +299,9 @@ exports.newFile = function (req, res, next) {
             uid: fields.uid,
             type: fields.instype,
             userToken: fields.userToken,
+        }
+        if(fields.workSpace) {
+            query.workSpace = req.query.workSpace
         }
         let newFile = {
             id: fields.id,
@@ -497,6 +555,9 @@ exports.delInst = (req, res, next) => {
     let query = {
         uid: req.query.uid,
         type: req.query.instType
+    }
+    if(req.query.workSpace) {
+        query.workSpace = req.query.workSpace
     }
     Instances.findOne(query, (err, doc) => {
         if (err) {

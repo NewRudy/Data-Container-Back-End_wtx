@@ -28,6 +28,7 @@ exports.simpleNewFolder = function (req, res, next) {
             type: fields.instype,
             userToken: fields.userToken,
         }
+        if(fields.workSpace) query.workSpace = fields.workSpace
         let newFolder = {
             id: fields.id,
             oid: fields.oid,
@@ -37,7 +38,9 @@ exports.simpleNewFolder = function (req, res, next) {
             authority: fields.authority,
             path: path.normalize(fields.path),
             isMerge: fields.isMerge,
-            keywords: fields.keywords
+            keywords: fields.keywords,
+            workSpace: fields.workSpace,
+            workSpaceName: fields.workSpaceName,
         }
         if(fields.xmlPath && fields.xmlPath != '') {
             newFolder['xmlPath'] = path.normalize(fields.xmlPath)
@@ -78,13 +81,15 @@ exports.simpleNewFolder = function (req, res, next) {
                 res.send({code: 0})
             })
         } else {
-            getFilesPath(newFolder, res).then((pathArr) => {
-                addInstances(query, pathArr)
-            }).catch(err => {
-                console.log(err)
-                throw err;
-            })
-            res.send({code: 0})
+            // updateInstance(query, [newFolder]).then(() => {
+                getFilesPath(newFolder, res).then((pathArr) => {
+                    addInstances(query, pathArr)
+                }).catch(err => {
+                    console.log(err)
+                    throw err;
+                })
+                res.send({code: 0})
+            // })
         }
     })
 }
@@ -111,6 +116,10 @@ function getFilesPath(folder, res) {        // 得到文件夹数组和文件数
                     authority: folder.authority,
                     path: path.normalize(folder.path + '/' + file),
                     meta: {}
+                }
+                if(folder.workSpace) {
+                    obj.workSpace = folder.workSpace,
+                    obj.workSpaceName = folder.workSpaceName
                 }
                 if(folder.xmlName) {
                     obj[xmlName] = folder.xmlName
@@ -178,12 +187,14 @@ function addInstances(query, pathArr) {
                 userToken: query.userToken,
                 type: query.type,
                 parentLevel: parseInt(result) + 1 + '',
-                list: []
+                list: [],
+                workSpace: path.workSpace,
             }
             let _query = {
                 type: query.type,
                 userToken: query.userToken,
-                uid: path.id
+                uid: path.id,
+                workSpace: query.workSpace
             }
             createInstance(newInstance).then(() => {
                 getFilesPath(path).then((_pathArr) => {
@@ -251,7 +262,7 @@ function copyDirectory(srcPath, destPath) {
             throw err;
         }
 
-        let bagPipeCopyFile = new BagPipe(50)
+        let bagPipeCopyFile = new BagPipe(10)
         // 要用并发的写法
         for(let i = 0; i < paths.length; ++i) {
             let _srcPath = srcPath + '/' + paths[i],

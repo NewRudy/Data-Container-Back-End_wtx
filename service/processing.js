@@ -61,6 +61,9 @@ exports.newProcessing = function (req, res, next) {
         type: fields.instype,
         userToken: fields.userToken,
       };
+      if(fields.workspace) {
+        query.workspace = fields.workspace
+      }
       let newFile = {
         id: fields.id,
         oid: fields.oid,
@@ -68,6 +71,7 @@ exports.newProcessing = function (req, res, next) {
         name: fields.name,
         date: fields.date,
         type: fields.type,
+        workspace: fields.workspace,
         description: fields.description,
         authority: Boolean(fields.authority),
         paramsCount: fields.paramsCount,
@@ -2247,6 +2251,7 @@ function uploadMultifiles(path,name){
     
 
 }
+
 exports.invokeExternalUrlsDataPcsWithKeys=function(req,res){
   let pythonExePath;
   User.findOne({name:'admin'},(err,doc)=>{
@@ -2810,8 +2815,6 @@ function requestFromDC(url,dirPath){
   })
 
 }
-
-
 
 exports.visualResultHtml = function (req, res, next) {
   let htmlPath = req.query.path;

@@ -9,7 +9,7 @@ const dataSChema = require('../../model/instances').dataSChema
 // 模糊查询：eg: db.user.find({state_arr:{$elemMatch:{$eq:"123"}}})
 // 参考（接口）：https://www.cnblogs.com/lyt0207/p/13260055.html
 // 参考（实例）： https://blog.csdn.net/u012946310/article/details/91430669
-// 根据 query 查询到一个 document，然后返回
+// 根据 query 查询到一个 document，然后返回   这个功能特别鸡肋，懒得删了
 exports.queryCollection = (req, res, next) => {
     let form = new formidable.IncomingForm()
     form.parse(req, (form_err, fields) => {
