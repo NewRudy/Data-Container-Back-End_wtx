@@ -629,8 +629,22 @@ function updateInstanceList(query, idArr, res) {
 // 删除数据容器 instance 对应的文件
 function delInstanceFile(delFileArr, res) {
     for (let i = 0; i < delFileArr.length; ++i) {
-        utils.delDir(delFileArr[i].meta.currentPath)
-        fs.unlinkSync(__filename + '/../../dataStorage/' + delFileArr[i].id + '.zip')
+        //utils.delDir(delFileArr[i].meta.currentPath)
+        stat(delFileArr[i].meta.currentPath, (err, st) => {
+            if(err) {
+                throw err;
+            }
+            if(st.isDirectory()) {
+                utils.delDir(delFileArr[i].meta.currentPage)
+            }
+        })
+        let dataStoragePath = __filename + '/../../dataStorage/' + delFileArr[i].id + '.zip'
+        stat(dataStoragePath, (err, st) => {
+            if(err) {
+                throw err;
+            }
+            fs.unlinkSync(dataStoragePath)  
+        })
         console.log('DEL File', delFileArr[i].id)
     }
 }
@@ -666,6 +680,88 @@ function delFolderInstance(delFolderArr, res) {
     }
 }
 
+// 没有复制的事currentPath， 复制的是dataStoragePath  暂时弃用
+function getDownloadPath(item) {
+    return new Promise((resolve, reject) => {
+        let dataStoragePath = path.normalize(__dirname + '/../upload/'+item.id+'.zip');
+        // fs.stat(dataStoragePath, (err, st) => {
+        //     if(err) {
+        //         fs.stat(item.path, (err2, st2) => {
+        //             if(err2) {
+        //                 reject(err2)
+        //             }
+        //             resolve(item.path)
+        //         })
+        //     }
+        //     resolve(dataStoragePath)
+        // })
+        if(fs.existsSync(dataStoragePath)) {
+            resolve(dataStoragePath)
+        } else {
+            if(fs.existsSync(item.path)) {
+                let srcPath = item.path 
+                let pathArr = item.path.split('.')
+                let destPath = pathArr[0] + '.zip'
+                addZipFile(srcPath, destPath, item.name).then(
+                    resolve(destPath)
+                ).catch(err => reject(err))
+            } else {
+                reject('both path is none.')
+            }
+        }
+    })
+}
+
+function addZipFile(srcPath, destPath, fileName) {
+    return new Promise((resolve, reject) => {
+        var output = fs.createWriteStream(destPath);
+        var archive = archiver('zip', {
+            zlib: { level: 9 }
+        });
+        output.on('close', function () {
+    
+        });
+        archive.on('end', (err) => {
+            resolve()
+            return
+        })
+        archive.on('error', function (err) {
+            reject(err)
+            throw err
+            return
+        });
+        stat(srcPath, (err, st) => {
+            archive.pipe(output);
+            if(err) {
+                reject(err)
+                throw err
+            }
+            if(st.isFile()) {
+                archive.file(srcPath, {name: fileName})
+            } else if (st.isDirectory()) {
+                archive.directory(srcPath, '/')
+            }
+            archive.finalize();
+        })
+
+        // try {
+        //     let st = fs.statSync(srcPath);
+        //     archive.pipe(output)
+        //     if(st.isFile()) {
+        //         archive.file(srcPath, {name: fileName})
+        //     } else if(st.isDirectory()) {
+        //         archive.directory(srcpath, '/')
+        //     } else {
+        //         console.log('add zip wrong.')
+        //     }
+        //     archive.finalize()
+        // }catch(err) {
+        //     console.log('add zip err: ', err)
+        //     reject(err)
+        // }
+    })
+}
+
 //数据下载
 //uid id 
 exports.inSituDownload = function (req, res, next) {
@@ -691,23 +787,88 @@ exports.inSituDownload = function (req, res, next) {
                     })
                     return
                 } else {
+                    // getDownloadPath(item).then((resPath) => {
+                    //     // 不是压缩文件就在该目录下压缩一个，上传后将压缩文件删除
+                    //     let name = item.name.split('.')[0]
+                    //     res.setHeader('fileName', escape(name + '.zip'))
+                    //     res.attachment(name + '.zip') //告诉浏览器这是一个需要下载的文件，解决中文乱码问题
+                    //     res.writeHead(200, {
+                    //         'Content-Type': 'application/octet-stream;fileName=' + escape(name + '.zip'), //告诉浏览器这是一个二进制文件
+    
+                    //     }); //设置响应头
+                    //     var readStream = fs.createReadStream(resPath); //得到文件输入流
+    
+                    //     readStream.on('data', (chunk) => {
+                    //         res.write(chunk, 'binary'); //文档内容以二进制的格式写到response的输出流
+                    //     });
+                    //     readStream.on('end', () => {
+                    //         res.end();
+                    //         let dataStoragePath = path.normalize(__dirname + '/../upload/'+item.id+'.zip');
+                    //         if(!fs.existsSync(dataStoragePath)) {
+                    //             fs.unlink(path, (err) => {
+                    //                 if(err) {
+                    //                     console.log('删除压缩文件失败：', err)
+                    //                 }
+                    //             })
+                    //         }
+                    //         return;
+                    //     })
+                    // }).catch(err => {
+                    //     console.log(err)
+                    //     res.end({code:-1})
+                    // })
+                    let dataStoragePath = path.normalize(__dirname + '/../upload/'+item.id+'.zip');
+                    let name = item.name.split('.')[0]
+                    let srcPath, resPath;
 
-                    let path = __dirname + '/../dataStorage/' + item.id + '.zip'
-                    res.setHeader('fileName', escape(item.name + '.zip'))
-                    res.attachment(item.name + '.zip') //告诉浏览器这是一个需要下载的文件，解决中文乱码问题
-                    res.writeHead(200, {
-                        'Content-Type': 'application/octet-stream;fileName=' + escape(item.name + '.zip'), //告诉浏览器这是一个二进制文件
-
+                    res.setHeader('fileName', escape(name + '.zip'))
+                    res.attachment(name + '.zip') //告诉浏览器这是一个需要下载的文件，解决中文乱码问题
+                    res.writeHead(200, {'Content-Type': 'application/octet-stream;fileName=' + escape(name + '.zip'), //告诉浏览器这是一个二进制文件
                     }); //设置响应头
-                    var readStream = fs.createReadStream(path); //得到文件输入流
-
-                    readStream.on('data', (chunk) => {
-                        res.write(chunk, 'binary'); //文档内容以二进制的格式写到response的输出流
-                    });
-                    readStream.on('end', () => {
-                        res.end();
-                        return;
-                    })
+                    if(fs.existsSync(dataStoragePath)) {
+                        resPath = dataStoragePath
+                        let readStream = fs.createReadStream(resPath); //得到文件输入流
+                        readStream.on('data', (chunk) => {
+                            res.write(chunk, 'binary'); //文档内容以二进制的格式写到response的输出流
+                        });
+                        readStream.on('end', () => {
+                            res.end();
+                        })
+                    } else {
+                        if(fs.existsSync(item.path)) {
+                            srcPath = item.path 
+                            resPath = item.path.split('.')[0] + '.zip'
+                            let archive = archiver('zip',{zlib: {level: 9}});
+                            archive.on('error',(err) => {res.end({code: -1})})
+                            archive.on('end',() => {
+                                    let readStream = fs.createReadStream(resPath); //得到文件输入流
+                                    readStream.on('data', (chunk) => {
+                                        res.write(chunk, 'binary'); //文档内容以二进制的格式写到response的输出流
+                                    });
+                                    readStream.on('end', () => {
+                                        res.end();
+                                        fs.unlink(resPath, (err) => {
+                                            if(err) console.log('delete zip file err: ', err)
+                                        })
+                                    })
+                            })
+                            stat(srcPath, (statErr, st) => {
+                                if(statErr) {
+                                    throw statErr
+                                }
+                                archive.pipe(fs.createWriteStream(resPath))
+                                if(st.isFile()) {
+                                    archive.file(srcPath, {name: item.name})
+                                } else if(st.isDirectory()) {
+                                    archive.directory(srcPath, '/')
+                                }
+                                archive.finalize()
+                            })
+                        } else {
+                            reject('both path is none.')
+                        }
+                    }
+                    
                 }
 
             }

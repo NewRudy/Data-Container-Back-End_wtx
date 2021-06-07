@@ -476,6 +476,13 @@ exports.storageDesc=function(req,res,next){
 }
 
 
+function getDownloadPath(doc) {
+    return new Promise((resolve, reject) => {
+        let localFilePath=__dirname + '/../upload/'+doc[0].fileId+'.zip';
+
+    })
+}
+
 //下载数据
 exports.download=function(req,res,next){
     let uid=req.query.uid;

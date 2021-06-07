@@ -37,6 +37,7 @@ exports.simpleNewFolder = function (req, res, next) {
             date: fields.date,
             authority: fields.authority,
             path: path.normalize(fields.path),
+            isCopy: fields.isCopy,
             isMerge: fields.isMerge,
             keywords: fields.keywords,
             workSpace: fields.workSpace,
@@ -76,8 +77,10 @@ exports.simpleNewFolder = function (req, res, next) {
 
         if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
             updateInstance(query, [newFolder]).then(() => {
-                copyInstance(newFolder.path, newFolder.meta.currentPath)
-                addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
+                if(newFolder.isCopy) {
+                    copyInstance(newFolder.path, newFolder.meta.currentPath)
+                    addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
+                }
                 res.send({code: 0})
             })
         } else {
@@ -115,7 +118,8 @@ function getFilesPath(folder, res) {        // 得到文件夹数组和文件数
                     date: utils.formatDate(new Date()),
                     authority: folder.authority,
                     path: path.normalize(folder.path + '/' + file),
-                    meta: {}
+                    meta: {},
+                    isCopy: folder.isCopy
                 }
                 if(folder.workSpace) {
                     obj.workSpace = folder.workSpace,
@@ -176,6 +180,7 @@ function updateInstance(query, pathArr) {
 // 添加合并的实例
 function addInstances(query, pathArr) {
     updateInstance(query, pathArr).then((result) => {
+
         addFiles(pathArr)
         for(let i = 0; i < pathArr.length; ++i) {
             let path = pathArr[i]
@@ -209,7 +214,7 @@ function addFiles(pathArr) {
     let bagPipeCopyFile  = new BagPipe(10)
     for(let i = 0; i < pathArr.length; ++i) {
         let path = pathArr[i]
-        if(path.type === 'file'){
+        if(path.type === 'file' && path.isCopy){
             let srcPath = path.path,
                 destPath = path.meta.currentPath,
                 name = path.name
