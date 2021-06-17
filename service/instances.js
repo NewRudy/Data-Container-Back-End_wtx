@@ -65,8 +65,8 @@ exports.instances = function (req, res, next) {
     }
     getWorkSpaceUid(req, query).then(() => {
         let page = {}
-        page.currentPage = req.query.currentPage? req.query.currentPage : 1
-        page.pageSize = req.query.pageSize? req.query.pageSize : 10
+        page.currentPage = req.query.currentPage? parseInt(req.query.currentPage) : 1
+        page.pageSize = req.query.pageSize? parseInt(req.query.pageSize) : 10
         Instances.findOne(query, (err, doc) => {
             if (err) {
                 res.send({
@@ -630,21 +630,29 @@ function updateInstanceList(query, idArr, res) {
 function delInstanceFile(delFileArr, res) {
     for (let i = 0; i < delFileArr.length; ++i) {
         //utils.delDir(delFileArr[i].meta.currentPath)
-        stat(delFileArr[i].meta.currentPath, (err, st) => {
-            if(err) {
-                throw err;
-            }
-            if(st.isDirectory()) {
-                utils.delDir(delFileArr[i].meta.currentPage)
-            }
-        })
+        // stat(delFileArr[i].meta.currentPath, (err, st) => {
+        //     if(err) {
+        //         throw err;
+        //     }
+        //     if(st.isDirectory()) {
+        //         utils.delDir(delFileArr[i].meta.currentPage)
+        //     }
+        // })
+        // let dataStoragePath = __filename + '/../../dataStorage/' + delFileArr[i].id + '.zip'
+        // stat(dataStoragePath, (err, st) => {
+        //     if(err) {
+        //         throw err;
+        //     }
+        //     fs.unlinkSync(dataStoragePath)  
+        // })
+
+        if(fs.existsSync(delFileArr[i].meta.currentPath)) {
+            utils.delDir(delFileArr[i].meta.currentPath)
+        }
         let dataStoragePath = __filename + '/../../dataStorage/' + delFileArr[i].id + '.zip'
-        stat(dataStoragePath, (err, st) => {
-            if(err) {
-                throw err;
-            }
-            fs.unlinkSync(dataStoragePath)  
-        })
+        if(fs.existsSync(dataStoragePath)) {
+            fs.unlinkSync(dataStoragePath)
+        }
         console.log('DEL File', delFileArr[i].id)
     }
 }
@@ -662,6 +670,7 @@ function delFolderInstance(delFolderArr, res) {
             }
             let _delFileArr = []
             let _delFolderArr = []
+            if(!doc.list) return
             for (let i = doc.list.length - 1; i >= 0; --i) { 
                 let temp = doc.list[i]
                 if(temp.type === 'file'){

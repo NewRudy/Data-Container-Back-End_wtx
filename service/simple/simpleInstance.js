@@ -46,7 +46,24 @@ exports.simpleNewFolder = function (req, res, next) {
         if(fields.xmlPath && fields.xmlPath != '') {
             newFolder['xmlPath'] = path.normalize(fields.xmlPath)
         }
+        // console.log('res: ', fs.accessSync('Z:\\逐小时降水数据\\数据和代码\\China_grid_rainfall_hourly'))
+        if(fs.existsSync('Z:\\China_grid_rainfall_hourly')) {
+            console.log('yes')
+        } else {
+            console.log('no')
+        }
+        
+        console.log('res: ', fs.existsSync('Z:\\China_grid_rainfall_hourly'))
+        
+        let testPath = 'Z:\\China_grid_rainfall_hourly'
+        try {
+            fs.accessSync(testPath)
+            console.log('yes')
+        }catch(err) {
+            console.log('no')
+        }
 
+        console.log('result: ', fs.existsSync(newFolder.path))
         if (!fs.existsSync(newFolder.path)) {
             console.log('数据文件夹路径不对')
             res.send({
@@ -55,6 +72,25 @@ exports.simpleNewFolder = function (req, res, next) {
             })
             return
         }
+        // let testPath = 'Z:\\逐小时降水数据\\数据和代码\\China_grid_rainfall_hourly'
+        // try {
+        // 	fs.accessSync(testPath)
+        // 	console.log('yes')
+        // }catch(err) {
+        // 	console.log('no')
+        // }
+
+        // try {
+        //     fs.accessSync(newFolder.path)
+        // } catch(err) {
+        //     console.log('accessSynce err: ', err)
+        //     console.log('数据文件夹路径不对')
+        //     res.send({
+        //         code: -1,
+        //         message: '数据文件夹路径不对'
+        //     })
+        //     return
+        // }
         if (newFolder.xmlPath && !fs.existsSync(newFolder.xmlPath)) {
             console.log('元数据文件夹路径不对')
             res.send({
