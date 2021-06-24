@@ -140,6 +140,8 @@ exports.workspaceDel=workSpace.workspaceDel
 
 exports.workspacePut=workSpace.workspacePut
 
+exports.findWorkSpace = workSpace.findWorkSpace
+
 // 可视化结果本地展示
 exports.visualResult=processing.visualResult
 

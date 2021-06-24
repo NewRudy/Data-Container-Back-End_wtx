@@ -61,8 +61,8 @@ exports.newProcessing = function (req, res, next) {
         type: fields.instype,
         userToken: fields.userToken,
       };
-      if(fields.workspace) {
-        query.workspace = fields.workspace
+      if(fields.workSpace) {
+        query.workSpace = fields.workSpace
       }
       let newFile = {
         id: fields.id,
@@ -71,7 +71,7 @@ exports.newProcessing = function (req, res, next) {
         name: fields.name,
         date: fields.date,
         type: fields.type,
-        workspace: fields.workspace,
+        workSpace: fields.workSpace,
         description: fields.description,
         authority: Boolean(fields.authority),
         paramsCount: fields.paramsCount,

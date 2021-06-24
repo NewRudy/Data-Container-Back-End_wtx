@@ -1,7 +1,7 @@
 
 const { workSpace } = require('../model/workSpace.js')
 const {instances} = require('../model/instances.js')
-
+const formidable =require('formidable')
 
 exports.initWorkSpace=function(req,res,next){
 
@@ -73,4 +73,32 @@ exports.workspaceDel=function(req,res,next){
 
 exports.workspacePut=function(req,res,next){
     
+}
+
+exports.findWorkSpace = (req, res, next) => {
+    let form = new formidable.IncomingForm()
+    form.parse(req, (form_err, fields) => {
+        if(form_err) {
+            res.send({code: -1, message: 'query failed'})
+            throw form_err
+        }
+        let query
+        if(fields.token) {
+            let {token, ...temp} = fields
+            query = temp
+      } else {
+            query = fields
+        }
+        workSpace.findOne(query, (err, doc) => {
+            if(err) {
+                res.send({code: -1, message: 'find err'})
+                return
+            }
+            if(doc) {
+                res.send({code: 0, data: doc})
+            } else {
+                res.send({code: 0, data: {}})
+            }
+        })
+    })
 }

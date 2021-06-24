@@ -180,6 +180,8 @@ app.del('/workspace',router.workspaceDel)
 
 app.put('/workspace',router.workspacePut)
 
+app.post('/findWorkSpace', router.findWorkSpace)
+
 
 //注册到参与式平台GSP
 app.put('/newDataIndexGSP',router.newDataIndexGSP)
