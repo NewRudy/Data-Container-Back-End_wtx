@@ -83,15 +83,38 @@ exports.simpleNewFolder = function (req, res, next) {
                 res.send({code: 0})
             })
         } else {
-            // updateInstance(query, [newFolder]).then(() => {
-                getFilesPath(newFolder, res).then((pathArr) => {
-                    addInstances(query, pathArr)
-                }).catch(err => {
-                    console.log(err)
-                    throw err;
+            let subContentId = uuid.v4()
+            newFolder.subContentId = subContentId
+            updateInstance(query, [newFolder]).then((result) => {
+                let newInstance = {
+                    uid: subContentId,
+                    userToken: result.userToken,
+                    type: result.type,
+                    parentLevel: parseInt(result.parentLevel) + 1 + '',
+                    list: [],
+                    workSpace: result.workSpace,
+                }
+                let _query = {
+                    type: result.type,
+                    userToken: result.userToken,
+                    uid: subContentId,
+                    workSpace: result.workSpace
+                }
+                createInstance(newInstance).then(() => {
+                    getFilesPath(newFolder, res).then((pathArr) => {
+                        addInstances(_query, pathArr).then(() => {
+                            res.send({code: 0})
+                        }).catch(() => {
+                            res.send({code: -1})
+                        })
+                        
+                    }).catch(err => {
+                        console.log(err)
+                        res.send({code: -1})
+                        throw err;
+                    })
                 })
-                res.send({code: 0})
-            // })
+            })
         }
     })
 }
@@ -170,7 +193,7 @@ function updateInstance(query, pathArr) {
                     return 
                 } 
             })
-            resolve(result._update.parentLevel)
+            resolve(result._update)
         })
     })
 }
@@ -178,35 +201,42 @@ function updateInstance(query, pathArr) {
 
 // 添加合并的实例
 function addInstances(query, pathArr) {
-    updateInstance(query, pathArr).then((result) => {
-
-        addFiles(pathArr)
-        for(let i = 0; i < pathArr.length; ++i) {
-            let path = pathArr[i]
-            if(path.type === 'file'){
-                continue
-            }
-            let newInstance = {
-                uid: path.id,
-                userToken: query.userToken,
-                type: query.type,
-                parentLevel: parseInt(result) + 1 + '',
-                list: [],
-                workSpace: path.workSpace,
-            }
-            let _query = {
-                type: query.type,
-                userToken: query.userToken,
-                uid: path.id,
-                workSpace: query.workSpace
-            }
-            createInstance(newInstance).then(() => {
-                getFilesPath(path).then((_pathArr) => {
-                    addInstances(_query, _pathArr)
-                })
+    return new Promise((resolve, reject) => {
+        try {
+            updateInstance(query, pathArr).then((result) => {
+                addFiles(pathArr)
+                for(let i = 0; i < pathArr.length; ++i) {
+                    let path = pathArr[i]
+                    if(path.type === 'file'){
+                        continue
+                    }
+                    let newInstance = {
+                        uid: path.id,
+                        userToken: query.userToken,
+                        type: query.type,
+                        parentLevel: parseInt(result.parentLevel) + 1 + '',
+                        list: [],
+                        workSpace: path.workSpace,
+                    }
+                    let _query = {
+                        type: query.type,
+                        userToken: query.userToken,
+                        uid: path.id,
+                        workSpace: query.workSpace
+                    }
+                    createInstance(newInstance).then(() => {
+                        getFilesPath(path).then((_pathArr) => {
+                            addInstances(_query, _pathArr)
+                        })
+                    })
+                }
             })
+            resolve()
+        } catch (error) {
+            reject(error)
         }
-    })
+    } )
+
 }
 
 function addFiles(pathArr) {

@@ -91,6 +91,8 @@ exports.instances=instances.instances
 exports.newInstance=instances.newInstance
 //新加项文件
 exports.newFile=instances.newFile
+// 新文件夹绑定本地文件夹
+exports.linkFolderInstance = instances.linkFolderInstance
 //删除
 exports.delInst=instances.delInst
 //下载

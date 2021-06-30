@@ -47,6 +47,7 @@ exports.newProcessing = function (req, res, next) {
 
   mkdirPromise.then((v) => {
     var form = new formidable.IncomingForm();
+
     form.uploadDir = path;
     form.keepExtensions = true;
 

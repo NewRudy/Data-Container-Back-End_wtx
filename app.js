@@ -128,6 +128,8 @@ app.get('/pcsInputs',router.pcsInputFiles)
 app.put('/newInst',router.newInstance)
 //新文件项
 app.put('/newFile',router.newFile)
+// 新文件夹项绑定本地文件夹
+app.post('/linkInst', router.linkFolderInstance)
 
 //删除条目
 app.delete('/delInst',router.delInst)

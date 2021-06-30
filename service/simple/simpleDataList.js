@@ -132,37 +132,60 @@ exports.queryDataList = (req, res, next) => {
 
         // list 筛选的时候主要用到 name, listType(列表传入)
 
-        if(!fields.name && !fields.listType) {
-            res.send({code: -1, messge: '条件不充分'})
-            return
-        }
-        let name = new RegExp(fields.name)
-        let listType = fields.listType.replace(/\s/g,"").split(',')
+        // if(!fields.name && !fields.listType) {
+        //     res.send({code: -1, messge: '条件不充分'})
+        //     return
+        // }
 
         let pageSize = fields.pageSize ? parseInt(fields.pageSize) : 10
         let currentPage = fields.currentPage ? parseInt(fields.currentPage) : 1
 
-        Instances.aggregate([
-            {"$match": query},
-            {"$unwind": "$list"},
-            {"$match": {
-                "list.name": {$regex: name, $options: 'i'}, "list.type" : {$in: listType}
-            }}
-        ], (err, doc) => {
-            if(err) {
-                res.send({code: -1, message: '查询失败'})
+        if(fields.name && fields.listType) {
+            let name = new RegExp(fields.name)
+            let listType = fields.listType.replace(/\s/g,"").split(',')
+    
+            Instances.aggregate([
+                {"$match": query},
+                {"$unwind": "$list"},
+                {"$match": {
+                    "list.name": {$regex: name, $options: 'i'}, "list.type" : {$in: listType}
+                }}
+            ], (err, doc) => {
+                if(err) {
+                    res.send({code: -1, message: '查询失败'})
+                    return
+                }
+                let total = doc.length
+    
+                let data = doc.slice(pageSize * (currentPage - 1), pageSize * currentPage)
+    
+                res.send({
+                    code: 0,
+                    data: data,
+                    total: total
+                })
                 return
-            }
-            let total = doc.length
-
-            let data = doc.slice(pageSize * (currentPage - 1), pageSize * currentPage)
-
-            res.send({
-                code: 0,
-                data: data,
-                total: total
             })
-            return
-        })
+        } else {
+            Instances.find(query, (err, doc) => {
+                if(err) {
+                    res.send({code: -1, message: '查询失败'})
+                    return
+                }
+                let total = doc.length
+                let temp = doc.slice(pageSize * (currentPage - 1), pageSize * currentPage)
+                let data = []
+                for(let i = 0; i < temp.length; ++i) {
+                    data.push(temp[i].list)
+                }
+                res.send({
+                    code: 0,
+                    data: data,
+                    total: total
+                })
+                return
+            })
+        }
+
     })
 }

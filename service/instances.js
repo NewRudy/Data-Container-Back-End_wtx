@@ -452,6 +452,54 @@ exports.newFile = function (req, res, next) {
 
 
 }
+// 新文件夹绑定本地路径
+exports.linkFolderInstance = (req, res, next) => {
+    var form = new formidable.IncomingForm()
+    form.parse(req, (form_err, fields, file) => {
+        if(form_err) {
+            res.send({code: -1})
+            return
+        }
+        let query = {
+            uid: fields.params.uid,
+            type: fields.params.instType,
+        }
+        if(fields.params.workSpace) {
+            query.workSpace = fields.params.workSpace
+        }
+        if(!fs.existsSync(path.normalize(fields.params.folderPath))) {
+            res.send({code: -2})
+            return
+        }
+
+        Instances.findOne(query, (err, doc) => {
+            if (err) {
+                res.send({
+                    code: -1
+                })
+                return
+            }
+            let index; // 用index是为了不嵌套多了
+            for (index = 0; index < doc.list.length; ++index) {
+                if (doc.list[index].id === fields.params.id) break
+            }
+            if (index >= doc.list.length) {
+                res.send({
+                    code: -1
+                })
+                return
+            }
+            doc.list[index].path = fields.params.folderPath
+            Instances.updateOne(query, doc, updateErr => {
+                if(updateErr) {
+                    res.send({code: -1})
+                    return 
+                }
+                res.send({code: 0})
+            })
+        })
+    })
+}
 
 var copy = function (src, dst) {
     // 读取目录中的所有文件/目录
