@@ -104,6 +104,10 @@ exports.openExplorer=method.openExplorer
 exports.authority=instances.authority
 //transit
 exports.transition=transition.transition
+exports.receiveUrl = transition.receiveUrl
+exports.receiveFile = transition.receiveFile
+exports.createInstFromUrl = simpleInstance.createInstFromUrl
+exports.createProcFromUrl = processing.createProcFromUrl
 
 // multifiles
 exports.multiFiles=transition.multiFiles

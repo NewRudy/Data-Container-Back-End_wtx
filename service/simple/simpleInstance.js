@@ -176,6 +176,24 @@ function createInstance(newInstance) {
     })
 }
 
+// 从外网创建一个Instance，只有一个file的形式，file通过下载
+exports.createInstFromUrl = (req, res, next) => {
+    let form = new formidable.IncomingForm()
+    form.parse(req, (formErr, fields, files) => {
+        if(formErr) {
+            res.send({code: -1, message: 'form parse err'})
+            return 
+        }
+        let query = {
+            uid: fields.uid,
+            type: 'Data',
+            userToken: fields.userToken,
+        }
+        if(fields.workSpace) query.workSpace = fields.workSpace
+
+    })
+}
+
 function updateInstance(query, pathArr) {
     return new Promise((resolve, reject) => {
         Instances.findOne(query, (find_err, doc)=> {

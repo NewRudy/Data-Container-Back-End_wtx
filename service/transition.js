@@ -16,6 +16,9 @@ const config_path=__filename+'/../../config/config.udxcfg'
 const data_path=__filename+'/../../dataStorage/'
 const transitUrl=cfg.transitUrl
 
+const path = require('path')
+const formidable = require('formidable')
+
 const my_dataContainer='http://221.226.60.2:8082/'
 // const transitUrl='http://localhost:8899'
 
@@ -167,6 +170,50 @@ exports.multiFiles=function(req,res,next){
     })
 
 }
+
+// 从url中下载文件到指定的localPath
+function downloadFile(url, fileName) {
+    return new Promise((resolve, reject) => {
+        try {
+            let localPath = path.normalize(__filename + '/../../tempFile/' + fileName)
+            if(fs.existsSync(localPath)) {
+                fs.unlinkSync(localPath)
+            }
+            let stream = fs.createWriteStream(localPath)
+            Request(url).pipe(stream)
+            stream.on('err', (streamErr) => {
+                reject(streamErr)
+            })
+            stream.on('end', () => {
+                resolve(localPath)
+            })
+        } catch (error) {
+            reject(error)
+        }
+
+    })
+}
+
+// 接收websocket 发送过来的东西不知道哪个才是文件， 所以没有继续写了
+exports.receiveFile = (req, res, next) => {
+    console.log('receive file: ', req)
+    res.send({code: 0})
+}
+
+exports.receiveUrl = (req, res, next) => {
+    let form = formidable.IncomingForm()
+    form.parse(req, (err, fields, files) => {
+        if(err) {
+            res.send({code: -1, message: err})
+            return 
+        }
+        for(let i of Object.keys(fields)) {
+            downloadFile(fields[i], i)
+        }
+        res.send({code: 0})
+    })
+}
+
 async function uploadFiles(filePath,files){
 
     let arr=[]
@@ -217,3 +264,7 @@ function uploadMultifiles(path,name){
       
 
 }
+
+exports.downloadFile = downloadFile
+exports.uploadFiles = uploadFiles
+exports.uploadMultifiles = uploadMultifiles

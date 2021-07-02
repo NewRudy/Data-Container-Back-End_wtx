@@ -39,6 +39,7 @@ const my_dataContainer='http://221.226.60.2:8082/'
 
 const User = user.User;
 
+// 这么多行一个方法，让人有点改不动啊，，，
 exports.newProcessing = function (req, res, next) {
   let script_uid = uuid.v4();
   let path = __dirname + "/../upload_processing/" + script_uid;
@@ -201,6 +202,67 @@ exports.newProcessing = function (req, res, next) {
     });
   });
 };
+
+exports.newProcessingFromUrl = (req, res, next) => {
+  let script_uid = uuid.v4();
+  let path = __dirname + "/../upload_processing/" + script_uid;
+
+  let mkdirPromise = fsPromises.mkdir(path);
+
+  mkdirPromise.then((v) => {
+    let form = new formidable.IncomingForm()
+    form.uploadDir = path 
+    form.parse(req, (formErr, fields, files) => {
+      if(formErr) {
+        console.log('formErr: ', formErr)
+        res.send({code: -1, message: 'new processing error.'})
+        return 
+      }
+      let query = {
+        uid: fields.uid,
+        type: fields.instype,
+        userToken: fields.userToken,
+      };
+      if(fields.workSpace) {
+        query.workSpace = fields.workSpace
+      }
+      let newFile = {
+        id: uuid.v4(),
+        name: fields.name,
+        date: utils.formatDate(new Date()),
+        type: fields.type?fields.type:'Processing',
+        description: fields.description,
+        authority: Boolean(fields.authority),
+        paramsCount: fields.paramsCount?fields.paramsCount:0,
+        fileList: Object.keys(fields.fileUrlList),
+        storagePath: form.uploadDir
+      }
+      instances.findOne(query, (find_err, doc) => {
+        if(find_err) {
+          res.send({code: -1, message: 'find error'})
+          return 
+        }
+        
+      })
+    })
+  })
+}
+
+// function downloadUrlToPath(url, path) {
+//   return new Promise((resolve, reject) => {
+//     request(url).pipe(fs.createWriteStream(path))
+
+//   })
+// }
+
+exports.newProcessingFormUrl = (req, res, next) => {
+  let script_uid = uuid.v4();
+  let path = path.normalize(__dirname + "/../upload_processing/" + script_uid);
+  let mkdirPromise = fsPromises.mkdir(path)
+  mkdirPromise.then(v => {
+
+  })
+}
 
 exports.delProcessing = function (req, res, next) {
   instances.findOne(
