@@ -245,11 +245,11 @@ function addInstances(query, pathArr) {
                     createInstance(newInstance).then(() => {
                         getFilesPath(path).then((_pathArr) => {
                             addInstances(_query, _pathArr)
+                            resolve()
                         })
                     })
                 }
             })
-            resolve()
         } catch (error) {
             reject(error)
         }

@@ -107,7 +107,7 @@ exports.transition=transition.transition
 exports.receiveUrl = transition.receiveUrl
 exports.receiveFile = transition.receiveFile
 exports.createInstFromUrl = simpleInstance.createInstFromUrl
-exports.createProcFromUrl = processing.createProcFromUrl
+exports.createProcFromUrl = processing.newProcessingFromUrl
 
 // multifiles
 exports.multiFiles=transition.multiFiles
