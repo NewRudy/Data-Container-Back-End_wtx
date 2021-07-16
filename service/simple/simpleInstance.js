@@ -76,11 +76,11 @@ exports.simpleNewFolder = function (req, res, next) {
 
         if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
             updateInstance(query, [newFolder]).then(() => {
+                res.send({code: 0})
                 if(newFolder.isCopy) {
                     copyInstance(newFolder.path, newFolder.meta.currentPath)
                     addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
                 }
-                res.send({code: 0})
             })
         } else {
             let subContentId = uuid.v4()
@@ -171,13 +171,20 @@ function createInstance(newInstance) {
             if(err) {
                 throw err
             }
+            console.log('create instance')
+            resolve()
         })
-        resolve()
+
     })
 }
 
 // 从外网创建一个Instance，只有一个file的形式，file通过下载
 exports.createInstFromUrl = (req, res, next) => {
+    console.log('req: ', req)
+    // let data = JSON.parse(req.body)
+    res.send({code: 0})
+    return
+
     let form = new formidable.IncomingForm()
     form.parse(req, (formErr, fields, files) => {
         if(formErr) {

@@ -14,6 +14,7 @@ const os = require('os');
 var bodyParser = require('body-parser');
 var app = express()
 
+
 //创建application/json解析
 var jsonParser = bodyParser.json();
 
@@ -268,9 +269,9 @@ app.post('/receiveFile', router.receiveFile)
 // 从下载文件的url（java的数据容器）中接收文件
 app.post('/receiveUrl', router.receiveUrl)
 // 从外网创建一个instance
-app.post('/createInstFromUrl', router.createInstFromUrl)
+app.post('/createInstFromUrl', jsonParser, router.createInstFromUrl)
 // 从外网创建一个processing
-app.post('/createProcFromUrl', router.createProcFromUrl)
+app.post('/createProcFromUrl', jsonParser,router.createProcFromUrl)
 
 //错误处理，使用自定义的中间件
 app.use(function (err, req, res, next) {

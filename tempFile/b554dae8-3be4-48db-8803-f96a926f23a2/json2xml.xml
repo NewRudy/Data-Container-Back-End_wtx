@@ -1,0 +1,19 @@
+<Method id="" name="Spatial_Clip">
+    <Description>
+    Convert the json file to an xml file
+    </Description>
+    <Dependency>
+        <Item name="dicttoxml" url=""/>
+        <Item name="json" url=""/>
+        <Item name="os" url=""/>
+        <Item name="sys" url=""/>
+    </Dependency>
+    <Input count="1">
+        <Item name="test.json" type="path" description="original json file"/>
+    </Input>
+    <Parameter count="0">
+    </Parameter>
+    <Output count="1">
+        <Item name="test.xml" type="path" description="result, an xml file"/>
+    </Output>
+</Method>

@@ -8,6 +8,7 @@ var path = require("path");
 const { instances } = require("../model/instances");
 const { record } = require("../model/runRecord");
 
+// 没搞懂为啥要这样引入，，，
 const request = require("request");
 const Request = require("request");
 
@@ -39,7 +40,7 @@ const my_dataContainer='http://221.226.60.2:8082/'
 
 const User = user.User;
 
-// 这么多行一个方法，让人有点改不动啊，，，
+// 这么多行写一个方法，让人有点改不动啊，，，
 exports.newProcessing = function (req, res, next) {
   let script_uid = uuid.v4();
   let path = __dirname + "/../upload_processing/" + script_uid;
@@ -203,49 +204,165 @@ exports.newProcessing = function (req, res, next) {
   });
 };
 
+const tempFile = path.normalize(__dirname + '/../tempFile/')
+const uploadFile = path.normalize(__dirname + '/../upload_processing/')
+
 exports.newProcessingFromUrl = (req, res, next) => {
-  let script_uid = uuid.v4();
-  let path = __dirname + "/../upload_processing/" + script_uid;
-
-  let mkdirPromise = fsPromises.mkdir(path);
-
-  mkdirPromise.then((v) => {
-    let form = new formidable.IncomingForm()
-    form.uploadDir = path 
-    form.parse(req, (formErr, fields, files) => {
-      if(formErr) {
-        console.log('formErr: ', formErr)
-        res.send({code: -1, message: 'new processing error.'})
+  let query = {
+    type: 'ProcessingMethod',
+    // userToken: req.body.token
+  }
+  let dataId = req.body.dataId
+  if(!fs.existsSync(uploadFile + dataId)) {
+    const url = 'http://172.21.213.174:8082/data/' + dataId
+    let stream = fs.createWriteStream('E:/dataServer/Data-Container-Back-End_wtx/tempFile/' + dataId + '.zip')   // dataId 作为临时文件名
+    request(url).pipe(stream).on('close',(downloadErr) => {
+      if(downloadErr) {
+        console.log('downloadErr: ', downloadErr)
         return 
       }
-      let query = {
-        uid: fields.uid,
-        type: fields.instype,
-        userToken: fields.userToken,
-      };
-      if(fields.workSpace) {
-        query.workSpace = fields.workSpace
-      }
+      // 下载的文件都是zip包，需要进行解压
+      compressing.zip.uncompress(tempFile + dataId + '.zip', uploadFile + dataId).then(() => {
+        callLocalCreateMethod(query, req.body.name, req.body.description, dataId, res)
+      }).catch(zipErr => {
+        console.error(zipErr)
+        return
+      })
+    })
+  } else {
+    callLocalCreateMethod(query, req.body.name, req.body.description, req.body.dataId, res)
+  }
+}
+
+// 文件下载完成后调用本地方法创建服务
+function callLocalCreateMethod(query, name, description, dataId,  res) {
+
+      let fileList = fs.readdirSync(tempFile + dataId)
       let newFile = {
+        oid: query.oid,
+        workSpace: query.workSpace,
+
         id: uuid.v4(),
-        name: fields.name,
+        type: 'ProcessingMethod',
+        name: name,
         date: utils.formatDate(new Date()),
-        type: fields.type?fields.type:'Processing',
-        description: fields.description,
-        authority: Boolean(fields.authority),
-        paramsCount: fields.paramsCount?fields.paramsCount:0,
-        fileList: Object.keys(fields.fileUrlList),
-        storagePath: form.uploadDir
+        description: description,
+        authority: true,
+        paramsCount: '0',
+        fileList: fileList,
+        storagePath: uploadFile + dataId,
       }
       instances.findOne(query, (find_err, doc) => {
         if(find_err) {
-          res.send({code: -1, message: 'find error'})
-          return 
+          res.send({ code: -1, message: "db find error!" });
+          return;
         }
-        
+        let xmlFile =
+        newFile.fileList[0].split(".")[1] == "xml"
+          ? newFile.fileList[0]
+          : newFile.fileList[1];
+          if((newFile.fileList[0].split(".")[1] == "xml"&&newFile.fileList[1].split(".")[1]== "xml" )|| (newFile.fileList[0].split(".")[1] != "xml"&&newFile.fileList[1].split(".")[1]!= "xml") ){
+            res.send({ code: -1, message: "DDL error!" });
+            return
+          }
+          let xmlPath = newFile.storagePath + "/" + xmlFile;
+          fs.readdir(newFile.storagePath, (err, filesItem) => {
+            filesItem.forEach((v) => {
+              newFile.fileList.forEach((v2) => {
+                if (v.split(".")[1] === v2.split(".")[1]) {
+                  fs.renameSync(
+                    newFile.storagePath + "/" + v,
+                    newFile.storagePath + "/" + v2
+                  );
+                }
+              });
+            });
+            fs.readFile(xmlPath, function (err, data) {
+              if(err){
+                res.send({ code: -1, message: "DDL error!" });
+                return
+              }
+              parser.parseString(data, function (err2, result) {
+                if(err2){
+                  res.send({ code: -1, message: "DDL error!" });
+                  return
+                }
+                
+                try{
+
+                let formatJson={}
+                formatJson['Description']=result['Method']['Description']
+
+                if(result['Method']['Dependency']&&result['Method']['Dependency'].length>0){
+            
+                    let Dependency=[]
+                    for( let it in result['Method']['Dependency'][0]['Item']){
+                  
+                        Dependency.push(result['Method']['Dependency'][0][['Item']][it]['$'])
+                    }
+                    formatJson['Dependency']=Dependency
+                }
+              
+                if(result['Method']['Input']&&result['Method']['Input'].length>0){
+                    let Input=[]
+                    for( let it in result['Method']['Input'][0]['Item']){
+                        
+                        let append=[]
+                        if(result['Method']['Input'][0]['Item'][it]['Append']&&result['Method']['Input'][0]['Item'][it]['Append'].length>0){
+                          for(let ap in result['Method']['Input'][0]['Item'][it]['Append']){
+                              append.push(result['Method']['Input'][0]['Item'][it]['Append'][ap]['$'])
+                          }
+                        }
+                        let m=result['Method']['Input'][0]['Item'][it]['$']
+                        if(append.length>0){m['Append']=append}
+
+                        Input.push(m)
+
+
+                    }
+                    formatJson['Input']=Input
+
+                }
+
+                if(result['Method']['Output']&&result['Method']['Output'].length>0){
+                    let Output=[]
+                    for( let it in result['Method']['Output'][0]['Item']){
+                          
+
+                        Output.push(result['Method']['Output'][0]['Item'][it]['$'])
+                    }
+                    formatJson['Output']=Output
+                }   
+
+                if(result['Method']['Parameter']&&result['Method']['Parameter'].length>0){
+                        let Parameter=[]
+                        for( let it in result['Method']['Parameter'][0]['Item']){
+                            Parameter.push(result['Method']['Parameter'][0]['Item'][it]['$'])
+                        }
+                        formatJson['Parameter']=Parameter
+                }
+              
+                newFile["metaDetail"] = JSON.stringify(result);
+                newFile["metaDetailJSON"]=formatJson;
+              }catch(err){
+                res.end({ code: -1, message: "DDL error!" });
+                return;
+              }
+                doc.list.unshift(newFile);
+
+                instances.updateOne(query, doc, (update_err) => {
+                  if (update_err) {
+                    res.send({ code: -1, message: "db update error!" });
+                    return;
+                  }
+
+                  res.send({ code: 0, message: "create ok" });
+                  return;
+                });
+              });
+            }); //end  readFile
+          });
       })
-    })
-  })
 }
 
 // function downloadUrlToPath(url, path) {
@@ -254,15 +371,6 @@ exports.newProcessingFromUrl = (req, res, next) => {
 
 //   })
 // }
-
-exports.newProcessingFormUrl = (req, res, next) => {
-  let script_uid = uuid.v4();
-  let path = path.normalize(__dirname + "/../upload_processing/" + script_uid);
-  let mkdirPromise = fsPromises.mkdir(path)
-  mkdirPromise.then(v => {
-
-  })
-}
 
 exports.delProcessing = function (req, res, next) {
   instances.findOne(
