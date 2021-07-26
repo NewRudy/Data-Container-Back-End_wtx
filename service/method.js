@@ -1,8 +1,8 @@
 /*
  * @Author: lan 
  * @Date: 2021-01-21 15:12:28 
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2021-01-21 17:37:28
+ * @Last Modified by: wutian
+ * @Last Modified time: 2021-07-26 10:55:25
  */
 const path = require("path");
 const uuid = require("node-uuid");
@@ -11,6 +11,8 @@ const cp = require("child_process"); //引入包
 
 const cfg = require("../config/config.js");
 const utils = require("../utils/utils.js");
+const user = require("../model/user");
+const User = user.User;
 
 
 const { instances } = require("../model/instances");
@@ -80,8 +82,10 @@ exports.invokeLocalMethod=function(req,res,next){
             }
           })
 
-
-        let par= [ pyPath,input,path.normalize(output)]
+        if(!input || input === '') {
+            input = __dirname + '/../dataStorage/' + dataId.id
+        }
+        let par= [ pyPath, path.normalize(input), path.normalize(output)]
 
         // 如果有参数存在的情况
         if(paramsArr!=undefined&&paramsArr.length>0){
@@ -90,7 +94,15 @@ exports.invokeLocalMethod=function(req,res,next){
 
         // 封装的处理方法调用
         let pcs_stout=undefined
-        const ls = cp.spawn(cfg.pythonExePath, par);//python安装路径，python脚本路径，shp路径，照片结果路径
+        let pythonExePath;
+        User.findOne({name: 'admin'}, (err, doc) => {
+            if(!doc || err) {
+                res.send({code: -1, message: 'User not Exist, no python exe path'})
+                return 
+            }
+            pythonExePath = doc.pythonEnv
+                    
+            const ls = cp.spawn(pythonExePath, par);//python安装路径，python脚本路径，shp路径，照片结果路径
 
         ls.on('exit', (code) => {
             console.log(`子进程使用代码 ${code} 退出`);
@@ -159,15 +171,7 @@ exports.invokeLocalMethod=function(req,res,next){
               pcs_stout=data
                                   
           })
-        
-
-
-
-
-
-
-
-
+        })
 
 
     });

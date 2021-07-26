@@ -214,7 +214,7 @@ exports.newProcessingFromUrl = (req, res, next) => {
   }
   let dataId = req.body.dataId
   if(!fs.existsSync(uploadFile + dataId)) {
-    const url = 'http://172.21.213.174:8082/data/' + dataId
+    const url = 'http://221.226.60.2:8082/data/' + dataId
     let stream = fs.createWriteStream('E:/dataServer/Data-Container-Back-End_wtx/tempFile/' + dataId + '.zip')   // dataId 作为临时文件名
     request(url).pipe(stream).on('close',(downloadErr) => {
       if(downloadErr) {
