@@ -374,7 +374,7 @@ function callLocalCreateMethod(query, name, description, dataId,  res) {
 
 exports.delProcessing = function (req, res, next) {
   instances.findOne(
-    { uid: req.query.uid, type: req.query.instType },
+    { uid: req.query.uid, type: req.query.instType, workSpace: req.query.workSpace},
     (err, doc) => {
       if (err || !doc) {
         res.send({ code: -1, message: "error" });
@@ -386,7 +386,7 @@ exports.delProcessing = function (req, res, next) {
             utils.delDir(it.storagePath);
             doc.list.splice(i, 1);
             instances.updateOne(
-              { uid: req.query.uid, type: req.query.instType },
+              { uid: req.query.uid, type: req.query.instType , workSpace: req.query.workSpace},
               doc,
               (err) => {
                 if (err) {
