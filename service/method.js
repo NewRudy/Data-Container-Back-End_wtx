@@ -2,7 +2,7 @@
  * @Author: lan 
  * @Date: 2021-01-21 15:12:28 
  * @Last Modified by: wutian
- * @Last Modified time: 2021-07-26 10:55:25
+ * @Last Modified time: 2021-07-30 17:09:42
  */
 const path = require("path");
 const uuid = require("node-uuid");
@@ -66,7 +66,6 @@ exports.invokeLocalMethod=function(req,res,next){
             inputPath.push(pathArr[p])
         }
         
-        input=inputPath.join(",")
 
         // 执行记录
         let recordIdForThisRun=uuid.v4()
@@ -82,9 +81,22 @@ exports.invokeLocalMethod=function(req,res,next){
             }
           })
 
-        if(!input || input === '') {
-            input = __dirname + '/../dataStorage/' + dataId.id
+        // if(!input || input === '') {
+        //     input = __dirname + '/../dataStorage/' + dataId.id
+        // }
+        let input
+        if('isCopy' in dataId) {         // 不复制的运行
+            if(!dataId.isCopy) {
+                let fileName = dataId.path.split('\\')[dataId.path.split('\\').length - 1]
+                let temp = dataId.path.lastIndexOf(fileName)
+                input = dataId.path.substring(0, temp)
+            } else {
+                input = __dirname + '/../dataStorage/' + dataId.id 
+            }
+        } else {
+            input = __dirname + '/../dataStorage/' + dataId.id 
         }
+
         let par= [ pyPath, path.normalize(input), path.normalize(output)]
 
         // 如果有参数存在的情况

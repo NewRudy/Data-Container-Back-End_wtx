@@ -86,6 +86,7 @@ exports.simpleNewFolder = function (req, res, next) {
             let subContentId = uuid.v4()
             newFolder.subContentId = subContentId
             updateInstance(query, [newFolder]).then((result) => {
+                res.send({code: 0})
                 let newInstance = {
                     uid: subContentId,
                     userToken: result.userToken,
@@ -103,7 +104,6 @@ exports.simpleNewFolder = function (req, res, next) {
                 createInstance(newInstance).then(() => {
                     getFilesPath(newFolder, res).then((pathArr) => {
                         addInstances(_query, pathArr).then(() => {
-                            res.send({code: 0})
                         }).catch(() => {
                             res.send({code: -1})
                         })
