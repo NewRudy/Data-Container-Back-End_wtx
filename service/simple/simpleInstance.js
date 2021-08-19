@@ -12,6 +12,7 @@ const BagPipe = require('bagpipe');
 
 const Instances = require('../../model/instances.js').instances;
 
+// 接收参数
 exports.simpleNewFolder = function (req, res, next) {
     let form = new formidable.IncomingForm()
     form.parse(req, (form_err, fields) => {
@@ -41,7 +42,6 @@ exports.simpleNewFolder = function (req, res, next) {
             isMerge: fields.isMerge,
             keywords: fields.keywords,
             workSpace: fields.workSpace,
-            workSpaceName: fields.workSpaceName,
         }
         if(fields.xmlPath && fields.xmlPath != '') {
             newFolder['xmlPath'] = path.normalize(fields.xmlPath)
@@ -67,56 +67,102 @@ exports.simpleNewFolder = function (req, res, next) {
         newFolder.meta = {}     // 为了和老版适应，因为老版的 currentPath 是从 meta 里面取的
         newFolder.meta.currentPath = path.normalize(dataStoragePath + '/' + newFolder.id)
         let readMeArr = ['readme.md', '简介.txt']
-        for(let i = 0; i< readMeArr.length; ++i) {       // 有一个就好
+        for(let i = 0; i< readMeArr.length; ++i) {    
             let readme = path.normalize(newFolder.path + '/' + readMeArr[i])
             if(fs.existsSync(readme)) {
                 newFolder.readme = readme
             }
         }
 
-        if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
-            updateInstance(query, [newFolder]).then(() => {
-                res.send({code: 0})
-                if(newFolder.isCopy) {
-                    copyInstance(newFolder.path, newFolder.meta.currentPath)
-                    addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
-                }
-            })
-        } else {
-            let subContentId = uuid.v4()
-            newFolder.subContentId = subContentId
-            updateInstance(query, [newFolder]).then((result) => {
-                res.send({code: 0})
-                let newInstance = {
-                    uid: subContentId,
-                    userToken: result.userToken,
-                    type: result.type,
-                    parentLevel: parseInt(result.parentLevel) + 1 + '',
-                    list: [],
-                    workSpace: result.workSpace,
-                }
-                let _query = {
-                    type: result.type,
-                    userToken: result.userToken,
-                    uid: subContentId,
-                    workSpace: result.workSpace
-                }
-                createInstance(newInstance).then(() => {
-                    getFilesPath(newFolder, res).then((pathArr) => {
-                        addInstances(_query, pathArr).then(() => {
-                        }).catch(() => {
-                            res.send({code: -1})
-                        })
+        createFolderInstance(query, newFolder, res)
+
+        // if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
+        //     updateInstance(query, [newFolder]).then(() => {
+        //         res.send({code: 0})
+        //         if(newFolder.isCopy) {
+        //             copyInstance(newFolder.path, newFolder.meta.currentPath)
+        //             addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
+        //         }
+        //     })
+        // } else {
+        //     let subContentId = uuid.v4()
+        //     newFolder.subContentId = subContentId
+        //     updateInstance(query, [newFolder]).then((result) => {
+        //         res.send({code: 0})
+        //         let newInstance = {
+        //             uid: subContentId,
+        //             userToken: result.userToken,
+        //             type: result.type,
+        //             parentLevel: parseInt(result.parentLevel) + 1 + '',
+        //             list: [],
+        //             workSpace: result.workSpace,
+        //         }
+        //         let _query = {
+        //             type: result.type,
+        //             userToken: result.userToken,
+        //             uid: subContentId,
+        //             workSpace: result.workSpace
+        //         }
+        //         createInstance(newInstance).then(() => {
+        //             getFilesPath(newFolder, res).then((pathArr) => {
+        //                 addInstances(_query, pathArr).then(() => {
+        //                 }).catch(() => {
+        //                     res.send({code: -1})
+        //                 })
                         
-                    }).catch(err => {
+        //             }).catch(err => {
+        //                 console.log(err)
+        //                 res.send({code: -1})
+        //                 throw err;
+        //             })
+        //         })
+        //     })
+        // }
+    })
+}
+
+function createFolderInstance(query, newFolder, res) {
+    if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
+        updateInstance(query, [newFolder]).then(() => {
+            res.send({code: 0})
+            if(newFolder.isCopy) {
+                copyInstance(newFolder.path, newFolder.meta.currentPath)
+                addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
+            }
+        })
+    } else {
+        let subContentId = uuid.v4()
+        newFolder.subContentId = subContentId
+        updateInstance(query, [newFolder]).then((result) => {
+            res.send({code: 0})     // 为了前端不等太久
+            let newInstance = {
+                uid: subContentId,
+                userToken: result.userToken,
+                type: result.type,
+                parentLevel: parseInt(result.parentLevel) + 1 + '',
+                list: [],
+                workSpace: result.workSpace,
+            }
+            let _query = {
+                type: result.type,
+                userToken: result.userToken,
+                uid: subContentId,
+                workSpace: result.workSpace
+            }
+            createInstance(newInstance).then(() => {
+                getFilesPath(newFolder, res).then((pathArr) => {
+                    addInstances(_query, pathArr).catch((err) => {
                         console.log(err)
-                        res.send({code: -1})
                         throw err;
                     })
+                    
+                }).catch(err => {
+                    console.log(err)
+                    throw err;
                 })
             })
-        }
-    })
+        })
+    }
 }
 
 function getFilesPath(folder, res) {        // 得到文件夹数组和文件数组
@@ -144,13 +190,15 @@ function getFilesPath(folder, res) {        // 得到文件夹数组和文件数
                     isCopy: folder.isCopy
                 }
                 if(folder.workSpace) {
-                    obj.workSpace = folder.workSpace,
-                    obj.workSpaceName = folder.workSpaceName
+                    obj.workSpace = folder.workSpace
                 }
                 if(folder.xmlName) {
                     obj[xmlName] = folder.xmlName
                 }
-                obj.meta.currentPath = path.normalize(dataStoragePath + '/' + tempV4)
+                if(folder.isCopy)
+                    obj.meta.currentPath = path.normalize(dataStoragePath + '/' + tempV4)
+                else
+                    obj.meta.currentPath = obj.path
                 let st = fs.statSync(obj.path)
                 if(st.isFile()){
                     obj.type = 'file'
@@ -386,3 +434,5 @@ function addZipFile(srcPath, destPath) {
         archive.finalize();
     })
 }
+
+exports.createFolderInstance = createFolderInstance

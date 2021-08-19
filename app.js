@@ -262,6 +262,8 @@ app.put('/simple/newFolder', router.simpleNewFolder);
 // app.post('/simple/queryCollection', router.queryCollection)
 app.post('/simple/queryCollection', router.querySomeCollection)
 app.post('/simple/queryList', router.queryDataList)
+// 处理大数据
+app.post('/simple/invokeMethod', router.invokeMethodForBigData)
 
 // 接收文件
 // 从websocket接收文件

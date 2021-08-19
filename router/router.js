@@ -25,6 +25,7 @@ const depend = require('../service/depend.js')
 
 const simpleInstance = require('../service/simple/simpleInstance.js')
 const simpleDataList = require('../service/simple/simpleDataList.js')
+const simpleProcess = require('../service/simple/processing.js')
 
 //接口不可用 
 //第一种接口上传数据到服务器
@@ -187,3 +188,6 @@ exports.simpleNewFolder = simpleInstance.simpleNewFolder
 exports.queryDataList = simpleDataList.queryDataList
 exports.queryCollection = simpleDataList.queryCollection
 exports.querySomeCollection = simpleDataList.querySomeCollection
+
+// 运行服务
+exports.invokeMethodForBigData = simpleProcess.invokeMethodForBigData

@@ -214,8 +214,9 @@ exports.newProcessingFromUrl = (req, res, next) => {
   }
   let dataId = req.body.dataId
   if(!fs.existsSync(uploadFile + dataId)) {
-    const url = 'http://221.226.60.2:8082/data/' + dataId
+    const url = encodeURI('http://221.226.60.2:8082/data/' + dataId)
     let stream = fs.createWriteStream('E:/dataServer/Data-Container-Back-End_wtx/tempFile/' + dataId + '.zip')   // dataId 作为临时文件名
+
     request(url).pipe(stream).on('close',(downloadErr) => {
       if(downloadErr) {
         console.log('downloadErr: ', downloadErr)
@@ -1055,7 +1056,7 @@ exports.exeWithOtherData = function (req, res, next) {
 
   let dataIdinCont = req.query.contDtId;
 
-  let downLoadUrl = transitUrl + "/data?uid=" + dataIdinCont;
+  let downLoadUrl = encodeURI(transitUrl + "/data?uid=" + dataIdinCont);
 
   let dataInfo = transitUrl + "/info?uid=" + dataIdinCont;
 
@@ -1699,7 +1700,7 @@ exports.invokeProUrl = function (req, res, next) {
   var fileType;
   var fileName;
   // form.parse(req, (err, fields, files) =>{
-  let url = req.body.url;
+  let url = encodeURL(req.body.url);
   function operation(url, filename, callback) {
     var stream = fs.createWriteStream(path.join(dirPath, "test"));
     //下载文件
@@ -2330,6 +2331,7 @@ try{
               return new Promise((resove,rej)=>{
                   var stream = fs.createWriteStream(path.join(dirPath, "test"));
                   //下载文件
+                  url = encodeURI(url)
                   request(url,function(err,response, body){
                     if(err){
                       let msg={code:-2,stoutErr:err}
@@ -2722,6 +2724,7 @@ exports.invokeExternalUrlsDataPcsWithKeys=function(req,res){
                   return new Promise((resove,rej)=>{
                       let stream = fs.createWriteStream(path.join(dirPath, fileName));
                       //下载文件
+                      url = encodeURI(url)
                       request(url,(err,response, body)=>{
                         try{
                           let arr = response.headers['content-disposition'].split('.');
@@ -2961,6 +2964,7 @@ function requestFromDC(url,dirPath){
     let uid=uuid.v4()
     let stream = fs.createWriteStream(path.join(dirPath,uid));
     let fileName
+    url = encodeURI(url)
     request(url,(err,resp,body)=>{
 
       if(err){

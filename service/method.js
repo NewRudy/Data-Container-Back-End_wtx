@@ -2,7 +2,7 @@
  * @Author: lan 
  * @Date: 2021-01-21 15:12:28 
  * @Last Modified by: wutian
- * @Last Modified time: 2021-07-30 17:09:42
+ * @Last Modified time: 2021-08-10 22:03:44
  */
 const path = require("path");
 const uuid = require("node-uuid");
@@ -205,8 +205,18 @@ exports.openExplorer=function(req,res,next){
             })
             return 
         }
+        let id = req.query.id 
+
+        let data
+        for(let i = 0; i < doc.list.length; ++i) {
+            if(id === doc.list[i].id) {
+                data = doc.list[i]
+                break 
+            }
+        }
+
        
-        let openExplorer='explorer.exe "'+ path.normalize(doc.list[0].dist)+'"' 
+        let openExplorer='explorer.exe "'+ path.normalize(data.meta.currentPath) + '"' 
         cp.exec(openExplorer)
 
         res.send({

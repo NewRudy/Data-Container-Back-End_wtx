@@ -1,5 +1,87 @@
 const fs = require('fs');
 const stat = fs.stat;
+
+const {DataSet} = require('../model/dataList')
+const {instances} = require('../model/instances')
+const {PUser} = require('../model/PortalUsr')
+const {Random }= require('../model/random')
+const {record} = require('../model/runRecord')
+const {SrcZip} = require('../model/srcZip')
+const {StandZip} = require('../model/standZip')
+const {UdxZip} = require('../model/udxZip')
+const {User} = require('../model/user')
+const {VisualLog} = require('../model/visualLog')
+const {workSpace} = require('../model/workSpace')
+
+/**
+ * 
+ * @param {*} modelName model名字
+ * @returns model
+ */
+function returnModel(modelName) {
+    switch (modelName) {
+        case 'DataSet':
+            return DataSet
+            break;
+        case 'instances':
+            return instances
+            break;
+        case 'portalUsr':
+            return PUser
+            break;
+        case 'random':
+            return Random
+            break;
+        case 'record':
+            return record
+            break;
+        case 'srcZip':
+            return SrcZip
+            break;
+        case 'standZip':
+            return StandZip
+            break;
+        case 'udxZip':
+            return UdxZip
+            break;
+        case 'user':
+            return User
+            break;
+        case 'visualLog':
+            return VisualLog
+            break;
+        case 'workSpace':
+            return workSpace
+            break;
+        default:
+            break;
+    }
+}
+/**
+ * 
+ * @param {*} modelName 模型的名字
+ * @param {*} searchCont 查询内容
+ * @returns 返回查询一个的结果
+ */
+function isFindOne(modelName, searchCont) {
+    return new Promise((resolve, reject) => {
+        const model = returnModel(modelName)
+        if(!model) {
+            console.log('model name is wrong.')
+            return
+        } 
+        model.findOne(searchCont, (err, res) =>{
+            if(err) {
+                console.log('findOne err: ', err)
+                reject(err)
+            }
+            resolve(res)
+        })
+    })
+}
+
+
+
 //删除文件夹
 function delDir(path){
     let files = [];
@@ -111,7 +193,8 @@ var formatDate=function(d){
     return time;
 }
 
-const CryptoJS = require('crypto-js') // 引用AES源码js
+const CryptoJS = require('crypto-js'); // 引用AES源码js
+const { reject } = require('async');
 // import CryptoJS from 'crypto-js'
 const key = CryptoJS.enc.Utf8.parse('1234567812345678') // 十六位十六进制数作为密钥
 const iv = CryptoJS.enc.Utf8.parse("1234567812345678");//十六位十六进制数作为密钥偏移量
@@ -144,6 +227,10 @@ exports.exists = exists;
 
 exports.Decrypt=Decrypt;
 exports.Encrypt=Encrypt;
+
+exports.isFindOne = isFindOne
+
+
 
 
 
