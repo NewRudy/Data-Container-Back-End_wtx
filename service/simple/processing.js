@@ -3,18 +3,24 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-08-10 21:58:05
+ * @Last Modified time: 2021-08-20 13:53:36
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
 const path = require('path')
 const cp = require('child_process')
 const formidable = require('formidable')
+const FormData = require('form-data');
+const request = require("request");
+const archiver = require("archiver")
 
 const utils = require('../../utils/utils')
 const {createFolderInstance} = require('./simpleInstance')
 
 const {record} = require('../../model/runRecord')
+const {dataContainer} = require('../../config/config')
+const { resolve } = require('path')
+const { reject } = require('async')
 
 
 
@@ -56,16 +62,26 @@ async function invoke(pcsId, dataId, paramsArr) {
         let input
         for(let i = 0; i < dataInstance.list.length; ++i) {
             if(dataId === dataInstance.list[i].id) {
-                if('isCopy' in dataInstance.list[i]) {         // 不复制的运行
-                    if(!dataInstance.list[i].isCopy) {
-                        let fileName = dataInstance.list[i].path.split('\\')[dataInstance.list[i].path.split('\\').length - 1]
-                        let temp = dataInstance.list[i].path.lastIndexOf(fileName)
-                        input = dataInstance.list[i].path.substring(0, temp)
+                if(dataInstance.list[i].type != 'folder') {
+                    if('isCopy' in dataInstance.list[i]) {         // 不复制的运行
+                        if(!dataInstance.list[i].isCopy) {
+                            let fileName = dataInstance.list[i].path.split('\\')[dataInstance.list[i].path.split('\\').length - 1]
+                            let temp = dataInstance.list[i].path.lastIndexOf(fileName)
+                            input = dataInstance.list[i].path.substring(0, temp)
+                        } else {
+                            input = __dirname + '/../dataStorage/' + dataInstance.list[i].id 
+                        }
                     } else {
-                        input = __dirname + '/../dataStorage/' + dataInstance.list[i].id 
+                        input = __dirname + '/../dataStorage/' + dataInstance.dataId
                     }
                 } else {
-                    input = __dirname + '/../dataStorage/' + dataInstance.dataId
+                    if('isCopy' in dataInstance.list[i]) {
+                        if(!dataInstance.list[i].isCopy) {
+                            input = dataInstance.list[i].path
+                        } else {
+                            input = __dirname + '/../dataStorage/' + dataInstance.dataId
+                        }
+                    }
                 }
             }
         }
@@ -95,6 +111,8 @@ async function invoke(pcsId, dataId, paramsArr) {
                 'recordId': uuid.v4(),
                 'serviceId': pcsId,
                 'dataId': dataId,
+                'resultId': uuid.v4(),
+                'paramsArr': paramsArr,
                 'date': utils.formatDate(new Date()),
                 'inputPath': input,
                 'outputPath': output,
@@ -110,8 +128,13 @@ async function invoke(pcsId, dataId, paramsArr) {
     })
 }
 
-
-function invokeMethodForBigData(req, res, next) {
+/**
+ * 本地方法运行本地的数据，结果也是一个实例，返回实例 id
+ * @param {*} req 传递 json 数据， 数据内容：dataId, pcsId, paramsArr, userToken, [workSpace]
+ * @param {*} res 返回 code, dataId(数据实例)
+ * @param {*} next 
+ */
+function invokeLocally(req, res, next) {
     let form = new formidable.IncomingForm()
     form.parse(req, async function(form_err, fields){
         if(form_err) {
@@ -123,7 +146,7 @@ function invokeMethodForBigData(req, res, next) {
         let dataId = fields.dataId;
         let paramsArr = fields.paramsArr
         let workSpace = fields.workSpace
-        let token = fields.userToken
+        let token = fields.userToken || fields.token
         if(!workSpace) {
             let temp = await utils.isFindOne('workSpace', {name: 'initWorkspace'})
             workSpace = temp.uid
@@ -133,38 +156,171 @@ function invokeMethodForBigData(req, res, next) {
             token = temp.uid
         }
 
-        // let record = await utils.isFindOne('record', {'serviceId': pcsId, 'dataId': dataId})
-        let record
-        if(!record) {
-            try {
-                record = await invoke(pcsId, dataId, paramsArr)
-            } catch (error) {
-                res.send({code: -1})
+        let record = await utils.isFindOne('record', {'serviceId': pcsId, 'dataId': dataId})    // 判断是否已经运行过
+        if(record) {
+            let flag = true
+            for(let i = 0; i < record.paramsArr; ++i) {
+                if(paramsArr[i] != record.paramsArr) {
+                    flag = false 
+                    break 
+                }
+            }
+            if(flag) {
+                res.send({code: 0, data: {'dataId': record.resultId} })
+                return
             }
         }
-        if(!record || typeof record === 'string') res.send({code: -1})
-        
-        let query = {
-            uid: '0',
-            type: 'DataOut',
-            userToken: token,
-            workSpace: workSpace
+        else {
+            try {
+                record = await invoke(pcsId, dataId, paramsArr)
+                if(!record || typeof record === 'string'){
+                    res.send({code: -1})
+                    return
+                }
+                
+                let query = {
+                    uid: '0',
+                    type: 'DataOut',
+                    userToken: token,
+                    workSpace: workSpace
+                }
+                let newFolder = {
+                    id: record.resultId,
+                    oid: '',
+                    name: record.serviceName + '_result',
+                    type: 'folder',
+                    date: utils.formatDate(new Date()),
+                    authority: 'public',
+                    path: record.outputPath,
+                    isCopy: false,
+                    isMerge: false,
+                    workSpace: workSpace
+                }
+                createFolderInstance(query, newFolder, res)
+            } catch (error) {
+                res.send({code: -1})
+                return
+            }
         }
-        let newFolder = {
-            id: uuid.v4(),
-            oid: '',
-            name: record.serviceName + '_result',
-            type: 'folder',
-            date: utils.formatDate(new Date()),
-            authority: 'public',
-            path: record.outputPath,
-            isCopy: false,
-            isMerge: false,
-            workSpace: workSpace
-        }
-        createFolderInstance(query, newFolder, res)
-        
     })
 }
 
-exports.invokeMethodForBigData = invokeMethodForBigData
+/**
+ * 文件夹压缩成压缩包
+ * @param {*} folder 
+ */
+function zipFolder(folder) {
+    return new Promise((resolve, reject) => {
+        let destPath = folder + '.zip'
+        if(fs.existsSync(destPath)){
+            resolve(destPath)
+            return
+        }
+        let archive = archiver('zip',{store: false})
+        archive.on('error', (err) => reject(err))
+        archive.on('end', () => resolve(destPath))
+        archive.pipe(fs.createWriteStream(destPath))
+        archive.directory(folder, '/')
+        archive.finalize()
+    })
+
+}
+
+/**
+ * 调用数据中转的接口，上传多文件, 本地就使用了单文件，数据大小限制为 10 GB
+ * @param {*} path 文件路径数组
+ * @param {*} name 字符串，本次上传文件名
+ * @returns 
+ */
+function uploadMultifiles(path,name){
+    return new Promise(async(resolve, reject) => {
+        // let upObj={
+        //     'name':name,
+        //     'datafile':fs.createReadStream(path)        
+        // }
+        console.log('upload multifiles.')
+        let upObj = {'name': name}
+        for(let i = 0; i < path.length; ++i){
+            let st = fs.statSync(path[i])
+            let file
+            if(st.isFile()){
+                file = path[i]
+            } else {
+                file = await zipFolder(path[i])
+            }
+            upObj['datafile'] = fs.createReadStream(file)
+        }
+        // TODO: 大文件数据上传
+        let options = {
+            method : 'POST',
+            url : dataContainer+'/data',
+            formData : upObj
+        };
+        //调用数据容器上传接口
+        request(options, (error, response, body) => {
+                if (error) reject(error)
+                resolve(JSON.parse(body))
+            });  
+    })
+}
+
+/**
+ * 上传本地数据到兰德，返回兰德的结果
+ * @param {*} req json数据，数据：dataId
+ * @param {*} res 
+ * @param {*} next 
+ */
+function uploadData(req, res, next) {
+    let form = new formidable.IncomingForm()
+    form.parse(req, async (form_err, fields) => {
+        if(form_err) {
+            res.send({code: -1})
+            return 
+        }
+        let dataId = fields.dataId
+        let path    // dataId 对应的 path
+        const dataInstance = await utils.isFindOne('instances', {type: 'Data', list: {$elemMatch: {id: dataId}}})
+        if(!dataInstance) {
+            res.send({code: -1})
+            return
+        }
+        for(let i = 0; i < dataInstance.list.length; ++i) {
+            if(dataId === dataInstance.list[i].id) {
+                if('isCopy' in dataInstance.list[i]) {
+                    if(dataInstance.list[i].isCopy) {
+                        path = dataInstance.list[i].meta.currentPath
+                    } else {
+                        path = dataInstance.list[i].path 
+                    }
+                } else {
+                    path = dataInstance.list[i].meta.currentPath
+                }
+            }
+        }
+        if(!path || path === '') {
+            res.send({code: -1})
+            return 
+        }
+
+        let workSpace = fields.workSpace
+        let token = fields.userToken || fields.token
+        if(!workSpace) {
+            let temp = await utils.isFindOne('workSpace', {name: 'initWorkspace'})
+            workSpace = temp.uid
+        }
+        if(!token) {
+            let temp = await utils.isFindOne('user', {name: 'admin'})
+            token = temp.uid
+        }
+        
+        uploadMultifiles([path], 'result').then((result) => {
+            res.send({code: 0, data: {'downloadUrl': dataContainer+'/data/' + result.data.id}})
+        }).catch((err) =>
+            res.send({code: -1})
+        )
+
+    })
+}
+
+exports.invokeLocally = invokeLocally
+exports.uploadData = uploadData

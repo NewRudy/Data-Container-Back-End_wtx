@@ -9,7 +9,7 @@ module.exports={
     // portalUserDb:'mongodb://111.229.14.128:27019/Portal',
     //数据上传接口路径
     transitUrl:'http://111.229.14.128:8899',
-    // transitUrl:'http://221.226.60.2:8082',
+    dataContainer:'http://221.226.60.2:8082',
     //绑定处理方法路径，明远机器测试路径
     bindPcsUrl:'http://223.2.47.247:8084/dataItem/bindDataItem',
     //python安装路径

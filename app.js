@@ -262,8 +262,10 @@ app.put('/simple/newFolder', router.simpleNewFolder);
 // app.post('/simple/queryCollection', router.queryCollection)
 app.post('/simple/queryCollection', router.querySomeCollection)
 app.post('/simple/queryList', router.queryDataList)
-// 处理大数据
-app.post('/simple/invokeMethod', router.invokeMethodForBigData)
+// 大数据采用数据存储在本地的用法
+app.post('/invokeLocally', router.invokeLocally)
+// 上传数据到兰德
+app.post('/uploadData', router.uploadData)
 
 // 接收文件
 // 从websocket接收文件

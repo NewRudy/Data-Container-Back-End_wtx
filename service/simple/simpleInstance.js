@@ -124,7 +124,7 @@ exports.simpleNewFolder = function (req, res, next) {
 function createFolderInstance(query, newFolder, res) {
     if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
         updateInstance(query, [newFolder]).then(() => {
-            res.send({code: 0})
+            res.send({code: 0, data:{'dataId': newFolder.id}})
             if(newFolder.isCopy) {
                 copyInstance(newFolder.path, newFolder.meta.currentPath)
                 addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
@@ -134,7 +134,6 @@ function createFolderInstance(query, newFolder, res) {
         let subContentId = uuid.v4()
         newFolder.subContentId = subContentId
         updateInstance(query, [newFolder]).then((result) => {
-            res.send({code: 0})     // 为了前端不等太久
             let newInstance = {
                 uid: subContentId,
                 userToken: result.userToken,
@@ -150,6 +149,7 @@ function createFolderInstance(query, newFolder, res) {
                 workSpace: result.workSpace
             }
             createInstance(newInstance).then(() => {
+                res.send({code: 0, data:{'dataId': newFolder.id}})
                 getFilesPath(newFolder, res).then((pathArr) => {
                     addInstances(_query, pathArr).catch((err) => {
                         console.log(err)

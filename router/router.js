@@ -190,4 +190,5 @@ exports.queryCollection = simpleDataList.queryCollection
 exports.querySomeCollection = simpleDataList.querySomeCollection
 
 // 运行服务
-exports.invokeMethodForBigData = simpleProcess.invokeMethodForBigData
+exports.invokeLocally = simpleProcess.invokeLocally
+exports.uploadData = simpleProcess.uploadData
