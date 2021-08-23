@@ -69,7 +69,7 @@ exports.querySomeCollection = (req, res, next) => {
             query.uid = fields.uid
         }
         if(fields.userToken) {
-            query.userToken = fields.userToken
+            query.userToken = fields.userToken || fields.token
         }
         if(fields.type) {
             query.type = fields.type

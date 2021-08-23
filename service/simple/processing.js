@@ -3,14 +3,13 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-08-20 13:53:36
+ * @Last Modified time: 2021-08-23 15:50:04
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
 const path = require('path')
 const cp = require('child_process')
 const formidable = require('formidable')
-const FormData = require('form-data');
 const request = require("request");
 const archiver = require("archiver")
 
@@ -83,6 +82,7 @@ async function invoke(pcsId, dataId, paramsArr) {
                         }
                     }
                 }
+                break
             }
         }
         
@@ -100,31 +100,62 @@ async function invoke(pcsId, dataId, paramsArr) {
         // 调用方法
         console.log('par: ', par)
         const ls = cp.spawn(pythonEnv, par);
-    
-        ls.on('exit', (code) => {
-            console.log(`子进程使用代码${code}退出`)
-            if(code != 0){
-                reject('run error')
+        let recordInstance = {
+            'recordId': uuid.v4(),
+            'status': 'run',
+            'serviceId': pcsId,
+            'dataId': dataId,
+            'resultId': uuid.v4(),
+            'paramsArr': paramsArr,
+            'date': utils.formatDate(new Date()),
+            'inputPath': input,
+            'outputPath': output,
+            'serviceName': processMethod.name
+        }
+        record.create(recordInstance, (err, doc) => {
+            if(err) {
+                reject()
                 return
             }
-            record.create({
-                'recordId': uuid.v4(),
-                'serviceId': pcsId,
-                'dataId': dataId,
-                'resultId': uuid.v4(),
-                'paramsArr': paramsArr,
-                'date': utils.formatDate(new Date()),
-                'inputPath': input,
-                'outputPath': output,
-                'serviceName': processMethod.name
-            }, (err, doc) => {
-                if(err) {
-                    reject('create record err.')
-                    return
+            resolve(doc._doc)
+            ls.on('exit', async(code) => {
+                console.log(`子进程使用代码${code}退出`)
+                result = await utils.isFindOne('record', {'recordId': doc._doc.recordId})
+                let recordInstance = result._doc
+                let status
+                if(code === 0) {
+                    status = 'success'
+                    let query = {
+                        uid: '0',
+                        type: 'DataOut',
+                        userToken: token,
+                        workSpace: workSpace
+                    }
+                    let newFolder = {
+                        id: recordInstance.resultId,
+                        oid: '',
+                        name: recordInstance.serviceName + '_result',
+                        type: 'folder',
+                        date: utils.formatDate(new Date()),
+                        authority: 'public',
+                        path: recordInstance.outputPath,
+                        isCopy: false,
+                        isMerge: false,
+                        workSpace: workSpace
+                    }
+                    createFolderInstance(query, newFolder)
+                }else{
+                    status = 'fail'
                 }
-                resolve(doc._doc)
-            })
-        }) 
+                record.updateOne({'recordId': recordInstance.recordId}, {$set: {status: status}},(err) => {
+                    if(err){
+                        console.error('update record err: ', err)
+                        return 
+                    }
+                    console.log('update record success.')
+                })
+            }) 
+        })
     })
 }
 
@@ -142,7 +173,7 @@ function invokeLocally(req, res, next) {
             return 
         }
 
-        let pcsId  = fields.pcsId;
+        let pcsId  = fields.serviceId;
         let dataId = fields.dataId;
         let paramsArr = fields.paramsArr
         let workSpace = fields.workSpace
@@ -156,52 +187,34 @@ function invokeLocally(req, res, next) {
             token = temp.uid
         }
 
-        let record = await utils.isFindOne('record', {'serviceId': pcsId, 'dataId': dataId})    // 判断是否已经运行过
-        if(record) {
-            let flag = true
-            for(let i = 0; i < record.paramsArr; ++i) {
-                if(paramsArr[i] != record.paramsArr) {
-                    flag = false 
-                    break 
-                }
+        record.find({'serviceId': pcsId, 'dataId': dataId}).then((record) => {
+            if(!record) {
+                res.send({code: -1})
+                return 
             }
-            if(flag) {
-                res.send({code: 0, data: {'dataId': record.resultId} })
-                return
-            }
-        }
-        else {
-            try {
-                record = await invoke(pcsId, dataId, paramsArr)
-                if(!record || typeof record === 'string'){
-                    res.send({code: -1})
+            for(let i=0;i<record.length;++i) {      // 判断是否执行过
+                let recordInstance = record[i]._doc
+                if(paramsArr.join() === recordInstance.paramsArr.join() && recordInstance.status === 'success'){
+                    res.send({code: 0, data: recordInstance})
                     return
                 }
-                
-                let query = {
-                    uid: '0',
-                    type: 'DataOut',
-                    userToken: token,
-                    workSpace: workSpace
-                }
-                let newFolder = {
-                    id: record.resultId,
-                    oid: '',
-                    name: record.serviceName + '_result',
-                    type: 'folder',
-                    date: utils.formatDate(new Date()),
-                    authority: 'public',
-                    path: record.outputPath,
-                    isCopy: false,
-                    isMerge: false,
-                    workSpace: workSpace
-                }
-                createFolderInstance(query, newFolder, res)
+            }
+
+            try {
+                invoke(pcsId, dataId, paramsArr).then(result => {
+                    if(!result || typeof result === 'string'){
+                        res.send({code: -1})
+                        return
+                    }
+                    res.send({code: 0, data: result})
+                }).catch((err) => {
+                    res.send({code: -1})
+                })
             } catch (error) {
                 res.send({code: -1})
                 return
             }
-        }
+        })
     })
 }
 

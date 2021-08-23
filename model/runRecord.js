@@ -11,15 +11,13 @@ var dataSChema= new mongoose.mongoose.Schema({
             serviceId:String,
             dataId: String,
             date:String,
+            paramsArr: Array,
             input:Array,
             output:Array,
 
             inputPath: String,
             outputPath: String,
             serviceName: String,
-
-
-     
 },{
     versionKey: false,
     collection: "record",

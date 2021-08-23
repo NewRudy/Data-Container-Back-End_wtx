@@ -266,6 +266,8 @@ app.post('/simple/queryList', router.queryDataList)
 app.post('/invokeLocally', router.invokeLocally)
 // 上传数据到兰德
 app.post('/uploadData', router.uploadData)
+// 查询数据
+app.post('/findData', router.findData)
 
 // 接收文件
 // 从websocket接收文件

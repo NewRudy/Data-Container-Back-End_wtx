@@ -67,7 +67,7 @@ function isFindOne(modelName, searchCont) {
     return new Promise((resolve, reject) => {
         const model = returnModel(modelName)
         if(!model) {
-            console.log('model name is wrong.')
+            reject('model name is wrong.')
             return
         } 
         model.findOne(searchCont, (err, res) =>{
@@ -77,6 +77,65 @@ function isFindOne(modelName, searchCont) {
             }
             resolve(res)
         })
+    })
+}
+
+/**
+ * 查询 instances 的内容
+ * @param {*} modelName 模型的名字
+ * @param {*} searchCont 查询内容，没有嵌套的 json 
+ * @returns 
+ */
+function findData(modelName, searchCont) {
+    return new Promise((resolve, reject) => {
+        const model = returnModel(modelName)
+        if(!model) {
+            reject('model name is wrong.')
+            return
+        } 
+        // model.findOne(searchCont, (err, res) =>{
+        //     if(err) {
+        //         console.log('findOne err: ', err)
+        //         reject(err)
+        //     }
+        //     resolve(res)
+        // })
+        if(modelName === 'instances') {
+            if(!searchCont.hasOwnProperty('uid')) searchCont.uid = '0'
+            outsideConditions = ['uid', 'userToken', 'type', 'parentLevel', 'workSpace']    // 第一层的查询条件
+            outsideQuery = {}
+            insideQuery = {}
+    
+            for(let i of outsideConditions) {
+                if(i in searchCont) {
+                    outsideQuery[i] = searchCont[i]
+                    delete searchCont[i]
+                }
+            }
+            for(let i of Object.keys(searchCont)) {
+                insideQuery['list.' + i] = searchCont[i]
+            }
+            model.aggregate([
+                {"$match": outsideQuery},
+                {"$unwind": "$list"},
+                {"$match": insideQuery}],
+                (err, doc) =>{
+                    if(err){
+                        reject(err)
+                        return 
+                    }
+                    resolve(doc)
+                }
+            )
+        }
+        else if(modelName === 'record') {
+            if('pcsId' in searchCont) {searchCont['serviceId'] = searchCont['pcsId']
+            delete searchCont['pcsId']
+            }
+            model.find(searchCont).then(doc => {
+                resolve(doc)
+            })
+        }
     })
 }
 
@@ -229,6 +288,7 @@ exports.Decrypt=Decrypt;
 exports.Encrypt=Encrypt;
 
 exports.isFindOne = isFindOne
+exports.findData = findData
 
 
 
