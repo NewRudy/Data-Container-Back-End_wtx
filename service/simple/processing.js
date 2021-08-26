@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-08-23 15:50:04
+ * @Last Modified time: 2021-08-26 09:30:08
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -22,6 +22,28 @@ const { resolve } = require('path')
 const { reject } = require('async')
 
 
+
+function createDataOut(query, recordData) {
+    let query = {
+        uid: '0',
+        type: 'DataOut',
+        userToken: token,
+        workSpace: workSpace
+    }
+    let newFolder = {
+        id: recordData.resultId,
+        oid: '',
+        name: recordData.serviceName + '_result',
+        type: 'folder',
+        date: utils.formatDate(new Date()),
+        authority: 'public',
+        path: recordData.outputPath,
+        isCopy: false,
+        isMerge: false,
+        workSpace: workSpace
+    }
+    createFolderInstance(query, newFolder)
+}
 
 /**
  * 
@@ -96,10 +118,8 @@ async function invoke(pcsId, dataId, paramsArr) {
         if(paramsArr && paramsArr.length>0){
             par = par.concat(paramsArr)
         }
-    
-        // 调用方法
-        console.log('par: ', par)
-        const ls = cp.spawn(pythonEnv, par);
+
+        // 创建方法
         let recordInstance = {
             'recordId': uuid.v4(),
             'status': 'run',
@@ -118,44 +138,30 @@ async function invoke(pcsId, dataId, paramsArr) {
                 return
             }
             resolve(doc._doc)
-            ls.on('exit', async(code) => {
-                console.log(`子进程使用代码${code}退出`)
-                result = await utils.isFindOne('record', {'recordId': doc._doc.recordId})
-                let recordInstance = result._doc
-                let status
-                if(code === 0) {
-                    status = 'success'
-                    let query = {
-                        uid: '0',
-                        type: 'DataOut',
-                        userToken: token,
-                        workSpace: workSpace
-                    }
-                    let newFolder = {
-                        id: recordInstance.resultId,
-                        oid: '',
-                        name: recordInstance.serviceName + '_result',
-                        type: 'folder',
-                        date: utils.formatDate(new Date()),
-                        authority: 'public',
-                        path: recordInstance.outputPath,
-                        isCopy: false,
-                        isMerge: false,
-                        workSpace: workSpace
-                    }
-                    createFolderInstance(query, newFolder)
-                }else{
-                    status = 'fail'
-                }
-                record.updateOne({'recordId': recordInstance.recordId}, {$set: {status: status}},(err) => {
-                    if(err){
-                        console.error('update record err: ', err)
-                        return 
-                    }
-                    console.log('update record success.')
-                })
-            }) 
         })
+            
+        // 调用方法
+        console.log('par: ', par)
+        const ls = cp.spawn(pythonEnv, par);
+        ls.on('exit', async(code) => {
+            console.log(`子进程使用代码${code}退出`)
+            result = await utils.isFindOne('record', {'recordId': recordInstance.recordId})
+            let recordData = result._doc
+            let status
+            if(code === 0) {
+                status = 'success'
+                createDataOut(query, recordData)
+            }else{
+                status = 'fail'
+            }
+            record.updateOne({'recordId': recordData.recordId}, {$set: {status: status}},(err) => {
+                if(err){
+                    console.error('update record err: ', err)
+                    return 
+                }
+                console.log('update record success.')
+            })
+        }) 
     })
 }
 
@@ -194,7 +200,7 @@ function invokeLocally(req, res, next) {
             }
             for(let i=0;i<record.length;++i) {      // 判断是否执行过
                 let recordInstance = record[i]._doc
-                if(paramsArr.join() === recordInstance.paramsArr.join() && recordInstance.status === 'success'){
+                if(paramsArr.join() === recordInstance.paramsArr.join() && recordInstance.status != 'fail'){
                     res.send({code: 0, data: recordInstance})
                     return
                 }

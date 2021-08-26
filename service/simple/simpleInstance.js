@@ -121,6 +121,29 @@ exports.simpleNewFolder = function (req, res, next) {
     })
 }
 
+// 从外网创建一个Instance，只有一个file的形式，file通过下载
+exports.createInstFromUrl = (req, res, next) => {
+    console.log('req: ', req)
+    // let data = JSON.parse(req.body)
+    res.send({code: 0})
+    return
+
+    let form = new formidable.IncomingForm()
+    form.parse(req, (formErr, fields, files) => {
+        if(formErr) {
+            res.send({code: -1, message: 'form parse err'})
+            return 
+        }
+        let query = {
+            uid: fields.uid,
+            type: 'Data',
+            userToken: fields.userToken,
+        }
+        if(fields.workSpace) query.workSpace = fields.workSpace
+
+    })
+}
+
 function createFolderInstance(query, newFolder, res) {
     if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
         updateInstance(query, [newFolder]).then(() => {
@@ -177,37 +200,51 @@ function getFilesPath(folder, res) {        // 得到文件夹数组和文件数
                 return
             }
             let pathArr = []
-            files.forEach(file => {
-                let tempV4 = uuid.v4()
-                let obj = {
-                    id: tempV4,
-                    oid: folder.oid,
-                    name: file,
-                    date: utils.formatDate(new Date()),
-                    authority: folder.authority,
-                    path: path.normalize(folder.path + '/' + file),
-                    meta: {},
-                    isCopy: folder.isCopy
-                }
-                if(folder.workSpace) {
-                    obj.workSpace = folder.workSpace
-                }
-                if(folder.xmlName) {
-                    obj[xmlName] = folder.xmlName
-                }
-                if(folder.isCopy)
-                    obj.meta.currentPath = path.normalize(dataStoragePath + '/' + tempV4)
-                else
-                    obj.meta.currentPath = obj.path
-                let st = fs.statSync(obj.path)
-                if(st.isFile()){
-                    obj.type = 'file'
-                } else {
-                    obj.type = 'folder'
-                    obj.subContentId = tempV4
-                }
+            if(files.length < 30000) {
+                files.forEach(file => {
+                    let tempV4 = uuid.v4()
+                    let obj = {
+                        id: tempV4,
+                        oid: folder.oid,
+                        name: file,
+                        date: utils.formatDate(new Date()),
+                        authority: folder.authority,
+                        path: path.normalize(folder.path + '/' + file),
+                        meta: {},
+                        isCopy: folder.isCopy
+                    }
+                    if(folder.workSpace) {
+                        obj.workSpace = folder.workSpace
+                    }
+                    if(folder.xmlName) {
+                        obj[xmlName] = folder.xmlName
+                    }
+                    if(folder.isCopy)
+                        obj.meta.currentPath = path.normalize(dataStoragePath + '/' + tempV4)
+                    else
+                        obj.meta.currentPath = obj.path
+                    let st = fs.statSync(obj.path)
+                    if(st.isFile()){
+                        obj.type = 'file'
+                    } else {
+                        obj.type = 'folder'
+                        obj.subContentId = tempV4
+                    }
+                    pathArr.push(obj)
+                }) 
+            } else {
+                files.forEach(file => {
+                    let tempV4 = uuid.v4()
+                    let obj = {
+                        id: tempV4,
+                        name: file,
+                        type: 'file',
+                        isCopy: folder.isCopy
+                    }
+                })
                 pathArr.push(obj)
-            }) 
+            }
+
             resolve(pathArr);
         })
     })
@@ -222,29 +259,6 @@ function createInstance(newInstance) {
             console.log('create instance')
             resolve()
         })
-
-    })
-}
-
-// 从外网创建一个Instance，只有一个file的形式，file通过下载
-exports.createInstFromUrl = (req, res, next) => {
-    console.log('req: ', req)
-    // let data = JSON.parse(req.body)
-    res.send({code: 0})
-    return
-
-    let form = new formidable.IncomingForm()
-    form.parse(req, (formErr, fields, files) => {
-        if(formErr) {
-            res.send({code: -1, message: 'form parse err'})
-            return 
-        }
-        let query = {
-            uid: fields.uid,
-            type: 'Data',
-            userToken: fields.userToken,
-        }
-        if(fields.workSpace) query.workSpace = fields.workSpace
 
     })
 }
@@ -270,7 +284,6 @@ function updateInstance(query, pathArr) {
         })
     })
 }
-
 
 // 添加合并的实例
 function addInstances(query, pathArr) {

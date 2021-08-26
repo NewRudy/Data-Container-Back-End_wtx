@@ -10,6 +10,7 @@ var dataSChema= new mongoose.mongoose.Schema({
             recordId:String,
             serviceId:String,
             dataId: String,
+            status: String,
             date:String,
             paramsArr: Array,
             input:Array,
