@@ -27,8 +27,8 @@ exports.simpleNewFolder = function (req, res, next) {
         let query = {
             uid: fields.uid,
             type: fields.instype,
-            userToken: fields.userToken,
         }
+        if(fields.userToken) query.userToken = fields.userToken
         if(fields.workSpace) query.workSpace = fields.workSpace
         let newFolder = {
             id: fields.id,
@@ -159,18 +159,18 @@ function createFolderInstance(query, newFolder, res) {
         updateInstance(query, [newFolder]).then((result) => {
             let newInstance = {
                 uid: subContentId,
-                userToken: result.userToken,
                 type: result.type,
                 parentLevel: parseInt(result.parentLevel) + 1 + '',
                 list: [],
-                workSpace: result.workSpace,
             }
+            if(result.userToken) newInstance.userToken = result.userToken
+            if(result.workSpace) newInstance.workSpace = result.workSpace
             let _query = {
                 type: result.type,
-                userToken: result.userToken,
                 uid: subContentId,
-                workSpace: result.workSpace
             }
+            if(result.userToken) _query.userToken = result.userToken
+            if(result.workSpace) _query.workSpace = result.workSpace
             createInstance(newInstance).then(() => {
                 res.send({code: 0, data:{'dataId': newFolder.id}})
                 getFilesPath(newFolder, res).then((pathArr) => {
@@ -298,18 +298,18 @@ function addInstances(query, pathArr) {
                     }
                     let newInstance = {
                         uid: path.id,
-                        userToken: query.userToken,
                         type: query.type,
                         parentLevel: parseInt(result.parentLevel) + 1 + '',
                         list: [],
-                        workSpace: path.workSpace,
                     }
+                    if(result.userToken) newInstance.userToken = result.userToken
+                    if(result.workSpace) newInstance.workSpace = result.workSpace
                     let _query = {
                         type: query.type,
-                        userToken: query.userToken,
                         uid: path.id,
-                        workSpace: query.workSpace
                     }
+                    if(result.userToken) _query.userToken = result.userToken
+                    if(result.workSpace) _query.workSpace = result.workSpace
                     createInstance(newInstance).then(() => {
                         getFilesPath(path).then((_pathArr) => {
                             addInstances(_query, _pathArr)

@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-08-26 09:30:08
+ * @Last Modified time: 2021-08-26 15:40:07
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -27,8 +27,6 @@ function createDataOut(query, recordData) {
     let query = {
         uid: '0',
         type: 'DataOut',
-        userToken: token,
-        workSpace: workSpace
     }
     let newFolder = {
         id: recordData.resultId,
@@ -56,6 +54,7 @@ async function invoke(pcsId, dataId, paramsArr) {
     return new Promise(async(resolve, reject) => {
         const prsInstance = await utils.isFindOne('instances',{type: 'ProcessingMethod', list:{$elemMatch: {id: pcsId}}})
         const dataInstance = await utils.isFindOne('instances', {type: 'Data', list: {$elemMatch: {id: dataId}}})
+        if(!dataInstance) dataInstance = await uitls.isFindOne('instances', {type: 'DataOut', list: {$elemMatch: {id: dataId}}})
         const user = await utils.isFindOne('user', {name: 'admin'})
         if(!prsInstance || !dataInstance || !user) {
             reject('prsInstance || data || user is wrong')
