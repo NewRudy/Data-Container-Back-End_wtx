@@ -74,8 +74,12 @@ exports.simpleNewFolder = function (req, res, next) {
             }
         }
 
-        createFolderInstance(query, newFolder, res)
-
+        createFolderInstance(query, newFolder).then(() => {
+            res.send({code: 0, data:{'dataId': newFolder.id}})
+        }).catch(err => {
+            res.send({code: -1, message: err})
+        })
+        
         // if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
         //     updateInstance(query, [newFolder]).then(() => {
         //         res.send({code: 0})
@@ -121,82 +125,73 @@ exports.simpleNewFolder = function (req, res, next) {
     })
 }
 
-// 从外网创建一个Instance，只有一个file的形式，file通过下载
+// 从外网创建一个Instance，未完成
 exports.createInstFromUrl = (req, res, next) => {
     console.log('req: ', req)
     // let data = JSON.parse(req.body)
     res.send({code: 0})
     return
-
-    let form = new formidable.IncomingForm()
-    form.parse(req, (formErr, fields, files) => {
-        if(formErr) {
-            res.send({code: -1, message: 'form parse err'})
-            return 
-        }
-        let query = {
-            uid: fields.uid,
-            type: 'Data',
-            userToken: fields.userToken,
-        }
-        if(fields.workSpace) query.workSpace = fields.workSpace
-
-    })
 }
 
-function createFolderInstance(query, newFolder, res) {
-    if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
-        updateInstance(query, [newFolder]).then(() => {
-            res.send({code: 0, data:{'dataId': newFolder.id}})
-            if(newFolder.isCopy) {
-                copyInstance(newFolder.path, newFolder.meta.currentPath)
-                addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
-            }
-        })
-    } else {
-        let subContentId = uuid.v4()
-        newFolder.subContentId = subContentId
-        updateInstance(query, [newFolder]).then((result) => {
-            let newInstance = {
-                uid: subContentId,
-                type: result.type,
-                parentLevel: parseInt(result.parentLevel) + 1 + '',
-                list: [],
-            }
-            if(result.userToken) newInstance.userToken = result.userToken
-            if(result.workSpace) newInstance.workSpace = result.workSpace
-            let _query = {
-                type: result.type,
-                uid: subContentId,
-            }
-            if(result.userToken) _query.userToken = result.userToken
-            if(result.workSpace) _query.workSpace = result.workSpace
-            createInstance(newInstance).then(() => {
-                res.send({code: 0, data:{'dataId': newFolder.id}})
-                getFilesPath(newFolder, res).then((pathArr) => {
-                    addInstances(_query, pathArr).catch((err) => {
+/**
+ * 
+ * @param {*} query 查询条件
+ * @param {*} newFolder 创建实例的文件夹
+ * @returns 返回 newInstance instance里面的一条新的纪录
+ */
+function createFolderInstance(query, newFolder) {
+    return new Promise((resolve, reject) => {
+        if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
+            updateInstance(query, [newFolder]).then(() => {
+                resolve(newFolder)
+                if(newFolder.isCopy) {
+                    copyInstance(newFolder.path, newFolder.meta.currentPath)
+                    addZipFile(newFolder.path, newFolder.meta.currentPath + '.zip')
+                }
+            })
+        } else {
+            let subContentId = uuid.v4()
+            newFolder.subContentId = subContentId
+            updateInstance(query, [newFolder]).then((result) => {
+                let newInstance = {
+                    uid: subContentId,
+                    type: result.type,
+                    parentLevel: parseInt(result.parentLevel) + 1 + '',
+                    list: [],
+                }
+                if(result.userToken) newInstance.userToken = result.userToken
+                if(result.workSpace) newInstance.workSpace = result.workSpace
+                let _query = {
+                    type: result.type,
+                    uid: subContentId,
+                }
+                if(result.userToken) _query.userToken = result.userToken
+                if(result.workSpace) _query.workSpace = result.workSpace
+                createInstance(newInstance).then(() => {
+                    getFilesPath(newFolder).then((pathArr) => {
+                        addInstances(_query, pathArr).then(result => {
+                            resolve(result)
+                        }).catch((err) => {
+                            console.log(err)
+                            throw err;
+                        })
+                        
+                    }).catch(err => {
                         console.log(err)
                         throw err;
                     })
-                    
-                }).catch(err => {
-                    console.log(err)
-                    throw err;
                 })
             })
-        })
-    }
+        }
+    })
 }
 
-function getFilesPath(folder, res) {        // 得到文件夹数组和文件数组
+function getFilesPath(folder) {        // 得到文件夹数组和文件数组
     return new Promise(function (resolve, reject) {
         console.log('get file path')
         fs.readdir(folder.path, (err, files) => {
             if (err) {
-                res.send({
-                    code: -1,
-                    message: 'file path is not exist!'
-                })
+                throw err
                 return
             }
             let pathArr = []
@@ -241,8 +236,8 @@ function getFilesPath(folder, res) {        // 得到文件夹数组和文件数
                         type: 'file',
                         isCopy: folder.isCopy
                     }
+                    pathArr.push(obj)
                 })
-                pathArr.push(obj)
             }
 
             resolve(pathArr);
@@ -313,7 +308,7 @@ function addInstances(query, pathArr) {
                     createInstance(newInstance).then(() => {
                         getFilesPath(path).then((_pathArr) => {
                             addInstances(_query, _pathArr)
-                            resolve()
+                            resolve(result)
                         })
                     })
                 }

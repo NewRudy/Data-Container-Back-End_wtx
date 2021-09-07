@@ -9,13 +9,17 @@ var Mixed = mongoose.mongoose.Schema.Types.Mixed;
 var dataSChema= new mongoose.mongoose.Schema({
             recordId:String,
             serviceId:String,
-            dataId: String,
-            resultId: String,
+            inputArrString: String,
+            paramsArrString: String,
+            outputArrString: String,
             status: String,
             date:String,
-            paramsArr: Array,
-            input:Array,
-            output:Array,
+            
+            dataoutId: String,
+            input:Object,
+            params:Object,
+            output:Object,
+            downloadUrl: Object,
 
             inputPath: String,
             outputPath: String,

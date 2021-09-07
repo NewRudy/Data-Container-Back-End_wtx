@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-08-26 15:40:07
+ * @Last Modified time: 2021-09-07 23:06:59
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -20,51 +20,88 @@ const {record} = require('../../model/runRecord')
 const {dataContainer} = require('../../config/config')
 const { resolve } = require('path')
 const { reject } = require('async')
+const tempPath = path.normalize(__dirname + '../../tempFile')
 
 
+function download(url, tempId, fileName) {
+    return new Promise((resolve, reject) => {
+        let destPath = path.normalize(tempPath + '/' + tempId + '/' + fileName)
+        if(fs.existsSync(destPath)) {
+            fs.rmdir(destPath)
+        }
+        let stream = fs.createWriteStream(destPath)
+        try {
+            request(encodeURI(url), (err, response, body) => {
+                if(err) {
+                    reject(err)
+                    return 
+                }
+                console.log(response.headers['content-disposition']);
+                var arr = response.headers['content-disposition'].split('.');
+                fileType = arr[arr.length-1];
+                arr = response.headers['content-disposition'].split('=');
+                fileName = arr[arr.length-1];
+                console.log("fileType: " + fileType + " fileName: " + fileName);
+    
+            }).pipe(stream).on('close', ()=> {
+                console.log(fileName + 'download ok')
+                resolve(destPath)
+            }) 
+        } catch (error) {
+            reject(error)
+        }
 
-function createDataOut(query, recordData) {
-    let query = {
-        uid: '0',
-        type: 'DataOut',
-    }
-    let newFolder = {
-        id: recordData.resultId,
-        oid: '',
-        name: recordData.serviceName + '_result',
-        type: 'folder',
-        date: utils.formatDate(new Date()),
-        authority: 'public',
-        path: recordData.outputPath,
-        isCopy: false,
-        isMerge: false,
-        workSpace: workSpace
-    }
-    createFolderInstance(query, newFolder)
+    })
+}
+
+/**
+ * 
+ * @param {*} recordData 运行记录
+ * @returns 返回一个object， 键值是instance下的每一个文件和文件夹的名字，值是 id
+ */
+function createDataOut(recordData) {
+    return new Promise((resolve, reject) => {
+        let query = {
+            uid: '0',
+            type: 'DataOut',
+        }
+        let newFolder = {
+            id: recordData.dataoutId,
+            oid: '',
+            name: recordData.serviceName + '_result',
+            type: 'folder',
+            date: utils.formatDate(new Date()),
+            authority: 'public',
+            path: recordData.outputPath,
+            isCopy: false,
+            isMerge: false,
+            workSpace: workSpace
+        }
+        createFolderInstance(query, newFolder).then(instance => {
+            if(!instance || ! instance.list) reject('null')
+            let result = {}
+            for(let i = 0; i < instance.list.length; ++i) {
+                result[instance.list[i].name] = instance.list[i].id 
+            }
+        }).catch(err => {
+            reject(err)
+        })
+    })
 }
 
 /**
  * 
  * @param {*} pcsId 处理方法id
- * @param {*} dataId 数据id，data 的instance（一个文件夹）
+ * @param {*} inputArr 输入的所有数据，其实是一个对象，键值是输入数据名，值是url或则本地instance的id
  * @param {*} paramsArr 参数数组（按照 xml 的顺序的参数数组）（设计不合理，应该是 key-value的键值对）
  * @returns record 的一个记录
  */
-async function invoke(pcsId, dataId, paramsArr) {
+async function invoke(pcsId, inputArr, paramsArr, outputArr) {
     return new Promise(async(resolve, reject) => {
-        const prsInstance = await utils.isFindOne('instances',{type: 'ProcessingMethod', list:{$elemMatch: {id: pcsId}}})
-        const dataInstance = await utils.isFindOne('instances', {type: 'Data', list: {$elemMatch: {id: dataId}}})
-        if(!dataInstance) dataInstance = await uitls.isFindOne('instances', {type: 'DataOut', list: {$elemMatch: {id: dataId}}})
-        const user = await utils.isFindOne('user', {name: 'admin'})
-        if(!prsInstance || !dataInstance || !user) {
-            reject('prsInstance || data || user is wrong')
-            return 
-        }
-    
-        // python 环境
-        let pythonEnv = user.pythonEnv
-    
-        // 脚本
+        paramsArr = Object.values(paramsArr)        // 原来的参数是一个数组，现在的参数是一个对象
+        
+        // 脚本文件
+        let prsInstance = await utils.isFindOne('instances',{type: 'ProcessingMethod', list:{$elemMatch: {id: pcsId}}})
         let processMethod, pyFile
         for(let i = 0; i < prsInstance.list.length; ++i) {
             if(pcsId === prsInstance.list[i].id) {
@@ -72,41 +109,39 @@ async function invoke(pcsId, dataId, paramsArr) {
                 break 
             }
         }
-        if(paramsArr && paramsArr.length != processMethod.metaDetailJSON.Parameter.length){
-            reject('paramsArr is not right')
+        if(paramsArr && paramsArr.length != processMethod.metaDetailJSON.Parameter.length || Object.values(inputArr).length != processMethod.metaDetailJSON.Input.length || Object.values(outputArr).length != processMethod.metaDetailJSON.Output.length){
+            reject('params is not right')
             return
         }
         pyFile = path.join(processMethod.storagePath, processMethod.fileList[0].split('.')[1] == 'py'? processMethod.fileList[0]: processMethod.fileList[1])
-    
-        // 输入路径
+        
+        // 输入数据
         let input
-        for(let i = 0; i < dataInstance.list.length; ++i) {
-            if(dataId === dataInstance.list[i].id) {
-                if(dataInstance.list[i].type != 'folder') {
-                    if('isCopy' in dataInstance.list[i]) {         // 不复制的运行
-                        if(!dataInstance.list[i].isCopy) {
-                            let fileName = dataInstance.list[i].path.split('\\')[dataInstance.list[i].path.split('\\').length - 1]
-                            let temp = dataInstance.list[i].path.lastIndexOf(fileName)
-                            input = dataInstance.list[i].path.substring(0, temp)
+        let tempId = uuid.v4()
+        for(let i of Object.keys(inputArr)) {
+            if(inputArr[i].startsWith('http')) {
+                input[i] = await download(inputArr[i], tempId, i)
+            } else {
+                let temp = await utils.isFindOne('instances', {type: 'Data', list: {$elemMatch: {id: inputArr[i]}}})
+                if(!temp) temp = await uitls.isFindOne('instances', {type: 'DataOut', list: {$elemMatch: {id: inputArr[i]}}})
+                for(let i = 0; i < temp.list.length; ++i) {
+                    if(inputArr[i] === temp.list[i].id) {
+                        if('isCopy' in temp.list[i]) {
+                            if(!temp.list[i].isCopy) {
+                                input[i] = temp.list[i].path
+                            } else {
+                                input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
+                            }
                         } else {
-                            input = __dirname + '/../dataStorage/' + dataInstance.list[i].id 
+                            input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
                         }
-                    } else {
-                        input = __dirname + '/../dataStorage/' + dataInstance.dataId
-                    }
-                } else {
-                    if('isCopy' in dataInstance.list[i]) {
-                        if(!dataInstance.list[i].isCopy) {
-                            input = dataInstance.list[i].path
-                        } else {
-                            input = __dirname + '/../dataStorage/' + dataInstance.dataId
-                        }
+                        break
                     }
                 }
-                break
             }
         }
-        
+
+
         // 输出路径
         let outId = uuid.v4()
         let output = path.normalize(__dirname+'/../../processing_result/' + outId)
@@ -118,49 +153,8 @@ async function invoke(pcsId, dataId, paramsArr) {
             par = par.concat(paramsArr)
         }
 
-        // 创建方法
-        let recordInstance = {
-            'recordId': uuid.v4(),
-            'status': 'run',
-            'serviceId': pcsId,
-            'dataId': dataId,
-            'resultId': uuid.v4(),
-            'paramsArr': paramsArr,
-            'date': utils.formatDate(new Date()),
-            'inputPath': input,
-            'outputPath': output,
-            'serviceName': processMethod.name
-        }
-        record.create(recordInstance, (err, doc) => {
-            if(err) {
-                reject()
-                return
-            }
-            resolve(doc._doc)
-        })
-            
-        // 调用方法
-        console.log('par: ', par)
-        const ls = cp.spawn(pythonEnv, par);
-        ls.on('exit', async(code) => {
-            console.log(`子进程使用代码${code}退出`)
-            result = await utils.isFindOne('record', {'recordId': recordInstance.recordId})
-            let recordData = result._doc
-            let status
-            if(code === 0) {
-                status = 'success'
-                createDataOut(query, recordData)
-            }else{
-                status = 'fail'
-            }
-            record.updateOne({'recordId': recordData.recordId}, {$set: {status: status}},(err) => {
-                if(err){
-                    console.error('update record err: ', err)
-                    return 
-                }
-                console.log('update record success.')
-            })
-        }) 
+        resolve(par)
+        
     })
 }
 
@@ -179,8 +173,14 @@ function invokeLocally(req, res, next) {
         }
 
         let pcsId  = fields.serviceId;
-        let dataId = fields.dataId;
+        let inputArr = fields.dataId;
         let paramsArr = fields.paramsArr
+        let outputArr = fields.outputArr
+        let inputArrString = JSON.stringify(inputArr)
+        let paramsArrString = JSON.stringify(paramsArr)
+        let outputArrString = JSON.stringify(outputArr)
+
+        
         let workSpace = fields.workSpace
         let token = fields.userToken || fields.token
         if(!workSpace) {
@@ -192,26 +192,83 @@ function invokeLocally(req, res, next) {
             token = temp.uid
         }
 
-        record.find({'serviceId': pcsId, 'dataId': dataId}).then((record) => {
+        record.find({'serviceId': pcsId, 'inputArrString': inputArrString, 'paramsArrString': paramsArrString, 'outputArrString': outputArrString}).then((record) => {
             if(!record) {
                 res.send({code: -1})
                 return 
             }
-            for(let i=0;i<record.length;++i) {      // 判断是否执行过
-                let recordInstance = record[i]._doc
+            try {
+                let recordInstance = record[0]._doc
                 if(paramsArr.join() === recordInstance.paramsArr.join() && recordInstance.status != 'fail'){
                     res.send({code: 0, data: recordInstance})
                     return
                 }
-            }
+                invoke(pcsId, inputArr, paramsArr, outputArr).then(par => {
+                    // python 环境
+                    let user = await utils.isFindOne('user', {name: 'admin'})
+                    let pythonEnv = user.pythonEnv
+                    // 创建方法
+                    let recordInstance = {
+                        'recordId': uuid.v4(),
+                        'serviceId': pcsId,
+                        'inputArrString': inputArrString,
+                        'paramsArrString': paramsArrString,
+                        'outputArrString': outputArrString,
+                        'status': 'run',
+                        'date': utils.formatDate(new Date()),
 
-            try {
-                invoke(pcsId, dataId, paramsArr).then(result => {
-                    if(!result || typeof result === 'string'){
-                        res.send({code: -1})
-                        return
+                        'dataoutId': uuid.v4(),
+                        'input': inputArr,
+                        'params': paramsArr,
+                        
+
+                        'inputPath': input,
+                        'outputPath': output,
+                        'serviceName': par[0]
                     }
-                    res.send({code: 0, data: result})
+                    record.create(recordInstance, (err, doc) => {
+                        if(err) {
+                            reject()
+                            return
+                        }
+                        let result = doc._doc
+                        if(!result || typeof result === 'string'){
+                            res.send({code: -1})
+                            return
+                        }
+                        res.send({code: 0, data: result})
+                    })
+                        
+                    // 调用方法
+                    console.log('par: ', par)
+                    const ls = cp.spawn(pythonEnv, par);
+                    ls.on('exit', async(code) => {
+                        console.log(`子进程使用代码${code}退出`)
+                        result = await utils.isFindOne('record', {'recordId': recordInstance.recordId})
+                        let recordData = result._doc
+                        let status
+                        if(code === 0) {
+                            status = 'success'
+                            outputIdArr = await createDataOut(recordData)
+                            let downloadUrl = {}
+                            for(let i of Object.keys(outputArr)) {
+                                if(outputArr[i]) {      // true代表是需要上传的数据
+                                    downloadUrl[i] = await uploadMultifiles(output + '/' + i, i)
+                                }
+                            }                            
+                        }else{
+                            status = 'fail'
+                            outputIdArr = {}
+                            downloadUrl = {}
+                        }
+                        record.updateOne({'recordId': recordData.recordId}, {$set: {status: status, output: outputIdArr, downloadUrl: downloadUrl}},(err) => {
+                            if(err){
+                                console.error('update record err: ', err)
+                                return 
+                            }
+                            console.log('update record success.')
+                        })
+                    }) 
                 }).catch((err) => {
                     res.send({code: -1})
                 })
@@ -248,7 +305,7 @@ function zipFolder(folder) {
  * 调用数据中转的接口，上传多文件, 本地就使用了单文件，数据大小限制为 10 GB
  * @param {*} path 文件路径数组
  * @param {*} name 字符串，本次上传文件名
- * @returns 
+ * @returns downloadUrl  下载的url
  */
 function uploadMultifiles(path,name){
     return new Promise(async(resolve, reject) => {
@@ -277,7 +334,14 @@ function uploadMultifiles(path,name){
         //调用数据容器上传接口
         request(options, (error, response, body) => {
                 if (error) reject(error)
-                resolve(JSON.parse(body))
+                let temp = JSON.parse(body)
+                if(temp.code === 1) {
+                    let downloadUrl = dataContainer+'/data/' + temp.data.id
+                    resolve(downloadUrl)
+                } else {
+                    reject(temp)
+                }
+
             });  
     })
 }
@@ -332,7 +396,7 @@ function uploadData(req, res, next) {
         }
         
         uploadMultifiles([path], 'result').then((result) => {
-            res.send({code: 0, data: {'downloadUrl': dataContainer+'/data/' + result.data.id}})
+            res.send({code: 0, data: {'downloadUrl': result}})
         }).catch((err) =>
             res.send({code: -1})
         )
