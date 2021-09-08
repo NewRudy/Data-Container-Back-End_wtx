@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-09-07 23:06:59
+ * @Last Modified time: 2021-09-08 16:15:24
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -98,62 +98,68 @@ function createDataOut(recordData) {
  */
 async function invoke(pcsId, inputArr, paramsArr, outputArr) {
     return new Promise(async(resolve, reject) => {
-        paramsArr = Object.values(paramsArr)        // 原来的参数是一个数组，现在的参数是一个对象
-        
-        // 脚本文件
-        let prsInstance = await utils.isFindOne('instances',{type: 'ProcessingMethod', list:{$elemMatch: {id: pcsId}}})
-        let processMethod, pyFile
-        for(let i = 0; i < prsInstance.list.length; ++i) {
-            if(pcsId === prsInstance.list[i].id) {
-                processMethod = prsInstance.list[i]
-                break 
+        try {
+            // 脚本文件
+            let prsInstance = await utils.isFindOne('instances',{type: 'ProcessingMethod', list:{$elemMatch: {id: pcsId}}})
+            let processMethod, pyFile
+            for(let i = 0; i < prsInstance.list.length; ++i) {
+                if(pcsId === prsInstance.list[i].id) {
+                    processMethod = prsInstance.list[i]
+                    break 
+                }
             }
-        }
-        if(paramsArr && paramsArr.length != processMethod.metaDetailJSON.Parameter.length || Object.values(inputArr).length != processMethod.metaDetailJSON.Input.length || Object.values(outputArr).length != processMethod.metaDetailJSON.Output.length){
-            reject('params is not right')
-            return
-        }
-        pyFile = path.join(processMethod.storagePath, processMethod.fileList[0].split('.')[1] == 'py'? processMethod.fileList[0]: processMethod.fileList[1])
-        
-        // 输入数据
-        let input
-        let tempId = uuid.v4()
-        for(let i of Object.keys(inputArr)) {
-            if(inputArr[i].startsWith('http')) {
-                input[i] = await download(inputArr[i], tempId, i)
-            } else {
-                let temp = await utils.isFindOne('instances', {type: 'Data', list: {$elemMatch: {id: inputArr[i]}}})
-                if(!temp) temp = await uitls.isFindOne('instances', {type: 'DataOut', list: {$elemMatch: {id: inputArr[i]}}})
-                for(let i = 0; i < temp.list.length; ++i) {
-                    if(inputArr[i] === temp.list[i].id) {
-                        if('isCopy' in temp.list[i]) {
-                            if(!temp.list[i].isCopy) {
-                                input[i] = temp.list[i].path
+            if(paramsArr && Object.values(paramsArr).length != processMethod.metaDetailJSON.Parameter.length || Object.values(inputArr).length !=  processMethod.metaDetailJSON.Input.length || Object.values(outputArr).length != processMethod.metaDetailJSON.Output. length){
+                reject('params is not right')
+                return
+            }
+            pyFile = path.join(processMethod.storagePath, processMethod.fileList[0].split('.')[1] == 'py'? processMethod.fileList   [0]: processMethod.fileList[1])
+            
+            // 输入数据 y
+            let input = {}
+            let tempId = uuid.v4()
+            for(let i of Object.keys(inputArr)) {
+                if(inputArr[i].startsWith('http')) {
+                    input[i] = await download(inputArr[i], tempId, i)
+                } else {
+                    let temp = await utils.isFindOne('instances', {type: 'Data', list: {$elemMatch: {id: inputArr[i]}}})
+                    if(!temp) temp = await uitls.isFindOne('instances', {type: 'DataOut', list: {$elemMatch: {id: inputArr[i]}}})
+                    for(let j = 0; j < temp.list.length; ++j) {
+                        if(inputArr[i] === temp.list[j].id) {
+                            if('isCopy' in temp.list[j]) {
+                                if(!temp.list[j].isCopy) {
+                                    input[i] = temp.list[j].path
+                                } else {
+                                    input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
+                                }
                             } else {
                                 input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
                             }
-                        } else {
-                            input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
+                            break
                         }
-                        break
                     }
                 }
             }
+        
+            // 输出路径
+            let outId = uuid.v4()
+            let output = path.normalize(__dirname+'/../../processing_result/' + outId)
+            fs.mkdirSync(output)    
+        
+            // 命令行设置 .py input params output
+            let par = [path.normalize(pyFile)]
+            for(let i = 0; i < processMethod.metaDetailJSON.Input.length; ++i) {
+                par.push(input[processMethod.metaDetailJSON.Input[i].name])
+            }
+            for(let i = 0; i < processMethod.metaDetailJSON.Parameter.length; ++i) {
+                par.push(paramsArr[processMethod.metaDetailJSON.Parameter[i].name])
+            }
+            par.push(output)
+
+            resolve(par)
+        } catch (error) {
+            reject(error)
         }
-
-
-        // 输出路径
-        let outId = uuid.v4()
-        let output = path.normalize(__dirname+'/../../processing_result/' + outId)
-        fs.mkdirSync(output)    
-    
-        // 参数设置
-        let par = [path.normalize(pyFile), path.normalize(input), path.normalize(output)]
-        if(paramsArr && paramsArr.length>0){
-            par = par.concat(paramsArr)
-        }
-
-        resolve(par)
+        
         
     })
 }
@@ -173,7 +179,7 @@ function invokeLocally(req, res, next) {
         }
 
         let pcsId  = fields.serviceId;
-        let inputArr = fields.dataId;
+        let inputArr = fields.inputArr;
         let paramsArr = fields.paramsArr
         let outputArr = fields.outputArr
         let inputArrString = JSON.stringify(inputArr)
@@ -192,18 +198,20 @@ function invokeLocally(req, res, next) {
             token = temp.uid
         }
 
-        record.find({'serviceId': pcsId, 'inputArrString': inputArrString, 'paramsArrString': paramsArrString, 'outputArrString': outputArrString}).then((record) => {
-            if(!record) {
+        record.find({'serviceId': pcsId, 'inputArrString': inputArrString, 'paramsArrString': paramsArrString, 'outputArrString': outputArrString}).then((doc) => {
+            if(!doc) {
                 res.send({code: -1})
                 return 
             }
             try {
-                let recordInstance = record[0]._doc
-                if(paramsArr.join() === recordInstance.paramsArr.join() && recordInstance.status != 'fail'){
-                    res.send({code: 0, data: recordInstance})
-                    return
+                if(doc.length > 0) {
+                    let recordInstance = doc[0]._doc
+                    if(paramsArr.join() === recordInstance.paramsArr.join() && recordInstance.status != 'fail'){
+                        res.send({code: 0, data: recordInstance})
+                        return
+                    }
                 }
-                invoke(pcsId, inputArr, paramsArr, outputArr).then(par => {
+                invoke(pcsId, inputArr, paramsArr, outputArr).then(async par => {
                     // python 环境
                     let user = await utils.isFindOne('user', {name: 'admin'})
                     let pythonEnv = user.pythonEnv
@@ -221,9 +229,7 @@ function invokeLocally(req, res, next) {
                         'input': inputArr,
                         'params': paramsArr,
                         
-
-                        'inputPath': input,
-                        'outputPath': output,
+                        'outputPath': par[par.length - 1],
                         'serviceName': par[0]
                     }
                     record.create(recordInstance, (err, doc) => {

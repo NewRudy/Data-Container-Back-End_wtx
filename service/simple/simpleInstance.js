@@ -66,19 +66,36 @@ exports.simpleNewFolder = function (req, res, next) {
         }
         newFolder.meta = {}     // 为了和老版适应，因为老版的 currentPath 是从 meta 里面取的
         newFolder.meta.currentPath = path.normalize(dataStoragePath + '/' + newFolder.id)
-        let readMeArr = ['readme.md', '简介.txt']
-        for(let i = 0; i< readMeArr.length; ++i) {    
-            let readme = path.normalize(newFolder.path + '/' + readMeArr[i])
-            if(fs.existsSync(readme)) {
-                newFolder.readme = readme
-            }
-        }
+        // let readMeArr = ['readme.md', '简介.txt']
+        // for(let i = 0; i< readMeArr.length; ++i) {    
+        //     let readme = path.normalize(newFolder.path + '/' + readMeArr[i])
+        //     if(fs.existsSync(readme)) {
+        //         newFolder.readme = readme
+        //     }
+        // }
 
-        createFolderInstance(query, newFolder).then(() => {
-            res.send({code: 0, data:{'dataId': newFolder.id}})
-        }).catch(err => {
-            res.send({code: -1, message: err})
+        stat(newFolder.path, (error, stats) => {
+            if(error) {
+                res.send({code: -1, messag: error})
+                return 
+            }
+            if(stats.isDirectory()) {
+                createFolderInstance(query, newFolder).then(() => {
+                    res.send({code: 0, data:{'dataId': newFolder.id}})
+                }).catch(err => {
+                    res.send({code: -1, message: err})
+                })
+            } else if(stats.isFile()) {
+                createFileInstance(query, newFolder).then(() => {
+                    res.send({code: 0, data:{'dataId': newFolder.id}})
+                }).catch(err => {
+                    res.send({code: -1, message: err})
+                })
+            } else {
+                res.send({code: -1})
+            }
         })
+
         
         // if (newFolder.isMerge) { // merge 就直接全部创建成一个 instance
         //     updateInstance(query, [newFolder]).then(() => {
@@ -186,6 +203,22 @@ function createFolderInstance(query, newFolder) {
     })
 }
 
+function createFileInstance(query, newFolder) {
+    return new Promise((resolve, reject) => {
+        if(newFolder.type === 'folder') newFolder.type = 'file'
+        newFolder.meta = {}
+        if(newFolder.isCopy) {
+            newFolder.meta.currentPath = path.normalize(dataStoragePath + '/' + uuid.v4())
+            copyInstance(newFolder.path, newFolder.meta.currentPath)
+        } else {
+            newFolder.meta.currentPath = newFolder.path
+        }
+        updateInstance(query, newFolder).then(() => {
+            resolve()
+        }).catch(err => reject(err))
+    })
+}
+
 function getFilesPath(folder) {        // 得到文件夹数组和文件数组
     return new Promise(function (resolve, reject) {
         console.log('get file path')
@@ -262,13 +295,13 @@ function updateInstance(query, pathArr) {
     return new Promise((resolve, reject) => {
         Instances.findOne(query, (find_err, doc)=> {
             if(find_err) {
-                console.log('instance 还未创建')
+                reject(find_err)
                 return
             }
             doc.list = doc.list.concat(pathArr)
             let result = Instances.update(query, doc, (err) => {
                 if(err){
-                    throw err
+                    reject(err)
                     return;
                 }else{
                     console.log('update instances')
