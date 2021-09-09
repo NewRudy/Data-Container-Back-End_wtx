@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-09-08 16:15:24
+ * @Last Modified time: 2021-09-09 14:14:40
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -23,6 +23,14 @@ const { reject } = require('async')
 const tempPath = path.normalize(__dirname + '../../tempFile')
 
 
+/**
+ * 
+ * @param {*} url 
+ * @param {*} tempId 
+ * @param {*} fileName 
+ * 将指定url 的内容下载到   ../tempId/fileName
+ * @returns 
+ */
 function download(url, tempId, fileName) {
     return new Promise((resolve, reject) => {
         let destPath = path.normalize(tempPath + '/' + tempId + '/' + fileName)
@@ -56,6 +64,31 @@ function download(url, tempId, fileName) {
 
 /**
  * 
+ * @param {} obj
+ * object 的key的所有特殊字符进行编码
+ */
+function escapeObject(obj) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let result = {}
+            for(let i of Object.keys(obj)) {
+                if(typeof i == 'string') {
+                    if(typeof obj[i] != 'object')
+                        result[escape(i)] = obj[i]
+                    else
+                        result[escape(i)] = await escapeObject(obj[i])
+                }
+            }
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+
+}
+
+/**
+ * 
  * @param {*} recordData 运行记录
  * @returns 返回一个object， 键值是instance下的每一个文件和文件夹的名字，值是 id
  */
@@ -75,7 +108,7 @@ function createDataOut(recordData) {
             path: recordData.outputPath,
             isCopy: false,
             isMerge: false,
-            workSpace: workSpace
+            workSpace: recordData.workSpace
         }
         createFolderInstance(query, newFolder).then(instance => {
             if(!instance || ! instance.list) reject('null')
@@ -171,6 +204,7 @@ async function invoke(pcsId, inputArr, paramsArr, outputArr) {
  * @param {*} next 
  */
 function invokeLocally(req, res, next) {
+    console.log('invokeLocally')
     let form = new formidable.IncomingForm()
     form.parse(req, async function(form_err, fields){
         if(form_err) {
@@ -206,15 +240,24 @@ function invokeLocally(req, res, next) {
             try {
                 if(doc.length > 0) {
                     let recordInstance = doc[0]._doc
-                    if(paramsArr.join() === recordInstance.paramsArr.join() && recordInstance.status != 'fail'){
+                    if(recordInstance.status != 'fail'){
                         res.send({code: 0, data: recordInstance})
                         return
                     }
                 }
                 invoke(pcsId, inputArr, paramsArr, outputArr).then(async par => {
+                    if(!par) {
+                        res.send({code: -1})
+                        return
+                    }
                     // python 环境
                     let user = await utils.isFindOne('user', {name: 'admin'})
                     let pythonEnv = user.pythonEnv
+
+                    // 调用方法
+                    console.log('par: ', par)
+                    const ls = cp.spawn(pythonEnv, par);
+
                     // 创建方法
                     let recordInstance = {
                         'recordId': uuid.v4(),
@@ -226,11 +269,11 @@ function invokeLocally(req, res, next) {
                         'date': utils.formatDate(new Date()),
 
                         'dataoutId': uuid.v4(),
-                        'input': inputArr,
-                        'params': paramsArr,
+                        'commandLine': par.join(' '),
                         
                         'outputPath': par[par.length - 1],
-                        'serviceName': par[0]
+                        'serviceName': par[0],
+                        'workSpace': workSpace
                     }
                     record.create(recordInstance, (err, doc) => {
                         if(err) {
@@ -245,9 +288,7 @@ function invokeLocally(req, res, next) {
                         res.send({code: 0, data: result})
                     })
                         
-                    // 调用方法
-                    console.log('par: ', par)
-                    const ls = cp.spawn(pythonEnv, par);
+
                     ls.on('exit', async(code) => {
                         console.log(`子进程使用代码${code}退出`)
                         result = await utils.isFindOne('record', {'recordId': recordInstance.recordId})
@@ -267,7 +308,7 @@ function invokeLocally(req, res, next) {
                             outputIdArr = {}
                             downloadUrl = {}
                         }
-                        record.updateOne({'recordId': recordData.recordId}, {$set: {status: status, output: outputIdArr, downloadUrl: downloadUrl}},(err) => {
+                        record.updateOne({'recordId': recordData.recordId}, {$set: {status: status, outputIdString: JSON.stringify(outputIdArr), downloadUrlString: JSON.stringify(downloadUrl)}},(err) => {
                             if(err){
                                 console.error('update record err: ', err)
                                 return 

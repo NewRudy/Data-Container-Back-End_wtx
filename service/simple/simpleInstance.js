@@ -170,6 +170,7 @@ function createFolderInstance(query, newFolder) {
             let subContentId = uuid.v4()
             newFolder.subContentId = subContentId
             updateInstance(query, [newFolder]).then((result) => {
+                
                 let newInstance = {
                     uid: subContentId,
                     type: result.type,
@@ -185,9 +186,9 @@ function createFolderInstance(query, newFolder) {
                 if(result.userToken) _query.userToken = result.userToken
                 if(result.workSpace) _query.workSpace = result.workSpace
                 createInstance(newInstance).then(() => {
+                    resolve()
                     getFilesPath(newFolder).then((pathArr) => {
                         addInstances(_query, pathArr).then(result => {
-                            resolve(result)
                         }).catch((err) => {
                             console.log(err)
                             throw err;

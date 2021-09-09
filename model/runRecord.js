@@ -16,14 +16,16 @@ var dataSChema= new mongoose.mongoose.Schema({
             date:String,
             
             dataoutId: String,
-            input:Object,
-            params:Object,
-            output:Object,
-            downloadUrl: Object,
+            // input:Object,
+            // params:Object,
+            outputIdString:Object,
+            downloadUrlString: Object,
+            commandLine: String,
 
             inputPath: String,
             outputPath: String,
             serviceName: String,
+            workSpace: String,
 },{
     versionKey: false,
     collection: "record",
