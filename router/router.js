@@ -193,4 +193,5 @@ exports.querySomeCollection = simpleDataList.querySomeCollection
 // 运行服务
 exports.invokeLocally = simpleProcess.invokeLocally
 exports.uploadData = simpleProcess.uploadData
+exports.findRecord = simpleProcess.findRecord
 exports.findData = find.findData

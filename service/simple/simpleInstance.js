@@ -186,9 +186,10 @@ function createFolderInstance(query, newFolder) {
                 if(result.userToken) _query.userToken = result.userToken
                 if(result.workSpace) _query.workSpace = result.workSpace
                 createInstance(newInstance).then(() => {
-                    resolve()
+                    // resolve(newInstance)
                     getFilesPath(newFolder).then((pathArr) => {
                         addInstances(_query, pathArr).then(result => {
+                            resolve(result)
                         }).catch((err) => {
                             console.log(err)
                             throw err;
@@ -306,7 +307,7 @@ function updateInstance(query, pathArr) {
                     return;
                 }else{
                     console.log('update instances')
-                    return 
+                    resolve(doc)
                 } 
             })
             resolve(result._update)
@@ -319,6 +320,7 @@ function addInstances(query, pathArr) {
     return new Promise((resolve, reject) => {
         try {
             updateInstance(query, pathArr).then((result) => {
+                resolve(result)
                 addFiles(pathArr)
                 for(let i = 0; i < pathArr.length; ++i) {
                     let path = pathArr[i]

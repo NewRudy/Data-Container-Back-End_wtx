@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-09-09 14:14:40
+ * @Last Modified time: 2021-09-16 17:15:59
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -21,6 +21,47 @@ const {dataContainer} = require('../../config/config')
 const { resolve } = require('path')
 const { reject } = require('async')
 const tempPath = path.normalize(__dirname + '../../tempFile')
+
+
+function judgeRecordStatus(recordId) {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let record = await utils.isFindOne('record', {recordId: recordId});
+            if(!record || !record.status || record.status === 'fail') {
+                resolve({
+                    code: -1,
+                    message: 'service is failed.'
+                })
+                return 
+            }
+            if(record.status === 'run') {
+                resolve({
+                    code: 1,
+                    message: record
+                })
+            } else if(record.status === 'success') {
+                resolve({
+                    code: 0,
+                    message: record
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+function findRecord(req, res, next) {
+    console.log('findRecord')
+    let form = new formidable.IncomingForm()
+    form.parse(req, async(form_err, fields) => {
+        if(form_err || !fields.recordId) {
+            res.send({code: -1, message: 'param err'})
+        }
+        let result = await judgeRecordStatus(fields.recordId)
+        res.send(result)
+    })
+}
 
 
 /**
@@ -116,6 +157,7 @@ function createDataOut(recordData) {
             for(let i = 0; i < instance.list.length; ++i) {
                 result[instance.list[i].name] = instance.list[i].id 
             }
+            resolve(result)
         }).catch(err => {
             reject(err)
         })
@@ -272,7 +314,7 @@ function invokeLocally(req, res, next) {
                         'commandLine': par.join(' '),
                         
                         'outputPath': par[par.length - 1],
-                        'serviceName': par[0],
+                        'serviceName': path.basename(par[0]),
                         'workSpace': workSpace
                     }
                     record.create(recordInstance, (err, doc) => {
@@ -293,11 +335,10 @@ function invokeLocally(req, res, next) {
                         console.log(`子进程使用代码${code}退出`)
                         result = await utils.isFindOne('record', {'recordId': recordInstance.recordId})
                         let recordData = result._doc
-                        let status
+                        let status, downloadUrl = {}
                         if(code === 0) {
                             status = 'success'
                             outputIdArr = await createDataOut(recordData)
-                            let downloadUrl = {}
                             for(let i of Object.keys(outputArr)) {
                                 if(outputArr[i]) {      // true代表是需要上传的数据
                                     downloadUrl[i] = await uploadMultifiles(output + '/' + i, i)
@@ -453,3 +494,4 @@ function uploadData(req, res, next) {
 
 exports.invokeLocally = invokeLocally
 exports.uploadData = uploadData
+exports.findRecord = findRecord

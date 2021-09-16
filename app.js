@@ -268,6 +268,8 @@ app.post('/invokeLocally', router.invokeLocally)
 app.post('/uploadData', router.uploadData)
 // 查询数据
 app.post('/findData', router.findData)
+// 查询record
+app.post('/findRecord', router.findRecord)
 
 // 接收文件
 // 从websocket接收文件
