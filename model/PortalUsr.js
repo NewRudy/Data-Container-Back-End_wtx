@@ -65,5 +65,5 @@ insituUsr:String
 });
 
 //创建model
-// var portalUser=DB.DB2.model('portalUser',dataSChema)
-// exports.PUser=portalUser;
+var portalUser=DB.DB2.model('portalUser',dataSChema)
+exports.PUser=portalUser;

@@ -5,7 +5,7 @@ module.exports={
     //本地数据库路径
     db:'mongodb://localhost:27017/insituShare',
     //门户库路径
-    // portalUserDb:'mongodb://172.21.213.33:27017/Portal',
+    portalUserDb:'mongodb://172.21.213.33:27017/Portal',
     // portalUserDb:'mongodb://111.229.14.128:27019/Portal',
     //数据上传接口路径
     transitUrl:'http://111.229.14.128:8899',
