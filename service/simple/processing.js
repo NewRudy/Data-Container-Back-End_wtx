@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-09-16 17:15:59
+ * @Last Modified time: 2021-10-19 16:39:21
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -30,21 +30,21 @@ function judgeRecordStatus(recordId) {
             if(!record || !record.status || record.status === 'fail') {
                 resolve({
                     code: -1,
-                    message: 'service is failed.'
+                    data: 'service is failed.'
                 })
                 return 
             }
-            if(record.status === 'run') {
-                resolve({
-                    code: 1,
-                    message: record
-                })
-            } else if(record.status === 'success') {
+            // if(record.status === 'run') {
+            //     resolve({
+            //         code: 1,
+            //         data: record
+            //     })
+            // } else if(record.status === 'success') {
                 resolve({
                     code: 0,
-                    message: record
+                    data: record
                 })
-            }
+            // }
         } catch (error) {
             reject(error)
         }
@@ -164,6 +164,36 @@ function createDataOut(recordData) {
     })
 }
 
+// updateRecord('3c627324-e189-4564-9b09-46fc8b964af6', 0);    // 太笨了，还得我手动升级
+
+async function updateRecord(recordId, code) {
+    console.log(`子进程使用代码${code}退出`)
+    result = await utils.isFindOne('record', {'recordId': recordId})
+    let recordData = result._doc
+    let outputArr = JSON.parse(recordData.outputArrString)
+    let status, downloadUrl = {}
+    if(code === 0) {
+        status = 'success'
+        outputIdArr = await createDataOut(recordData)
+        for(let i of Object.keys(outputArr)) {
+            if(outputArr[i]) {      // true代表是需要上传的数据
+                downloadUrl[i] = await uploadMultifiles(output + '/' + i, i)
+            }
+        }                            
+    }else{
+        status = 'fail'
+        outputIdArr = {}
+        downloadUrl = {}
+    }
+    record.updateOne({'recordId': recordData.recordId}, {$set: {status: status, outputIdString: JSON.stringify(outputIdArr), downloadUrlString: JSON.stringify(downloadUrl)}},(err) => {
+        if(err){
+            console.error('update record err: ', err)
+            return 
+        }
+        console.log('update record success.')
+    })
+}
+
 /**
  * 
  * @param {*} pcsId 处理方法id
@@ -175,7 +205,7 @@ async function invoke(pcsId, inputArr, paramsArr, outputArr) {
     return new Promise(async(resolve, reject) => {
         try {
             // 脚本文件
-            let prsInstance = await utils.isFindOne('instances',{type: 'ProcessingMethod', list:{$elemMatch: {id: pcsId}}})
+            let prsInstance = await utils.isFindOne('instances',{type: 'Processing', list:{$elemMatch: {id: pcsId}}})
             let processMethod, pyFile
             for(let i = 0; i < prsInstance.list.length; ++i) {
                 if(pcsId === prsInstance.list[i].id) {
@@ -197,17 +227,23 @@ async function invoke(pcsId, inputArr, paramsArr, outputArr) {
                     input[i] = await download(inputArr[i], tempId, i)
                 } else {
                     let temp = await utils.isFindOne('instances', {type: 'Data', list: {$elemMatch: {id: inputArr[i]}}})
-                    if(!temp) temp = await uitls.isFindOne('instances', {type: 'DataOut', list: {$elemMatch: {id: inputArr[i]}}})
+                    if(!temp) temp = await　utils.isFindOne('instances', {type: 'DataOut', list: {$elemMatch: {id: inputArr[i]}}})
                     for(let j = 0; j < temp.list.length; ++j) {
                         if(inputArr[i] === temp.list[j].id) {
                             if('isCopy' in temp.list[j]) {
                                 if(!temp.list[j].isCopy) {
                                     input[i] = temp.list[j].path
                                 } else {
-                                    input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
+                                    if(temp.dataId)
+                                        input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
+                                    else
+                                        input[i] = path.normalize(__dirname + '/../../dataStorage/' + temp.list[j].id)
                                 }
                             } else {
-                                input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
+                                if(temp.dataId)
+                                    input[i] = path.normalize(__dirname + '/../dataStorage/' + temp.dataId)
+                                else
+                                    input[i] = path.normalize(__dirname + '/../../dataStorage/' + temp.list[j].id)
                             }
                             break
                         }
@@ -238,6 +274,13 @@ async function invoke(pcsId, inputArr, paramsArr, outputArr) {
         
     })
 }
+
+record.find({'status': 'run'}).then(doc =>{      // 重启程序，删除还在 run 的记录
+    if(!doc || doc.length === 0) return;
+    record.deleteMany({'status': 'run'}).then(doc => {
+        console.log('delete all running record: ', doc)
+    })
+})
 
 /**
  * 本地方法运行本地的数据，结果也是一个实例，返回实例 id
@@ -281,11 +324,14 @@ function invokeLocally(req, res, next) {
             }
             try {
                 if(doc.length > 0) {
-                    let recordInstance = doc[0]._doc
-                    if(recordInstance.status != 'fail'){
-                        res.send({code: 0, data: recordInstance})
-                        return
+                    for(let i = 0; i < doc.length; ++i) {
+                        let recordInstance = doc[i]._doc
+                        if(recordInstance.status != 'fail'){
+                            res.send({code: 0, data: recordInstance})
+                            return
+                        }
                     }
+
                 }
                 invoke(pcsId, inputArr, paramsArr, outputArr).then(async par => {
                     if(!par) {
@@ -317,45 +363,23 @@ function invokeLocally(req, res, next) {
                         'serviceName': path.basename(par[0]),
                         'workSpace': workSpace
                     }
+                    res.send({code: 0, data: recordInstance})
                     record.create(recordInstance, (err, doc) => {
                         if(err) {
                             reject()
                             return
                         }
-                        let result = doc._doc
-                        if(!result || typeof result === 'string'){
-                            res.send({code: -1})
-                            return
-                        }
-                        res.send({code: 0, data: result})
+                        // let result = doc._doc
+                        // if(!result || typeof result === 'string'){
+                        //     res.send({code: -1})
+                        //     return
+                        // }
+                        // res.send({code: 0, data: result})
                     })
                         
 
-                    ls.on('exit', async(code) => {
-                        console.log(`子进程使用代码${code}退出`)
-                        result = await utils.isFindOne('record', {'recordId': recordInstance.recordId})
-                        let recordData = result._doc
-                        let status, downloadUrl = {}
-                        if(code === 0) {
-                            status = 'success'
-                            outputIdArr = await createDataOut(recordData)
-                            for(let i of Object.keys(outputArr)) {
-                                if(outputArr[i]) {      // true代表是需要上传的数据
-                                    downloadUrl[i] = await uploadMultifiles(output + '/' + i, i)
-                                }
-                            }                            
-                        }else{
-                            status = 'fail'
-                            outputIdArr = {}
-                            downloadUrl = {}
-                        }
-                        record.updateOne({'recordId': recordData.recordId}, {$set: {status: status, outputIdString: JSON.stringify(outputIdArr), downloadUrlString: JSON.stringify(downloadUrl)}},(err) => {
-                            if(err){
-                                console.error('update record err: ', err)
-                                return 
-                            }
-                            console.log('update record success.')
-                        })
+                    ls.on('exit', (code) => {
+                        updateRecord(recordInstance.recordId, code)
                     }) 
                 }).catch((err) => {
                     res.send({code: -1})
