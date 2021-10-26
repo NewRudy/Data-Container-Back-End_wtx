@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-10-19 16:39:21
+ * @Last Modified time: 2021-10-26 21:16:17
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -151,11 +151,15 @@ function createDataOut(recordData) {
             isMerge: false,
             workSpace: recordData.workSpace
         }
+        let outputArr = JSON.parse(recordData.outputArrString)
         createFolderInstance(query, newFolder).then(instance => {
             if(!instance || ! instance.list) reject('null')
             let result = {}
             for(let i = 0; i < instance.list.length; ++i) {
-                result[instance.list[i].name] = instance.list[i].id 
+                if(Object.keys(outputArr)[i])
+                    result[Object.keys(outputArr)[i]] = instance.list[i].id 
+                else 
+                    result[instance.list[i].name] = instance.list[i].id 
             }
             resolve(result)
         }).catch(err => {
@@ -164,7 +168,7 @@ function createDataOut(recordData) {
     })
 }
 
-// updateRecord('3c627324-e189-4564-9b09-46fc8b964af6', 0);    // 太笨了，还得我手动升级
+// updateRecord('811b0914-788a-4e1c-8e21-d78324b5734b', 0);    // 太笨了，还得我手动升级
 
 async function updateRecord(recordId, code) {
     console.log(`子进程使用代码${code}退出`)
@@ -177,7 +181,7 @@ async function updateRecord(recordId, code) {
         outputIdArr = await createDataOut(recordData)
         for(let i of Object.keys(outputArr)) {
             if(outputArr[i]) {      // true代表是需要上传的数据
-                downloadUrl[i] = await uploadMultifiles(output + '/' + i, i)
+                downloadUrl[i] = await uploadMultifiles([recordData.outputPath + '/' + i], i)
             }
         }                            
     }else{
@@ -213,7 +217,16 @@ async function invoke(pcsId, inputArr, paramsArr, outputArr) {
                     break 
                 }
             }
-            if(paramsArr && Object.values(paramsArr).length != processMethod.metaDetailJSON.Parameter.length || Object.values(inputArr).length !=  processMethod.metaDetailJSON.Input.length || Object.values(outputArr).length != processMethod.metaDetailJSON.Output. length){
+            // 如果 ouputArr 和原来的对应不上，就默认是上传了
+            if(Object.values(outputArr).length != processMethod.metaDetailJSON.Output.length) {
+                let tempSet = new Set(Object.keys(outputArr))
+                let output = processMethod.metaDetailJSON.Output
+                for(let i = 0; i < output.length; ++i) {
+                    if(!tempSet.has(output[i].name))
+                        outputArr[output[i].name] = true
+                }
+            }
+            if(paramsArr && Object.values(paramsArr).length != processMethod.metaDetailJSON.Parameter.length || Object.values(inputArr).length !=  processMethod.metaDetailJSON.Input.length){
                 reject('params is not right')
                 return
             }
@@ -281,6 +294,12 @@ record.find({'status': 'run'}).then(doc =>{      // 重启程序，删除还在 
         console.log('delete all running record: ', doc)
     })
 })
+// record.find({'status': 'fail'}).then(doc =>{      // 重启程序，删除 fail 的记录
+//     if(!doc || doc.length === 0) return;
+//     record.deleteMany({'status': 'fail'}).then(doc => {
+//         console.log('delete all fail record: ', doc)
+//     })
+// })
 
 /**
  * 本地方法运行本地的数据，结果也是一个实例，返回实例 id
@@ -350,9 +369,9 @@ function invokeLocally(req, res, next) {
                     let recordInstance = {
                         'recordId': uuid.v4(),
                         'serviceId': pcsId,
-                        'inputArrString': inputArrString,
-                        'paramsArrString': paramsArrString,
-                        'outputArrString': outputArrString,
+                        'inputArrString': JSON.stringify(inputArr),
+                        'paramsArrString': JSON.stringify(paramsArr),
+                        'outputArrString': JSON.stringify(outputArr),
                         'status': 'run',
                         'date': utils.formatDate(new Date()),
 
