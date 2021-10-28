@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-10-26 21:16:17
+ * @Last Modified time: 2021-10-28 10:18:39
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -19,7 +19,7 @@ const {createFolderInstance} = require('./simpleInstance')
 const {record} = require('../../model/runRecord')
 const {dataContainer} = require('../../config/config')
 const { resolve } = require('path')
-const { reject } = require('async')
+// const { reject } = require('async')
 const tempPath = path.normalize(__dirname + '../../tempFile')
 
 
@@ -168,7 +168,7 @@ function createDataOut(recordData) {
     })
 }
 
-// updateRecord('811b0914-788a-4e1c-8e21-d78324b5734b', 0);    // 太笨了，还得我手动升级
+// updateRecord('149a88df-e93f-4c08-a801-decccd7218fe', 0);    // 太笨了，还得我手动升级
 
 async function updateRecord(recordId, code) {
     console.log(`子进程使用代码${code}退出`)
@@ -336,7 +336,7 @@ function invokeLocally(req, res, next) {
             token = temp.uid
         }
 
-        record.find({'serviceId': pcsId, 'inputArrString': inputArrString, 'paramsArrString': paramsArrString, 'outputArrString': outputArrString}).then((doc) => {
+        record.find({'serviceId': pcsId, 'inputArrString': inputArrString, 'paramsArrString': paramsArrString}).then((doc) => {
             if(!doc) {
                 res.send({code: -1})
                 return 
@@ -345,7 +345,21 @@ function invokeLocally(req, res, next) {
                 if(doc.length > 0) {
                     for(let i = 0; i < doc.length; ++i) {
                         let recordInstance = doc[i]._doc
-                        if(recordInstance.status != 'fail'){
+                        let flag = true
+                        if(recordInstance.status != 'fail') {
+                            if(outputArrString != '{}' && outputArrString != recordInstance.outputArrString) flag = false
+                            else {
+                                if(outputArrString == '{}')
+                                    for(let j of Object.values(JSON.parse(recordInstance.outputArrString)))
+                                        if(!j){
+                                            flag = false
+                                            break
+                                        }
+                            }   
+                        } else {
+                            flag = false
+                        }
+                        if(flag) {
                             res.send({code: 0, data: recordInstance})
                             return
                         }
