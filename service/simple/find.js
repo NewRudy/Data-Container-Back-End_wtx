@@ -1,5 +1,5 @@
 const formidable = require('formidable')
-
+const {record} = require('../../model/runRecord')
 const utils = require('../../utils/utils')
 
 exports.findData = (req, res, next) => {
@@ -23,4 +23,28 @@ exports.findData = (req, res, next) => {
             res.send({code: -1})
         })
     })
+}
+
+exports.findRecord = (req, res, next) => {
+    try {
+        if(req.query.recordId) {
+            record.findOne({recordId: req.query.recordId}).then(doc => {
+                if(doc._doc) {
+                    res.send({code: 0, data: doc._doc})
+                } else {
+                   res.send({code: 0, data: {}}) 
+                }
+            }).catch(error => {
+                res.send({
+                    code: -1,
+                    message: error
+                })
+            })
+        }
+    } catch (error) {
+        res.send({
+            code: -1,
+            message: error
+        })
+    }
 }

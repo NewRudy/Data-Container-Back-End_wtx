@@ -3,7 +3,7 @@
  * @Date: 2021-08-10 09:52:45 
  * @运行服务的js，原来的不敢改，初始目的事运行不复制的批量的文件
  * @Last Modified by: wutian
- * @Last Modified time: 2021-10-28 10:18:39
+ * @Last Modified time: 2021-11-30 09:45:41
  */
 const uuid = require('node-uuid')
 const fs = require('fs')
@@ -17,6 +17,7 @@ const utils = require('../../utils/utils')
 const {createFolderInstance} = require('./simpleInstance')
 
 const {record} = require('../../model/runRecord')
+const {instances} = require('../../model/instances')
 const {dataContainer} = require('../../config/config')
 const { resolve } = require('path')
 // const { reject } = require('async')
@@ -51,17 +52,17 @@ function judgeRecordStatus(recordId) {
     })
 }
 
-function findRecord(req, res, next) {
-    console.log('findRecord')
-    let form = new formidable.IncomingForm()
-    form.parse(req, async(form_err, fields) => {
-        if(form_err || !fields.recordId) {
-            res.send({code: -1, message: 'param err'})
-        }
-        let result = await judgeRecordStatus(fields.recordId)
-        res.send(result)
-    })
-}
+// function findRecord(req, res, next) {
+//     console.log('findRecord')
+//     let form = new formidable.IncomingForm()
+//     form.parse(req, async(form_err, fields) => {
+//         if(form_err || !fields.recordId) {
+//             res.send({code: -1, message: 'param err'})
+//         }
+//         let result = await judgeRecordStatus(fields.recordId)
+//         res.send(result)
+//     })
+// }
 
 
 /**
@@ -156,9 +157,9 @@ function createDataOut(recordData) {
             if(!instance || ! instance.list) reject('null')
             let result = {}
             for(let i = 0; i < instance.list.length; ++i) {
-                if(Object.keys(outputArr)[i])
-                    result[Object.keys(outputArr)[i]] = instance.list[i].id 
-                else 
+                // if(Object.keys(outputArr)[i])
+                //     result[Object.keys(outputArr)[i]] = instance.list[i].id 
+                // else 
                     result[instance.list[i].name] = instance.list[i].id 
             }
             resolve(result)
@@ -181,9 +182,10 @@ async function updateRecord(recordId, code) {
         outputIdArr = await createDataOut(recordData)
         for(let i of Object.keys(outputArr)) {
             if(outputArr[i]) {      // true代表是需要上传的数据
-                downloadUrl[i] = await uploadMultifiles([recordData.outputPath + '/' + i], i)
+                downloadUrl[i] = await uploadFile(path.normalize(recordData.outputPath + '/' + i), i)
             }
         }                            
+// 
     }else{
         status = 'fail'
         outputIdArr = {}
@@ -288,16 +290,30 @@ async function invoke(pcsId, inputArr, paramsArr, outputArr) {
     })
 }
 
-record.find({'status': 'run'}).then(doc =>{      // 重启程序，删除还在 run 的记录
+record.find({'status': 'run'}).then(doc =>{      // 重启程序时将还在 run 的记录全改成fail
     if(!doc || doc.length === 0) return;
-    record.deleteMany({'status': 'run'}).then(doc => {
-        console.log('delete all running record: ', doc)
-    })
+    try {
+        record.updateMany({'status': 'run'}, {$set: {'status': 'fail'}}).then(orders => {
+            console.log(orders)
+        })
+    } catch (error) {
+        console.log('updateMany error: ', error)
+    }
+    // record.deleteMany({'status': 'run'}).then(doc => {
+    //     console.log('delete all running record: ', doc)
+    // })
 })
 // record.find({'status': 'fail'}).then(doc =>{      // 重启程序，删除 fail 的记录
 //     if(!doc || doc.length === 0) return;
 //     record.deleteMany({'status': 'fail'}).then(doc => {
 //         console.log('delete all fail record: ', doc)
+//     })
+// })
+
+// instances.find({'type': 'DataOut'}).then(doc => {
+//     if(!doc || doc.length ==0 ) return;
+//     instances.deleteMany({'type': 'DataOut'}).then(doc => {
+//         console.log('delete all : ', doc)
 //     })
 // })
 
@@ -377,7 +393,7 @@ function invokeLocally(req, res, next) {
 
                     // 调用方法
                     console.log('par: ', par)
-                    const ls = cp.spawn(pythonEnv, par);
+                    const ls = cp.spawn(pythonEnv, par, {stdio: 'ignore'});
 
                     // 创建方法
                     let recordInstance = {
@@ -446,39 +462,45 @@ function zipFolder(folder) {
 
 }
 
+// 函数实现，参数单位 毫秒 ；
+function wait(ms) {
+    return new Promise(resolve =>setTimeout(() => resolve(), ms));
+};
+
+
+
 /**
- * 调用数据中转的接口，上传多文件, 本地就使用了单文件，数据大小限制为 10 GB
- * @param {*} path 文件路径数组
+ * 调用数据中转的接口，上传单文件，数据大小限制为 10 GB
+ * @param {*} filePath 文件路径
  * @param {*} name 字符串，本次上传文件名
  * @returns downloadUrl  下载的url
  */
-function uploadMultifiles(path,name){
+function uploadFile(filePath,name){
     return new Promise(async(resolve, reject) => {
-        // let upObj={
-        //     'name':name,
-        //     'datafile':fs.createReadStream(path)        
-        // }
-        console.log('upload multifiles.')
-        let upObj = {'name': name}
-        for(let i = 0; i < path.length; ++i){
-            let st = fs.statSync(path[i])
-            let file
-            if(st.isFile()){
-                file = path[i]
-            } else {
-                file = await zipFolder(path[i])
-            }
-            upObj['datafile'] = fs.createReadStream(file)
+        console.log('upload file.')
+        let file
+        let st = fs.statSync(filePath)
+        if(st.isFile()){
+            file = filePath
+        } else {
+            file = await zipFolder(filePath)
         }
-        // TODO: 大文件数据上传
+
         let options = {
             method : 'POST',
             url : dataContainer+'/data',
-            formData : upObj
+            formData : {
+                name: name,
+                datafile: fs.createReadStream(file)
+            }
         };
+        await wait(5000)    // 不知道为啥，可能是因为刚压缩完，总是报错
         //调用数据容器上传接口
         request(options, (error, response, body) => {
-                if (error) reject(error)
+                if (error) {
+                    console.log('upload error: ', error)
+                    return 
+                }
                 let temp = JSON.parse(body)
                 if(temp.code === 1) {
                     let downloadUrl = dataContainer+'/data/' + temp.data.id
@@ -540,7 +562,7 @@ function uploadData(req, res, next) {
             token = temp.uid
         }
         
-        uploadMultifiles([path], 'result').then((result) => {
+        uploadFile(path, 'result').then((result) => {
             res.send({code: 0, data: {'downloadUrl': result}})
         }).catch((err) =>
             res.send({code: -1})
@@ -551,4 +573,4 @@ function uploadData(req, res, next) {
 
 exports.invokeLocally = invokeLocally
 exports.uploadData = uploadData
-exports.findRecord = findRecord
+// exports.findRecord = findRecord
